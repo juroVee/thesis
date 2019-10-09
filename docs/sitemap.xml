@@ -3,41 +3,41 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>~sitename/</loc>
+    <loc>/</loc>
     <lastmod>2018-03-07T16:01:23+08:00</lastmod>
   </url>
   
   <url>
-    <loc>~sitename/tags/preview/</loc>
+    <loc>/tags/preview/</loc>
     <lastmod>2018-03-07T16:01:23+08:00</lastmod>
   </url>
   
   <url>
-    <loc>~sitename/tags/shortcodes/</loc>
+    <loc>/tags/shortcodes/</loc>
     <lastmod>2018-03-07T16:01:23+08:00</lastmod>
   </url>
   
   <url>
-    <loc>~sitename/tags/tag-6/</loc>
+    <loc>/tags/tag-6/</loc>
     <lastmod>2018-03-07T16:01:23+08:00</lastmod>
   </url>
   
   <url>
-    <loc>~sitename/tags/</loc>
+    <loc>/tags/</loc>
     <lastmod>2018-03-07T16:01:23+08:00</lastmod>
   </url>
   
   <url>
-    <loc>~sitename/</loc>
+    <loc>/</loc>
     <lastmod>2018-03-07T16:01:23+08:00</lastmod>
   </url>
   
   <url>
-    <loc>~sitename/series/</loc>
+    <loc>/series/</loc>
   </url>
   
   <url>
-    <loc>~sitename/series-desc/</loc>
+    <loc>/series-desc/</loc>
   </url>
   
 </urlset>
