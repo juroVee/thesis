@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Thesis</title>
+    <link>~sitename/</link>
+    <description>Recent content on Thesis</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>yolo</copyright>
+    <lastBuildDate>Wed, 07 Mar 2018 16:01:23 +0800</lastBuildDate>
+    
+	<atom:link href="~sitename/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Webová stránka k bakalárskej práci</title>
+      <link>~sitename/</link>
+      <pubDate>Wed, 07 Mar 2018 16:01:23 +0800</pubDate>
+      
+      <guid>~sitename/</guid>
+      <description>&lt;p&gt;Cotton candy caramels brownie ice cream. Powder marzipan jujubes brownie cheesecake sesame snaps liquorice. Dragée jelly-o muffin bear claw biscuit soufflé.&lt;/p&gt;
+
+&lt;p&gt;Marshmallow cookie cheesecake topping. Candy lemon drops fruitcake marshmallow cake. Oat cake macaroon chupa chups fruitcake tart chocolate cotton candy sweet roll. Cheesecake candy canes ice cream cupcake oat cake powder pudding carrot cake.&lt;/p&gt;
+
+&lt;p&gt;Candy pastry jelly beans gingerbread danish jelly. Gummies gummies danish muffin wafer. Jelly tiramisu sweet cake.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

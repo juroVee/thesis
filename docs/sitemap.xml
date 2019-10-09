@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>~sitename/</loc>
+    <lastmod>2018-03-07T16:01:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>~sitename/tags/preview/</loc>
+    <lastmod>2018-03-07T16:01:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>~sitename/tags/shortcodes/</loc>
+    <lastmod>2018-03-07T16:01:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>~sitename/tags/tag-6/</loc>
+    <lastmod>2018-03-07T16:01:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>~sitename/tags/</loc>
+    <lastmod>2018-03-07T16:01:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>~sitename/</loc>
+    <lastmod>2018-03-07T16:01:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>~sitename/series/</loc>
+  </url>
+  
+  <url>
+    <loc>~sitename/series-desc/</loc>
+  </url>
+  
+</urlset>
