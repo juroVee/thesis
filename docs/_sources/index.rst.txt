@@ -1,0 +1,49 @@
+.. Bachelor Thesis documentation master file, created by
+   sphinx-quickstart on Tue Oct 15 16:49:20 2019.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Základné informácie
+===================
+
+.. _GitHub: https://github.com/juroVee/thesis
+
+.. sidebar:: Odkazy/Na stiahnutie
+
+   | **Repozitár práce**
+   |    GitHub_
+
+   | **Aktuálna verzia práce**
+   |    `PDF <#>`__
+
+   | **Nejaký ďalší dokument**
+   |    `PDF <#>`__
+
+| **Názov práce**
+|   Interaktívne vyšetrovanie priebehu elementárnych funkcií
+|   *Properties of Elementary Functions Interactively*
+
+| **Anotácia**
+|   Návrh, vývoj a implementácia editora pre interaktívne vyšetrovanie priebehu elementárnych funkcií vo výpočtovom prostredí IPython/Jupyter.
+|   *Design, development and implementation of an editor which allows interactive exploration of  the properties of elementary functions in the computing environment IPython/Jupyter.*
+
+| **Školiteľ**
+|   Ing. Ján Komara, PhD.
+|   *Katedra aplikovanej informatiky, FMFI UK*
+
+
+
+Log
+===
+
+
+15. október 2019
+----------------
+
+- Aktualizácia webovej stránky k novej bakalárskej práci.
+
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Základné informácie
