@@ -1,0 +1,8 @@
+Cvičenie odovzdať: 
+ v MOODLE do 18:00 pondelok, 25. marca.
+Vaše riešenie musíte odovzdať v takomto formáte:
+ <priezvisko.meno>.ex03.<ext>
+Tu <ext> je prípona, ktorá odpovedá niektorému zo slobodných 
+súborových formátov pre kompresiu a archiváciu údajov (tar.gz 
+tar.bz2 tar.7z tar.xz). Vaše riešenie by malo tiež obsahovať 
+všetky relevantné súbory, vrátane pomocných súborov.
