@@ -1,5 +1,5 @@
 from .gui import Board
-from .plot import Plot
+from .plots import Plot
 from .misc import PlotNotSetException
 
 
