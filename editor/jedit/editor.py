@@ -1,6 +1,6 @@
-from .guielements.board import Board
+from .gui import Board
 from .plot import Plot
-from .misc.custom_errors import PlotNotSetException
+from .misc import PlotNotSetException
 
 
 class Editor:
