@@ -1,6 +1,5 @@
 from .gui import Board
 from .plots import Plot
-from .misc import PlotNotSetException
 
 
 class Editor:
@@ -18,4 +17,4 @@ class Editor:
     def run(self, fig, ax):
         self._init_plot(fig, ax)
         self.is_set = True
-        return self.board.data()
+        return self.board.get()
