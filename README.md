@@ -19,7 +19,11 @@ pip3 install jupyter
 jupyter notebook
 ```
 
+V zvolenom pracovnom priečinku vytvorte nový dokument `.ipynb`.
+
 ### Import editora v Jupyter Notebook:
+
+Nakopírujte priečinok `jedit`, ktorý sa nachádza v priečinku `editor` tohto repozitára do vyššie zvoleného pracovného priečinka. Potom:
 
 ```
 import matplotlib.pyplot as plt
