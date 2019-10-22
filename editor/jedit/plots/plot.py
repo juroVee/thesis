@@ -1,11 +1,9 @@
 import matplotlib.pyplot as plt
-import numpy as np
 from .maux import *
 from ipywidgets import interactive
-import copy
 
 
-def transform_title(self, title: str) -> str:
+def transform_title(title: str) -> str:
     start = title.find('$')
     end = title.rfind('$')
     return r'' + title[start:end + 1]
