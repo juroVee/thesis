@@ -35,7 +35,6 @@ class Plot:
             self.user_data.append(child)
 
     def plot_function(self):
-
         fig, ax = plt.subplots()
         fig.set_size_inches(6, 5)
         for X, Y in zip(self.xdatas, self.ydatas):
