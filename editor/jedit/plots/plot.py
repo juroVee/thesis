@@ -1,43 +1,48 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from .maux import *
-from ipywidgets import interactive, Output
-from IPython.display import display
-from math import floor, ceil
+from ipywidgets import interactive
+import copy
 
-def f(X):
-    return 2 * X ** 4 - 7 * X ** 3 + 5 * X ** 2 + 3 * X - 2
+
+def transform_title(self, title: str) -> str:
+    start = title.find('$')
+    end = title.rfind('$')
+    return r'' + title[start:end + 1]
 
 class Plot:
     """nacita hodnoty grafu nakresleneho uzivatelom
     a spravuje jeho parametre + spustanie (show)"""
     def __init__(self, fig, ax):
-        self.data = {}
-        self.fig, self.ax = fig, ax
-        self.size = (7, 9) # temporary
-        self.interactive_fields = False
-        self._resize()
+        self.user_data = []
+        self._init_user_plot_data(fig, ax)
+        # self.test(fig, ax)
 
-    def _resize(self):
-        # default DPI in Matplotlib = 100
-        grid_height = 400 if self.interactive_fields else 500
-        x, y = self.size
-        print(f'original: {self.size}')
-        factor = (y * 100) / grid_height
-        self.size = x / factor, y / factor
-        print(f'resized: {self.size}')
+    def test(self, fig, ax):
+        print(fig)
+        print(ax)
+        print(fig)
+        print(ax.get_children())
+        print(self.xdatas)
+        print(self.ydatas)
+
+    def _init_user_plot_data(self, fig, ax):
+        self.fig = fig
+        self.title = transform_title(ax.get_title())
+        self.xdatas = [line.get_xdata() for line in ax.lines]
+        self.ydatas = [line.get_ydata() for line in ax.lines]
+        for child in ax.get_children():
+            self.user_data.append(child)
 
     def plot_function(self):
+
         fig, ax = plt.subplots()
-        size_x, size_y = self.size
         fig.set_size_inches(6, 5)
-        X = np.linspace(-0.70, 2.20, 29 * 100 + 1)  # výber hodnôt nezávislej premennej pre zaujímavú časť grafu
-        Y = f(X)
-        init_subplot(ax)
-        ax.set_title(r"Graf funkcie $y = 2x^4-7x^3+5x^2+3x-2$")  # pomenovanie diagramu
-        ax.set_aspect('equal')
-        plt.ioff()
-        ax.plot(X, Y)
+        for X, Y in zip(self.xdatas, self.ydatas):
+            init_subplot(ax)
+            ax.set_title(self.title)
+            ax.set_aspect('equal')
+            ax.plot(X, Y)
         fig.show()
 
     def get_widget(self) -> interactive:
