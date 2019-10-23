@@ -1,29 +1,46 @@
-import ipywidgets as widgets
-from ipywidgets import Layout, VBox, HBox, Button
-from IPython.display import display, Markdown, clear_output
-import time
+import time, ipywidgets as w
+from .button import Button
+from .outputs import print_output, log_output
+from IPython.display import clear_output
 
+# ----------- resetting button ----------
+reset_button = Button(description='Reset Editor', button_style='').get_widget()
 
-def create_button(description, button_style):
-    return Button(description=description,
-                  button_style=button_style,
-                  layout=Layout(height='auto', width='auto'))
+def reset_button_clicked():
+    with log_output:
+        clear_output()
+        #editor.reset()
+        print_output('Editor has been successfully reset')
+        time.sleep(3)
+        clear_output()
 
-def get_log_output(text):
-    print(text)
+@reset_button.on_click
+def reset_on_click(b):
+    reset_button_clicked()
 
-# left bottom output widget
-visible_log = widgets.Output()
+# ----------- grid toggle button ----------
 
+grid_toggle_button = w.ToggleButton(
+    value=False,
+    description='Grid',
+    disabled=False,
+    button_style='',
+    tooltip='Turn grid on',
+    layout=w.Layout(width='auto')
+)
 
-# reset button click function
-def reset_button_clicked(_):
-      with visible_log:
-          clear_output()
-          get_log_output('Editor has been successfully reset')
-          time.sleep(3)
-          clear_output()
+def grid_toggle_button_clicked():
+    with log_output:
+        clear_output()
+        #editor.reset()
+        print_output('Grid visible!')
+        time.sleep(3)
+        clear_output()
 
-# reset button and it's click function init
-button_reset = create_button(description='Reset Editor', button_style='')
-button_reset.on_click(reset_button_clicked)
+@reset_button.on_click
+def reset_on_click(b):
+    reset_button_clicked()
+
+# ----------- grid toggle button REAL ----------
+
+box = w.Checkbox(False, description='Grid')

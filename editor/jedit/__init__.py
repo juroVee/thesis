@@ -1,3 +1,1 @@
-from .editor import Editor
-
-editor = Editor()
+from .config import editor

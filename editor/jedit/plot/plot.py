@@ -11,10 +11,13 @@ def transform_title(title: str) -> str:
 class Plot:
     """nacita hodnoty grafu nakresleneho uzivatelom
     a spravuje jeho parametre + spustanie (show)"""
+
     def __init__(self, fig, ax):
         self.user_data = []
         self._init_user_plot_data(fig, ax)
         self.color = 'C0'
+        self.grid = False
+        self.updated = False
 
     def _init_user_plot_data(self, fig, ax):
         self.fig = fig
@@ -25,16 +28,19 @@ class Plot:
             self.user_data.append(child)
 
     def plot_function(self):
+        if self.updated:
+            plt.close('all') # very important, possible memory exceeding instead
         fig, ax = plt.subplots()
-        fig.set_size_inches(6, 5) # good: (6, 5)
+        fig.set_size_inches(6, 5.2) # good: (6, 5)
         for X, Y in zip(self.xdatas, self.ydatas):
             init_subplot(ax)
             ax.set_title(self.title, loc='right', fontsize=10)
             #ax.set_aspect('equal')
+            ax.grid(self.grid)
             ax.plot(X, Y, color=self.color)
         fig.show()
 
     def get_widget(self) -> w.interactive:
         widget = w.interactive(self.plot_function)
-        #widget.layout = {'border': '5px solid black'}
+        widget.layout = {'border': '3px solid black'}
         return widget

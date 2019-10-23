@@ -1,5 +1,8 @@
 import ipywidgets as w
 
+class Slider:
+        pass
+
 freq_slider = w.FloatSlider(
         value=2.,
         min=1.,
