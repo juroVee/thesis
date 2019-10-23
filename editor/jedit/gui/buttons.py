@@ -17,7 +17,7 @@ visible_log = widgets.Output()
 
 
 # reset button click function
-def reset_button_clicked():
+def reset_button_clicked(_):
       with visible_log:
           clear_output()
           get_log_output('Editor has been successfully reset')

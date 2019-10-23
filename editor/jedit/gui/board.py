@@ -8,7 +8,6 @@ GRID_ROWS = 16
 class JTab:
     """
     Fixed layout - GridspecLayout
-
     """
     def __init__(self, name=None, main_window=None, sidebar=None):
         self.name = name if name else 'Untitled Tab'
