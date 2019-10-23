@@ -8,7 +8,6 @@ from .observer import Observer
 from IPython.display import clear_output, display
 import time
 
-
 class Board:
 
     grid_toggle = w.ToggleButtons(
@@ -30,7 +29,7 @@ class Board:
 
     def init_tabs(self):
         tab1 = Tab(name='Analysis',
-                 main_window=[self.plot_widget],
+                 main_window=[self.plot.get_widget()],
                  sidebar=[(0, freq_slider),
                           (1, freq_slider),
                           (2, freq_slider),

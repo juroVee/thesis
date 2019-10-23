@@ -15,8 +15,7 @@ class Observer:
         self.loaded_board.plot.updated = True
         self.loaded_board.plot_widget = self.loaded_board.plot.get_widget()
         self.loaded_board.init_tabs()
-        clear_output()
-        display(self.loaded_board.get_widget())
+        display(self.loaded_board.plot.get_widget())
 
     def start(self):
         box.observe(self.changed, 'value')

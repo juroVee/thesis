@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import ipywidgets as w
 from .maux import *
-
+from IPython.display import display, clear_output
 
 def transform_title(title: str) -> str:
     start = title.find('$')
@@ -11,6 +11,8 @@ def transform_title(title: str) -> str:
 class Plot:
     """nacita hodnoty grafu nakresleneho uzivatelom
     a spravuje jeho parametre + spustanie (show)"""
+
+    output = w.Output()
 
     def __init__(self, fig, ax):
         self.user_data = []
@@ -30,7 +32,9 @@ class Plot:
     def plot_function(self):
         if self.updated:
             plt.close('all') # very important, possible memory exceeding instead
+        plt.ioff()
         fig, ax = plt.subplots()
+        plt.ion()
         fig.set_size_inches(6, 5.2) # good: (6, 5)
         for X, Y in zip(self.xdatas, self.ydatas):
             init_subplot(ax)
@@ -38,9 +42,12 @@ class Plot:
             #ax.set_aspect('equal')
             ax.grid(self.grid)
             ax.plot(X, Y, color=self.color)
-        fig.show()
+        display(self.output)
+        with self.output:
+            clear_output()
+            display(fig)
 
     def get_widget(self) -> w.interactive:
         widget = w.interactive(self.plot_function)
         widget.layout = {'border': '3px solid black'}
-        return widget
+        return w.interactive(self.plot_function)
