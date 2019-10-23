@@ -1,45 +1,30 @@
-import ipywidgets as widgets
-from math import floor, ceil
-from ipywidgets import VBox, AppLayout, Output, Button, Layout, GridspecLayout
-from .sliders import freq_slider, range_slider
-from .buttons import color_buttons
+import ipywidgets as w
+from .sliders import freq_slider
+from .buttons import button_reset, visible_log
 from ..plots import Plot
 
-import matplotlib.pyplot as plt
-
-def create_expanded_button(description, button_style):
-    return Button(description=description, button_style=button_style, layout=Layout(height='auto', width='auto'))
-
-header_button = create_expanded_button('Title', 'success')
-# left_button = create_expanded_button('Left', 'info')
-# center_button = create_expanded_button('Center', 'warning')
-# right_button = create_expanded_button('Right', 'info')
-# footer_button = create_expanded_button('Footer', 'success')
+GRID_ROWS = 16
 
 class JTab:
-    """Fixed layout - AppLayout (header, footer, left, right sidebar and center"""
-    def __init__(self, name=None, header=None, footer=None, left_sidebar=None, center=None, right_sidebar=None):
-        self.name = name
-        self.header, self.footer = header, footer
-        self.left_sidebar, self.center, self.right_sidebar = left_sidebar, center, right_sidebar
+    """
+    Fixed layout - GridspecLayout
 
-    def app_layout(self) -> AppLayout: # not used yet
-        return AppLayout(header=self.header,
-          left_sidebar=self.left_sidebar,
-          center=self.center,
-          right_sidebar=self.right_sidebar,
-          footer=self.footer)
+    """
+    def __init__(self, name=None, main_window=None, sidebar=None):
+        self.name = name if name else 'Untitled Tab'
+        self.main_window = main_window if main_window else []
+        self.sidebar = sidebar if sidebar else []
 
-    def grid_space(self) -> GridspecLayout:
-        grid = GridspecLayout(10, 10, height='600px')
-        grid[:, :7] = self.center
-        grid[:, 7:] = self.right_sidebar
-        #grid[:2, :7] = header_button
+    def get_grid_space(self) -> w.GridspecLayout:
+        grid = w.GridspecLayout(GRID_ROWS, 10, height='620px')
+        grid[:GRID_ROWS-1, :7] = w.VBox(children=self.main_window)
+        grid[GRID_ROWS-1, :7] = w.VBox(children=[visible_log], layout=w.Layout(height='auto'))
+        for pos, item in self.sidebar:
+            grid[pos, 7:] = w.VBox(children=[item])
         return grid
 
-
-
 class Board:
+
     def __init__(self, fig, ax):
         self.plot = Plot(fig, ax)
         self._init_tabs()
@@ -48,22 +33,18 @@ class Board:
         pw = self.plot.get_widget()
         tabs = [
             JTab(name='Analysis',
-                 center=VBox(children=[pw]),
-                 right_sidebar=VBox(children=[freq_slider] * 5)
+                 main_window=[pw],
+                 sidebar=[(0, freq_slider), # i in <0, GRID_ROWS-1>
+                          (1, freq_slider),
+                          (2, freq_slider),
+                          (GRID_ROWS-1, button_reset)]
                  ),
-            JTab(name='Settings',
-                 center=VBox(children=[color_buttons]),
-                 right_sidebar=VBox()
-                 ),
-            JTab(name='Info',
-                 center=VBox(),
-                 right_sidebar=VBox()
-                 )
+            JTab(name='Settings'),
+            JTab(name='Info')
         ]
-        self.tab = widgets.Tab(children=[t.grid_space() for t in tabs])
+        self.tab = w.Tab(children=[t.get_grid_space() for t in tabs])
         for i, tab in enumerate(tabs):
             self.tab.set_title(i, tab.name)
 
-    def get(self):
-        return VBox(children=[self.tab])
-
+    def get(self) -> w.VBox:
+        return w.VBox(children=[self.tab])

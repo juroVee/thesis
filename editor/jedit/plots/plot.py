@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
+import ipywidgets as w
 from .maux import *
-from ipywidgets import interactive
 
 
 def transform_title(title: str) -> str:
@@ -14,15 +14,7 @@ class Plot:
     def __init__(self, fig, ax):
         self.user_data = []
         self._init_user_plot_data(fig, ax)
-        # self.test(fig, ax)
-
-    def test(self, fig, ax):
-        print(fig)
-        print(ax)
-        print(fig)
-        print(ax.get_children())
-        print(self.xdatas)
-        print(self.ydatas)
+        self.color = 'C0'
 
     def _init_user_plot_data(self, fig, ax):
         self.fig = fig
@@ -34,19 +26,15 @@ class Plot:
 
     def plot_function(self):
         fig, ax = plt.subplots()
-        fig.set_size_inches(6, 5)
+        fig.set_size_inches(6, 5) # good: (6, 5)
         for X, Y in zip(self.xdatas, self.ydatas):
             init_subplot(ax)
-            ax.set_title(self.title)
-            ax.set_aspect('equal')
-            ax.plot(X, Y)
+            ax.set_title(self.title, loc='right', fontsize=10)
+            #ax.set_aspect('equal')
+            ax.plot(X, Y, color=self.color)
         fig.show()
 
-    def get_widget(self) -> interactive:
-        widget = interactive(self.plot_function)
+    def get_widget(self) -> w.interactive:
+        widget = w.interactive(self.plot_function)
         #widget.layout = {'border': '5px solid black'}
         return widget
-
-
-
-

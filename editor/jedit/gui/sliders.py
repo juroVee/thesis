@@ -1,6 +1,6 @@
-from ipywidgets import Layout, FloatSlider, FloatRangeSlider
+import ipywidgets as w
 
-freq_slider = FloatSlider(
+freq_slider = w.FloatSlider(
         value=2.,
         min=1.,
         max=10.0,
@@ -8,7 +8,7 @@ freq_slider = FloatSlider(
         description='Frequency:',
         readout_format='.1f')
 
-range_slider = FloatRangeSlider(
+range_slider = w.FloatRangeSlider(
         value=[-1., +1.],
         min=-5., max=+5., step=0.1,
         description='xlim:',
