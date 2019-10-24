@@ -1,1 +1,1 @@
-from .config import editor
+from .editor import editor

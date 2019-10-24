@@ -1,4 +1,5 @@
 import ipywidgets as w
+from ..config import DEFAULT_FUNCTIONS
 
 # ----------- checkbox grid UNUSED ----------
 
@@ -7,6 +8,24 @@ checkbox_grid = w.Checkbox(False, description='Grid')
 # ----------- checkbox color UNUSED ----------
 
 checkbox_color = w.Checkbox(False, description='Red color')
+
+# ----------- dropdown functions ----------
+
+dropdown_functions = w.Dropdown(
+    options=['user defined'] + list(DEFAULT_FUNCTIONS.keys()),
+    value='user defined',
+    description='Functions:',
+    disabled=False,
+    layout=w.Layout(width='auto', height='auto')
+)
+
+dropdown_functions_not_defined = w.Dropdown(
+    options=DEFAULT_FUNCTIONS.keys(),
+    value='y = x',
+    description='Functions:',
+    disabled=False,
+    layout=w.Layout(width='auto', height='auto')
+)
 
 # ----------- dropdown grid ----------
 

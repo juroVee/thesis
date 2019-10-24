@@ -1,9 +1,8 @@
 from .gui import Board
-from .misc import PlotNotSetException, NotSupportedException
-from matplotlib.figure import Figure
-from matplotlib.axes import Axes
+from .misc import NotSupportedException
+from .config import settings
 from matplotlib import get_backend
-from IPython.display import display
+from IPython.display import display, HTML
 
 
 class Editor:
@@ -12,21 +11,26 @@ class Editor:
         self.user_fig, self.user_ax = None, None
         self.board = None
 
-    def run(self, fig, ax):
-        self.user_fig, self.user_ax = fig, ax
-        check_fig = isinstance(fig, Figure)
-        check_ax = isinstance(ax, Axes)
-
-        if not any([check_fig, check_ax]):
-            raise PlotNotSetException('No correct figure or axes provided. Check types of fig and ax.')
+    def run(self, fig=None, ax=None):
         if 'inline' in get_backend():
             raise NotSupportedException('Clause %matplotlib inline is not supported. Please use %matplotlib notebook.')
-
-
         self.board = Board(fig, ax)
         plot = self.board.get_plot()
         display(self.board.get_widget())
 
         with plot.output:
-            #clear_output()
             plot.update()
+
+# run instance after importing editor
+
+editor = Editor()
+
+if settings.FIGURE_HEADER is False:
+    html = '''
+        <style>
+        .cell .output_wrapper .ui-dialog-titlebar {
+          display: none;
+        }    
+        </style>
+        '''
+    display(HTML(html))

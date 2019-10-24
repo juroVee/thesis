@@ -1,2 +1,1 @@
-from .custom_errors import PlotNotSetException
 from .custom_errors import NotSupportedException
