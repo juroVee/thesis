@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import ipywidgets as w
 from .maux import *
-from IPython.display import display, clear_output
 
 def transform_title(title: str) -> str:
     start = title.find('$')
@@ -21,7 +20,7 @@ class Plot:
         self.grid = False
         self.updated = False
 
-    def _init_user_plot_data(self, fig, ax):
+    def _init_user_plot_data(self, fig, ax) -> None:
         self.fig = fig
         self.title = transform_title(ax.get_title())
         self.xdatas = [line.get_xdata() for line in ax.lines]
@@ -29,25 +28,18 @@ class Plot:
         for child in ax.get_children():
             self.user_data.append(child)
 
-    def plot_function(self):
-        if self.updated:
-            plt.close('all') # very important, possible memory exceeding instead
-        plt.ioff()
+    def plot_function(self) -> None:
         fig, ax = plt.subplots()
-        plt.ion()
-        fig.set_size_inches(6, 5.2) # good: (6, 5)
+        fig.set_size_inches(6, 5.2)  # good: (6, 5)
         for X, Y in zip(self.xdatas, self.ydatas):
             init_subplot(ax)
             ax.set_title(self.title, loc='right', fontsize=10)
-            #ax.set_aspect('equal')
+            # ax.set_aspect('equal')
             ax.grid(self.grid)
             ax.plot(X, Y, color=self.color)
-        display(self.output)
-        with self.output:
-            clear_output()
-            display(fig)
+        fig.show()
 
-    def get_widget(self) -> w.interactive:
-        widget = w.interactive(self.plot_function)
-        widget.layout = {'border': '3px solid black'}
-        return w.interactive(self.plot_function)
+    def update(self) -> None:
+        if self.updated:
+            plt.close('all') # very important, possible memory exceeding instead
+        self.plot_function()

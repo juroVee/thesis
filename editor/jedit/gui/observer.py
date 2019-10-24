@@ -1,22 +1,27 @@
-from IPython.display import display, clear_output
-from .buttons import box
+from IPython.display import clear_output
+from .sidebar_elements import color_picker, dropdown_grid
 
 class Observer:
 
     def __init__(self, board):
-        self.loaded_board = board
+        self.board = board
+        self.plot = self.board.plot
 
-    def changed(self, b):
-        val = b['new']
-        if val:
-            self.loaded_board.plot.grid = True
-        else:
-            self.loaded_board.plot.grid = False
-        self.loaded_board.plot.updated = True
-        self.loaded_board.plot_widget = self.loaded_board.plot.get_widget()
-        self.loaded_board.init_tabs()
-        display(self.loaded_board.plot.get_widget())
+    def _changed_grid(self, b) -> None:
+        self.plot.grid = True if b['new'] == 'True' else False
+        self.plot.updated = True
+        with self.plot.output:
+            clear_output()
+            self.plot.plot_function()
 
-    def start(self):
-        box.observe(self.changed, 'value')
+    def _changed_color(self, b) -> None:
+        self.plot.color = b['new']
+        self.plot.updated = True
+        with self.plot.output:
+            clear_output()
+            self.plot.plot_function()
+
+    def start(self) -> None:
+        dropdown_grid.observe(self._changed_grid, 'value')
+        color_picker.observe(self._changed_color, 'value')
 

@@ -1,5 +1,4 @@
 import ipywidgets as w
-from .outputs import log_output
 
 GRID_ROWS = 16
 PLOT_SIZE = 7
@@ -14,10 +13,10 @@ class Tab:
         self.sidebar = sidebar if sidebar else []
 
     def get_grid_space(self) -> w.GridspecLayout:
-        grid = w.GridspecLayout(GRID_ROWS, 10, height='620px')
-        grid[:GRID_ROWS-1, :PLOT_SIZE] = w.VBox(children=self.main_window)
-        grid[GRID_ROWS-1, :PLOT_SIZE] = w.VBox(children=[log_output],
-                                               layout=w.Layout(height='auto'))
+        grid = w.GridspecLayout(GRID_ROWS, 10, height='560px')
+        grid[:GRID_ROWS, :PLOT_SIZE] = w.VBox(children=self.main_window)
+        # grid[GRID_ROWS-1, :PLOT_SIZE] = w.VBox(children=[log_output],
+        #                                        layout=w.Layout(height='auto'))
         for pos, item in self.sidebar:
             grid[pos, PLOT_SIZE:] = w.VBox(children=[item])
         return grid
