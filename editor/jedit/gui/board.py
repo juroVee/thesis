@@ -1,13 +1,17 @@
 import ipywidgets as w
 from .tab import Tab
 from ..plot import Plot
-from .sidebar_elements import color_picker, dropdown_grid, dropdown_functions, dropdown_functions_not_defined
 from .observer import Observer
+from .sidebar_elements import (color_picker,
+                               dropdown_grid,
+                               dropdown_functions,
+                               dropdown_functions_not_defined,
+                               dropdown_aspect,
+                               range_slider)
 
 class Board:
 
     def __init__(self, fig, ax):
-        self.user_fig, self.user_ax = fig, ax
         self._init_plot(fig, ax)
         self._init_tabs()
         self._init_observer()
@@ -18,9 +22,10 @@ class Board:
     def _init_tabs(self):
         tab1 = Tab(name='Analysis',
                    main_window=[self.plot.output],
-                   sidebar=[(2, dropdown_functions if self.plot.user_defined else dropdown_functions_not_defined),
-                            (3, dropdown_grid),
-                            (4, color_picker)]
+                   sidebar=[(0, dropdown_functions if self.plot.is_user_defined() else dropdown_functions_not_defined),
+                            (1, dropdown_grid),
+                            (2, dropdown_aspect),
+                            (3, color_picker)]
                    )
         tab2 = Tab(name='Settings')
         tab3 = Tab(name='Info')
@@ -37,7 +42,3 @@ class Board:
 
     def get_widget(self) -> w.VBox:
         return w.VBox(children=[self.tab_parent])
-
-
-
-

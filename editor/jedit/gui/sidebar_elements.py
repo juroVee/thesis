@@ -1,5 +1,5 @@
 import ipywidgets as w
-from ..config import DEFAULT_FUNCTIONS
+from ..config.settings import DEFAULT_FUNCTIONS, DEFAULT_FUNCTION_SHOW
 
 # ----------- checkbox grid UNUSED ----------
 
@@ -21,7 +21,7 @@ dropdown_functions = w.Dropdown(
 
 dropdown_functions_not_defined = w.Dropdown(
     options=DEFAULT_FUNCTIONS.keys(),
-    value='y = x',
+    value=DEFAULT_FUNCTION_SHOW,
     description='Functions:',
     disabled=False,
     layout=w.Layout(width='auto', height='auto')
@@ -30,12 +30,23 @@ dropdown_functions_not_defined = w.Dropdown(
 # ----------- dropdown grid ----------
 
 dropdown_grid = w.Dropdown(
-    options=['False', 'True'],
-    value='False',
+    options=['false', 'true'],
+    value='false',
     description='Grid:',
     disabled=False,
     layout=w.Layout(width='auto', height='auto')
 )
+
+# ----------- dropdown aspect ----------
+
+dropdown_aspect = w.Dropdown(
+    options=['auto', 'equal'],
+    value='auto',
+    description='Aspect:',
+    disabled=False,
+    layout=w.Layout(width='auto', height='auto')
+)
+
 
 # ----------- color picker ----------
 
@@ -57,10 +68,14 @@ freq_slider = w.FloatSlider(
         description='Frequency:',
         readout_format='.1f')
 
-# ----------- range slider UNUSED ----------
+# ----------- range slider ----------
 
 range_slider = w.FloatRangeSlider(
-        value=[-1., +1.],
-        min= -5., max= +5., step=0.1,
-        description='xlim:',
-        readout_format='.1f')
+        value=[-10., +10.],
+        min= -20., max= +20., step=0.1,
+        description='X Range:',
+        continuous_update=False,
+        readout_format='.1f',
+        orientation='horizontal',
+        layout=w.Layout(width='auto', height='auto')
+)

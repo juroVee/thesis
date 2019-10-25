@@ -1,69 +1,54 @@
 import matplotlib.pyplot as plt
 import ipywidgets as w
-from .maux import *
-from ..config.settings import DEFAULT_FUNCTIONS
+from .function import Function
+from ..config import DEFAULT_FUNCTIONS, DEFAULT_FUNCTION_SHOW
 
 def transform_title(title: str) -> str:
     start = title.find('$')
     end = title.rfind('$')
     return r'' + title[start:end + 1]
 
+def load_functions() -> dict:
+    functions = {}
+    for name, data in DEFAULT_FUNCTIONS.items():
+        X = data['linspace']
+        func = data['function']
+        latex = data['latex']
+        functions[name] = Function(X=[X], Y=[func(X)], name=name, latex=latex)
+        if 'xticks_data' in data.keys():
+            functions[name].xticks = data['xticks_data']['xticks']
+            functions[name].xticks_labels = data['xticks_data']['xticklabels']
+
+    return functions
+
 class Plot:
-    """nacita hodnoty grafu nakresleneho uzivatelom
-    a spravuje jeho parametre + spustanie (show)"""
 
     output = w.Output()
 
     def __init__(self, fig, ax):
-        self.user_defined = not (fig is None and ax is None)
-        self.user_data = []
-        if self.user_defined:
-            self._init_user_plot_data(fig, ax)
-        else:
-            function_name = 'y = x'
-            function = DEFAULT_FUNCTIONS[function_name]['function']
-            linspace = DEFAULT_FUNCTIONS[function_name]['linspace']
-            self.defined_function = function, function_name, linspace
-        self.color = 'C0'
-        self.grid = False
+        self.functions = load_functions()
+        self.current_function = None
+        self.user_defined = False
         self.updated = False
+        if not (fig is None and ax is None): # if user defined
+            self.user_defined = True
+            X = [line.get_xdata() for line in ax.lines] # toto vsetko do nejakeho loadingu #TODO
+            Y = [line.get_ydata() for line in ax.lines]
+            latex = transform_title(ax.get_title())
+            name = transform_title(latex)
+            self.functions['user defined'] = Function(X=X, Y=Y, name=name, latex=latex)
+            self.current_function = self.functions['user defined']
+            self.current_function.set_xtics(ax.get_xticks())
+            if ax.get_xticklabels()[0].get_text() != '':
+                self.current_function.set_xtics_labels(ax.get_xticklabels())
 
-    def _init_user_plot_data(self, fig, ax) -> None:
-        self.fig = fig
-        self.title = transform_title(ax.get_title())
-        self.xdatas = [line.get_xdata() for line in ax.lines]
-        self.ydatas = [line.get_ydata() for line in ax.lines]
-        for child in ax.get_children():
-            self.user_data.append(child)
+        else:
+            self.current_function = self.functions[DEFAULT_FUNCTION_SHOW]
 
-    def plot_user_function(self) -> None:
-        fig, ax = plt.subplots()
-        fig.set_size_inches(6, 5.2)  # good: (6, 5)
-        for X, Y in zip(self.xdatas, self.ydatas):
-            init_subplot(ax)
-            ax.set_title(self.title, loc='right', fontsize=10)
-            # ax.set_aspect('equal')
-            ax.grid(self.grid)
-            ax.plot(X, Y, color=self.color)
-        fig.show()
-
-    def plot_function(self, function, function_name, linspace) -> None:
-        fig, ax = plt.subplots()
-        fig.set_size_inches(6, 5.2)
-        X = linspace
-        Y = function(X)
-        init_subplot(ax)
-        ax.set_title(function_name, loc='right', fontsize=10)
-        # ax.set_aspect('equal')
-        ax.grid(self.grid)
-        ax.plot(X, Y, color=self.color)
-        fig.show()
+    def is_user_defined(self):
+        return self.user_defined
 
     def update(self) -> None:
         if self.updated:
-            plt.close('all') # very important, possible memory exceeding instead
-        if self.user_defined:
-            self.plot_user_function()
-        else:
-            fun, name, linspace = self.defined_function
-            self.plot_function(fun, name, linspace)
+            plt.close('all') # very important, possible memory exceeding
+        self.current_function.plot()
