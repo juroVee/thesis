@@ -16,8 +16,8 @@ Základné informácie
    | **Aktuálna verzia práce**
    |    `PDF <#>`__
 
-   | **Nejaký ďalší dokument**
-   |    `PDF <#>`__
+   | **Aktuálna verzia programu**
+   |    :download:`ZIP <files/editor_v1.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -36,11 +36,20 @@ Základné informácie
 Log
 ===
 
+27. október 2019
+----------------
+
+- Naprogramovaná prvotná verzia editoru
+- Obsahuje načítanie grafu od užívateľa
+- Vie fungovať aj bez užívateľovho grafu spracujúc jednu z predvolených funkcií
+- Naprogramovaná funkcionalita prepínania týchto predvolených funkcií + užívateľovej
+- Obsahuje ďalšie jednoduché interaktívne prvky ako zmena farby krivky, nastavenie mriežky, aspectu
 
 15. október 2019
 ----------------
 
 - Aktualizácia webovej stránky k novej bakalárskej práci.
+- Vytvorenie GitHub repozitára
 
 
 
