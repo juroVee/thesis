@@ -8,13 +8,13 @@ from .sidebar_elements import (color_picker,
 class Observer:
 
     def __init__(self, board):
-        self.board = board
-        self.plot = self.board.plot
+        self.plot = board.get_plot()
+        self.carousel = self.plot.carousel
 
     def _changed_function(self, b) -> None:
         self.plot.updated = True
         choice = b['new']
-        self.plot.current_function = self.plot.functions[choice]
+        self.carousel.set_current(self.carousel[choice])
         with self.plot.output:
             clear_output()
             self.plot.update()
@@ -22,8 +22,7 @@ class Observer:
     def _changed_grid(self, b) -> None:
         self.plot.updated = True
         choice = True if b['new'] == 'true' else False
-        functions =  self.plot.functions.values()
-        for function in functions:
+        for function in self.carousel.get_all():
             function.set_grid(choice)
         with self.plot.output:
             clear_output()
@@ -32,8 +31,7 @@ class Observer:
     def _changed_aspect(self, b) -> None:
         self.plot.updated = True
         choice = b['new']
-        functions =  self.plot.functions.values()
-        for function in functions:
+        for function in self.carousel.get_all():
             function.set_aspect(choice)
         with self.plot.output:
             clear_output()
@@ -42,8 +40,7 @@ class Observer:
     def _changed_color(self, b) -> None:
         self.plot.updated = True
         choice = b['new']
-        functions = self.plot.functions.values()
-        for function in functions:
+        for function in self.carousel.get_all():
             function.set_color(choice)
         with self.plot.output:
             clear_output()

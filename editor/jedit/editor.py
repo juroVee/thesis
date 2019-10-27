@@ -8,7 +8,6 @@ from IPython.display import display, HTML
 class Editor:
 
     def __init__(self):
-        self.user_fig, self.user_ax = None, None
         self.board = None
 
     def run(self, fig=None, ax=None):

@@ -12,8 +12,8 @@ checkbox_color = w.Checkbox(False, description='Red color')
 # ----------- dropdown functions ----------
 
 dropdown_functions = w.Dropdown(
-    options=['user defined'] + list(DEFAULT_FUNCTIONS.keys()),
-    value='user defined',
+    options=['user function'] + list(DEFAULT_FUNCTIONS.keys()),
+    value='user function',
     description='Functions:',
     disabled=False,
     layout=w.Layout(width='auto', height='auto')
