@@ -37,6 +37,12 @@ Základné informácie
 Log
 ===
 
+8. november 2019
+----------------
+
+- Odstránený dropdown pre aspect ratio po konzultácii so školiteľom
+- Pridané ďalšie dva parametre X a f po konzultácii so školiteľom
+
 27. október 2019
 ----------------
 
@@ -52,6 +58,18 @@ Log
 - Aktualizácia webovej stránky k novej bakalárskej práci.
 - Vytvorenie GitHub repozitára
 
+Literatúra, tutoriály, manuály
+==============================
+
+[1] TODO
+
+[2] TODO
+
+[3] TODO
+
+[4] TODO
+
+[5] TODO
 
 
 .. toctree::
