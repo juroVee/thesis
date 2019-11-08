@@ -5,9 +5,7 @@ from .observer import Observer
 from .sidebar_elements import (color_picker,
                                dropdown_grid,
                                dropdown_functions,
-                               dropdown_functions_not_defined,
-                               dropdown_aspect,
-                               range_slider)
+                               dropdown_functions_not_defined)
 
 class Board:
 
@@ -24,8 +22,7 @@ class Board:
                    main_window=[self.plot.output],
                    sidebar=[(0, dropdown_functions if self.plot.is_user_defined() else dropdown_functions_not_defined),
                             (1, dropdown_grid),
-                            (2, dropdown_aspect),
-                            (3, color_picker)]
+                            (2, color_picker)]
                    )
         tab2 = Tab(name='Settings')
         tab3 = Tab(name='Info')

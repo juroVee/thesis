@@ -1,6 +1,6 @@
 from .gui import Board
-from .misc import NotSupportedException
-from .config import settings
+from .util import NotSupportedException
+from .config import FIGURE_HEADER
 from matplotlib import get_backend
 from IPython.display import display, HTML
 
@@ -24,7 +24,7 @@ class Editor:
 
 editor = Editor()
 
-if settings.FIGURE_HEADER is False:
+if not FIGURE_HEADER:
     html = '''
         <style>
         .cell .output_wrapper .ui-dialog-titlebar {

@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import numpy as np
 from .maux import init_subplot
 
 class Function:

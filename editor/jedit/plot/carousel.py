@@ -1,19 +1,18 @@
 from .function import Function
-from ..config import DEFAULT_FUNCTIONS, DEFAULT_FUNCTION_SHOW
+from ..config import FUNCTIONS, DEFAULT_FUNCTION
 from ..util import transform_title
 
 class FunctionCarousel:
 
     def __init__(self, fig, ax):
         self._load_default_functions()
-        self.current_function = self.functions[DEFAULT_FUNCTION_SHOW]
+        self.current_function = self.functions[DEFAULT_FUNCTION]
         if not (fig is None and ax is None): # if user defined
             self._load_user_function(fig, ax)
 
-
     def _load_default_functions(self):
         self.functions = {}
-        for name, data in DEFAULT_FUNCTIONS.items():
+        for name, data in FUNCTIONS.items():
             function = data['function']
             X = data['linspace']
             latex = data['latex']
@@ -29,6 +28,7 @@ class FunctionCarousel:
         latex = transform_title(ax.get_title())
         self.functions['user function'] = Function(X=X, Y=Y, name='user function', latex=latex)
         self.current_function = self.functions['user function']
+        self.current_function.set_aspect(ax.get_aspect())
         self.current_function.set_xtics(ax.get_xticks())
         if ax.get_xticklabels()[0].get_text() != '':
             self.current_function.set_xtics_labels(ax.get_xticklabels())
