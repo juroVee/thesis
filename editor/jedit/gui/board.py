@@ -9,13 +9,13 @@ from .sidebar_elements import (color_picker,
 
 class Board:
 
-    def __init__(self, fig, ax):
-        self._init_plot(fig, ax)
+    def __init__(self, user_data=None):
+        self._init_plot(user_data)
         self._init_tabs()
         self._init_observer()
 
-    def _init_plot(self, fig, ax):
-        self.plot = Plot(fig, ax)
+    def _init_plot(self, user_data):
+        self.plot = Plot(user_data)
 
     def _init_tabs(self):
         tab1 = Tab(name='Analysis',

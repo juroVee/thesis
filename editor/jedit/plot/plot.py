@@ -7,8 +7,8 @@ class Plot:
 
     output = w.Output()
 
-    def __init__(self, fig, ax):
-        self.carousel = FunctionCarousel(fig, ax)
+    def __init__(self, user_data):
+        self.carousel = FunctionCarousel(user_data)
         self.updated = False
 
     def is_user_defined(self) -> bool:

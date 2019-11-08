@@ -4,11 +4,13 @@ from ..util import transform_title
 
 class FunctionCarousel:
 
-    def __init__(self, fig, ax):
+    def __init__(self, user_data):
         self._load_default_functions()
         self.current_function = self.functions[DEFAULT_FUNCTION]
-        if not (fig is None and ax is None): # if user defined
-            self._load_user_function(fig, ax)
+        self.user_defined = all(var is not None for var in user_data)
+        if self.user_defined:
+            self.user_data = user_data
+            self._load_user_function()
 
     def _load_default_functions(self):
         self.functions = {}
@@ -21,8 +23,8 @@ class FunctionCarousel:
                 self.functions[name].xticks = data['xticks_data']['xticks']
                 self.functions[name].xticks_labels = data['xticks_data']['xticklabels']
 
-    def _load_user_function(self, fig, ax):
-        self.user_defined = True
+    def _load_user_function(self):
+        fig, ax, X, Y = self.user_data
         X = [line.get_xdata() for line in ax.lines]
         Y = [line.get_ydata() for line in ax.lines]
         latex = transform_title(ax.get_title())

@@ -1,5 +1,5 @@
 from .gui import Board
-from .util import NotSupportedException
+from .util import NotSupportedException, check_params
 from .config import FIGURE_HEADER
 from matplotlib import get_backend
 from IPython.display import display, HTML
@@ -10,10 +10,12 @@ class Editor:
     def __init__(self):
         self.board = None
 
-    def run(self, fig=None, ax=None):
+    def run(self, fig=None, ax=None, X=None, f=None):
         if 'inline' in get_backend():
             raise NotSupportedException('Clause %matplotlib inline is not supported. Please use %matplotlib notebook.')
-        self.board = Board(fig, ax)
+
+        check_params(fig, ax, X, f)
+        self.board = Board(user_data=(fig, ax, X, f))
         plot = self.board.get_plot()
         display(self.board.get_widget())
 
