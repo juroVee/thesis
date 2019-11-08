@@ -35,6 +35,8 @@ from jedit import editor
 
 ```
 ...
+X = ...
+def f(x) = ...
 fig, ax = plt.subplots()
 ...
 ```
@@ -42,5 +44,10 @@ fig, ax = plt.subplots()
 ### Spustenie editora po nakreslení grafu:
 
 ```
-editor.run(fig, ax)
+editor.run(fig, ax, X, f) 
 ```
+alebo
+```
+editor.run() 
+```
+pre v základe definované funkcie.
