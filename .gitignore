@@ -1,5 +1,6 @@
 sphinx
 private
+exercises
 .idea
 .vscode
 .ipynb_checkpoints
