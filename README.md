@@ -44,7 +44,7 @@ fig, ax = plt.subplots()
 ### Spustenie editora po nakreslení grafu:
 
 ```
-editor.run(fig, ax, X, f) 
+editor.run(fig, ax, f, X1..Xn) 
 ```
 alebo
 ```
