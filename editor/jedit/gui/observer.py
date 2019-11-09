@@ -2,7 +2,8 @@ from IPython.display import clear_output
 from .sidebar_elements import (color_picker,
                                dropdown_grid,
                                dropdown_functions,
-                               dropdown_functions_not_defined)
+                               dropdown_functions_not_defined,
+                               dropdown_derivative)
 
 class Observer:
 
@@ -27,6 +28,15 @@ class Observer:
             clear_output()
             self.plot.update()
 
+    def _changed_derivative(self, b) -> None:
+        self.plot.updated = True
+        choice = True if b['new'] == 'true' else False
+        for function in self.carousel.get_all():
+            function.set_derivative_plot(choice)
+        with self.plot.output:
+            clear_output()
+            self.plot.update()
+
 
     def _changed_color(self, b) -> None:
         self.plot.updated = True
@@ -44,4 +54,5 @@ class Observer:
         else:
             dropdown_functions_not_defined.observe(self._changed_function, 'value')
         dropdown_grid.observe(self._changed_grid, 'value')
+        dropdown_derivative.observe(self._changed_derivative, 'value')
         color_picker.observe(self._changed_color, 'value')

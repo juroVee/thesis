@@ -37,6 +37,16 @@ dropdown_grid = w.Dropdown(
     layout=w.Layout(width='auto', height='auto')
 )
 
+# ----------- dropdown grid ----------
+
+dropdown_derivative = w.Dropdown(
+    options=['false', 'true'],
+    value='false',
+    description='Plot derivative:',
+    disabled=False,
+    layout=w.Layout(width='auto', height='auto')
+)
+
 # ----------- color picker ----------
 
 color_picker = w.ColorPicker(

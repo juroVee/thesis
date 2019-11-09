@@ -37,11 +37,19 @@ Základné informácie
 Log
 ===
 
+9. november 2019
+----------------
+
+- Pridané zobrazenie grafu derivácie pri jednoduchých funkciách
+- pridaná možnosť zadania n argumentov pre hodnoty ``X``, t.j. ``run(fig, ax, f, X1..Xn)``
+- upravené zobrazovanie názvov funkcií (premiestnenie do legendy)
+
+
 8. november 2019
 ----------------
 
 - Odstránený dropdown pre aspect ratio po konzultácii so školiteľom
-- Pridané ďalšie dva parametre X a f po konzultácii so školiteľom
+- Pridané ďalšie dva parametre ``X`` a ``f`` po konzultácii so školiteľom
 
 27. október 2019
 ----------------
