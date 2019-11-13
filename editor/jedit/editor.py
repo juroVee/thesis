@@ -1,8 +1,8 @@
 from .gui import Board
-from .util import NotSupportedException, check_params
+from .util import NotSupportedException, hide_interactive_toolbars, get_user_parameters
 from .config import FIGURE_HEADER
 from matplotlib import get_backend
-from IPython.display import display, HTML
+from IPython.display import display, clear_output
 
 
 class Editor:
@@ -11,11 +11,11 @@ class Editor:
         self.board = None
 
     def run(self, figure=None, axis=None, function=None, *X_values):
+        if not FIGURE_HEADER:
+            hide_interactive_toolbars()
         if 'inline' in get_backend():
             raise NotSupportedException('Clause %matplotlib inline is not supported. Please use %matplotlib notebook.')
-
-        check_params(figure, axis, function, X_values)
-        self.board = Board(user_data=(figure, axis, function, X_values))
+        self.board = Board(get_user_parameters(figure, axis, function, X_values))
         plot = self.board.get_plot()
         display(self.board.get_widget())
 
@@ -26,12 +26,3 @@ class Editor:
 
 editor = Editor()
 
-if not FIGURE_HEADER:
-    html = '''
-        <style>
-        .cell .output_wrapper .ui-dialog-titlebar {
-          display: none;
-        }    
-        </style>
-        '''
-    display(HTML(html))

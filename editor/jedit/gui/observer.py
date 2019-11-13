@@ -3,7 +3,8 @@ from .sidebar_elements import (color_picker,
                                dropdown_grid,
                                dropdown_functions,
                                dropdown_functions_not_defined,
-                               dropdown_derivative)
+                               dropdown_derivative,
+                               refinement_slider)
 
 class Observer:
 
@@ -30,7 +31,7 @@ class Observer:
 
     def _changed_derivative(self, b) -> None:
         self.plot.updated = True
-        choice = True if b['new'] == 'true' else False
+        choice = 0 if b['new'] == 'none' else int(b['new'][-1])
         for function in self.carousel.get_all():
             function.set_derivative_plot(choice)
         with self.plot.output:
@@ -47,6 +48,15 @@ class Observer:
             clear_output()
             self.plot.update()
 
+    def _changed_refinement(self, b) -> None:
+        self.plot.updated = True
+        choice = b['new']
+        for function in self.carousel.get_all():
+            function.set_refinement(choice)
+        with self.plot.output:
+            clear_output()
+            self.plot.update()
+
 
     def start(self) -> None:
         if self.plot.is_user_defined():
@@ -56,3 +66,4 @@ class Observer:
         dropdown_grid.observe(self._changed_grid, 'value')
         dropdown_derivative.observe(self._changed_derivative, 'value')
         color_picker.observe(self._changed_color, 'value')
+        refinement_slider.observe(self._changed_refinement, 'value')

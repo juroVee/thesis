@@ -17,8 +17,8 @@ Základné informácie
    |    `PDF <#>`__
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/editor_v1.tar.gz>`
-   |    :download:`zip <files/editor_v1.zip>`
+   |    :download:`tar.gz <files/editor_v2.tar.gz>`
+   |    :download:`zip <files/editor_v2.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -37,13 +37,20 @@ Základné informácie
 Log
 ===
 
+13. november 2019
+----------------
+
+- pridaná literatúra do zoznamu literatúry
+- pridaná možnosť zobrazenia prvej až piatej derivácie funkcie
+- pridaný slider na zjemnenie delenia x-ovej osi
+- pridaná funkcionalita pre správne vykreslenie ``lines`` aj v prípade zaujímavejších funkcií, ako napr. tangens
+
 9. november 2019
 ----------------
 
 - Pridané zobrazenie grafu derivácie pri jednoduchých funkciách
 - pridaná možnosť zadania n argumentov pre hodnoty ``X``, t.j. ``run(fig, ax, f, X1..Xn)``
 - upravené zobrazovanie názvov funkcií (premiestnenie do legendy)
-
 
 8. november 2019
 ----------------
@@ -66,18 +73,27 @@ Log
 - Aktualizácia webovej stránky k novej bakalárskej práci.
 - Vytvorenie GitHub repozitára
 
-Literatúra, tutoriály, manuály
-==============================
+Literatúra
+==========
 
-[1] TODO
+(predbežne)
 
-[2] TODO
+[1] ČERNÝ, Ilja. 2002. *Úvod do inteligentního kalkulu (1000 příkladů z elementární analýzy)*. Akademie věd České republiky.
 
-[3] TODO
+[2] ELIÁŠ, Jozef. 1974. *Matematika (Úvod do numerickej analýzy)*. Slovenská vysoká škola technická v Bratislave.
 
-[4] TODO
+[3] KUBÁČEK Zbyněk, VALÁŠEK, Ján. 1989. *Cvičenia z matematickej analýzy I*. Univerzita Komenského v Bratislave.
 
-[5] TODO
+[4] ŠVEC, Marko, KLUVÁNEK, Igor, MIŠÍK, Ladislav. 1959. *Matematika I pre štúdium technických vied*. Slovenské vydavateľstvo technickej literatúry.
+
+[5] VENCKO, Jozef, NEUBRUNN, Tibor. 1992. *Matematická analýza I vysokoškolské skriptá*. Matematicko-fyzikálna fakulta Univerzity Komenského.
+
+Tutoriály, manuály
+==================
+
+- ipywidgets dokumentácia (https://ipywidgets.readthedocs.io/en/latest/)
+
+- matplotlib dokumentácia (https://matplotlib.org/3.1.1/contents.html)
 
 
 .. toctree::

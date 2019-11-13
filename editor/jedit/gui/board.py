@@ -1,22 +1,24 @@
 import ipywidgets as w
 from .tab import Tab
-from ..plot import Plot
+from ..plot import Plot, FunctionCarousel
 from .observer import Observer
 from .sidebar_elements import (color_picker,
                                dropdown_grid,
                                dropdown_functions,
                                dropdown_functions_not_defined,
-                               dropdown_derivative)
+                               dropdown_derivative,
+                               range_slider,
+                               refinement_slider)
 
 class Board:
 
-    def __init__(self, user_data=None):
+    def __init__(self, user_data: dict):
         self._init_plot(user_data)
         self._init_tabs()
         self._init_observer()
 
-    def _init_plot(self, user_data):
-        self.plot = Plot(user_data)
+    def _init_plot(self, user_data: dict):
+        self.plot = Plot(FunctionCarousel(user_data))
 
     def _init_tabs(self):
         tab1 = Tab(name='Analysis',
@@ -25,7 +27,8 @@ class Board:
                             (1, dropdown_grid),
                             (2, color_picker),
                             (3, dropdown_derivative)
-                            ]
+                            ],
+                   footer=[(0, refinement_slider)]
                    )
         tab2 = Tab(name='Settings')
         tab3 = Tab(name='Info')
