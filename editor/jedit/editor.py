@@ -1,8 +1,8 @@
 from .gui import Board
 from .util import NotSupportedException, hide_interactive_toolbars, get_user_parameters
-from .config import FIGURE_HEADER
+from .settings import FIGURE_HEADER
 from matplotlib import get_backend
-from IPython.display import display, clear_output
+from IPython.display import display
 
 
 class Editor:

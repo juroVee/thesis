@@ -1,9 +1,71 @@
+import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.lines import Line2D
-from .function import Function
-from ..config import DEFAULT_FUNCTIONS, DEFAULT_FUNCTION_TO_SHOW
+from ..settings import DEFAULT_FUNCTIONS, DEFAULT_FUNCTION_TO_SHOW
 from ..util import transform_title
+from .plot_utils import plot_main_function, plot_derivative, plot_zero_points, plot_legend
 
-class FunctionCarousel:
+class Function:
+
+    def __init__(self, X, Y, function, name, latex):
+        self.x_values, self.y_values = X, Y
+        self.function, self.name, self.latex = function, name, latex
+
+        # plot params shared
+        self.grid = False
+        self.color = 'C0'
+        self.parameters = {'derivatives':set()}
+
+        self.original_x_values = X
+        self.refinement = 0.
+
+    def __repr__(self):
+        return f'Function(name={self.name})'
+
+    def plot(self) -> None:
+        for xval in self.x_values:
+            print(f'(DEBUG) Refinement: {self.refinement} Partitions: {len(xval)}')
+        fig, ax = plt.subplots()
+        fig.set_size_inches(6, 5)
+        plot_main_function(self, ax)
+        plot_derivative(self, ax)
+        plot_zero_points(self, ax)
+        plot_legend(ax)
+        fig.show()
+
+    def set_parameter(self, name, value):
+        self.parameters[name] = value
+
+    def add_derivative(self, n):
+        self.parameters['derivatives'].add(n)
+
+    def remove_derivative(self, n):
+        self.parameters['derivatives'].discard(n)
+
+    def set_grid(self, value=False) -> None:
+        self.grid = value
+
+    def set_color(self, value='C0') -> None:
+        self.color = value
+
+    def set_refinement(self, value=0) -> None:
+        self.refinement = value
+        new_x_values = []
+        for xval in self.original_x_values:
+            minima, maxima = min(xval), max(xval)
+            partitions = len(xval)
+            new_partitions = int(partitions * (10 ** self.refinement))
+            new_x_values.append(np.linspace(minima, maxima, new_partitions))
+        self.x_values = new_x_values
+
+    def get_name(self) -> str:
+        return self.name
+
+    def get_latex(self) -> str:
+        return self.latex
+
+
+class FunctionManager:
 
     def __init__(self, user_data: dict):
         self.functions = {}

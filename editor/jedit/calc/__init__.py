@@ -1,1 +1,0 @@
-from .derivative import derivative_data

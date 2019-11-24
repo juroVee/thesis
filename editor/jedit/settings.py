@@ -1,14 +1,13 @@
 import numpy as np
-from ..plot.maux import smart_ticklabel
+from .plot.maux import smart_ticklabel
 
-# disable interactive figure header
+# DISABLE DEFAULT INTERACTIVE HEADER FROM MATPLOTLIB
 FIGURE_HEADER = False
 
-# default derivative plot color
-DEFAULT_DERIV_COLOR = '#ff8647'
+# SET DEFAULT DERIVATIVE COLORS
+DERIV_COLORS = {1:'#ff8647', 2:'#39ff33', 3:'#ff33f0'}
 
-# default functions list
-
+# SET DEFAULT FUNCTION NAMES
 LINEAR = 'f(x) = x'
 QUADTRATIC = 'f(x) = x^2'
 CUBIC = 'f(x) = x^3'
@@ -18,8 +17,7 @@ LOG = 'f(x) = log x'
 SIN = 'f(x) = sin x'
 COS = 'f(x) = cos x'
 
-DEFAULT_FUNCTION_TO_SHOW = LINEAR
-
+# SET DEFAULT FUNCTIONS DEFINITIONS (USING NUMPY)
 DEFAULT_FUNCTIONS = {
     LINEAR: {
         'function': lambda x: x,
@@ -58,3 +56,6 @@ DEFAULT_FUNCTIONS = {
         'xticks_data': {'xticks': [n * np.pi / 2 for n in range(-4, 8 + 1)],
                         'xticklabels': [smart_ticklabel(n, r"\pi", 2) for n in range(-4, 8 + 1)]}},
 }
+
+# SET FIRST FUNCTION TO SHOW IF USER FUNCTION NOT PROVIDED
+DEFAULT_FUNCTION_TO_SHOW = LINEAR

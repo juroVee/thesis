@@ -17,8 +17,8 @@ Základné informácie
    |    `PDF <#>`__
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/editor_v2.tar.gz>`
-   |    :download:`zip <files/editor_v2.zip>`
+   |    :download:`tar.gz <files/editor_v3.tar.gz>`
+   |    :download:`zip <files/editor_v3.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -37,8 +37,15 @@ Základné informácie
 Log
 ===
 
+22. november 2019
+-----------------
+
+- slider na zjemnenia delenia zmenený na dropdown, opravený funkčnosť (mocniny 10)
+- pridaný dropdown na 1., 2., 3. deriváciu
+- začiatok práce na vyhľadávaní nulových bodov
+
 13. november 2019
-----------------
+-----------------
 
 - pridaná literatúra do zoznamu literatúry
 - pridaná možnosť zobrazenia prvej až piatej derivácie funkcie

@@ -1,5 +1,5 @@
 import ipywidgets as w
-from ..config.settings import DEFAULT_FUNCTIONS, DEFAULT_FUNCTION_TO_SHOW
+from ..settings import DEFAULT_FUNCTIONS, DEFAULT_FUNCTION_TO_SHOW
 
 DEFAULT_DESCRIPTION_LENGTH = '120px'
 
@@ -42,12 +42,34 @@ dropdown_grid = w.Dropdown(
     style={'description_width': DEFAULT_DESCRIPTION_LENGTH}
 )
 
-# ----------- dropdown grid ----------
+# ----------- dropdown first derivative ----------
 
-dropdown_derivative = w.Dropdown(
-    options=['none'] + [f'n = {i}' for i in range(1, 6)],
-    value='none',
-    description='Derivative:',
+dropdown_derivative1 = w.Dropdown(
+    options=['false', 'true'],
+    value='false',
+    description='1st derivative:',
+    disabled=False,
+    layout=w.Layout(width='auto', height='auto'),
+    style={'description_width': DEFAULT_DESCRIPTION_LENGTH}
+)
+
+# ----------- dropdown second derivative ----------
+
+dropdown_derivative2 = w.Dropdown(
+    options=['false', 'true'],
+    value='false',
+    description='2nd derivative:',
+    disabled=False,
+    layout=w.Layout(width='auto', height='auto'),
+    style={'description_width': DEFAULT_DESCRIPTION_LENGTH}
+)
+
+# ----------- dropdown third derivative ----------
+
+dropdown_derivative3 = w.Dropdown(
+    options=['false', 'true'],
+    value='false',
+    description='3rd derivative:',
     disabled=False,
     layout=w.Layout(width='auto', height='auto'),
     style={'description_width': DEFAULT_DESCRIPTION_LENGTH}
@@ -57,34 +79,35 @@ dropdown_derivative = w.Dropdown(
 
 color_picker = w.ColorPicker(
     concise=False,
-    description='Line color:',
+    description='Main line color:',
     value='#1f77b4',
     layout=w.Layout(width='auto', height='auto'),
     disabled=False,
     style={'description_width': DEFAULT_DESCRIPTION_LENGTH}
 )
 
-# ----------- freq slider UNUSED ----------
+# ----------- refinement slider ----------
 
-refinement_slider = w.FloatSlider(
-        value=0.,
-        min=0.,
-        max=2.0,
-        step=0.1,
-        description='Refinement:',
-        readout_format='.1f',
-        continuous_update=False,
-        layout=w.Layout(width='auto', height='auto')
-)
+# refinement_slider = w.IntSlider(
+#     value=0,
+#     min=0,
+#     max=3,
+#     step=1,
+#     description='Refinement:',
+#     disabled=False,
+#     continuous_update=False,
+#     orientation='horizontal',
+#     readout=True,
+#     readout_format='d',
+#     style={'description_width': DEFAULT_DESCRIPTION_LENGTH},
+#     layout=w.Layout(width='auto', height='auto')
+# )
 
-# ----------- range slider ----------
-
-range_slider = w.FloatRangeSlider(
-        value=[-10., +10.],
-        min= -20., max= +20., step=0.1,
-        description='X Range:',
-        continuous_update=False,
-        readout_format='.1f',
-        orientation='horizontal',
-        layout=w.Layout(width='auto', height='auto')
+dropdown_refinement = w.Dropdown(
+    options=['original', '10x', '100x', '1000x', '10000x'],
+    value='original',
+    description='Refinement:',
+    disabled=False,
+    layout=w.Layout(width='auto', height='auto'),
+    style={'description_width': DEFAULT_DESCRIPTION_LENGTH}
 )
