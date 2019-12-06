@@ -1,15 +1,24 @@
+# external modules
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.lines import Line2D
+
+# project-level modules
 from ..settings import DEFAULT_FUNCTIONS, DEFAULT_FUNCTION_TO_SHOW
 from ..util import transform_title
-from .plot_utils import plot_main_function, plot_derivative, plot_zero_points, plot_legend
+from ..calculations import Calculator
+
+# package-level modules
+from .painter import Painter
+
 
 class Function:
 
-    def __init__(self, X, Y, function, name, latex):
+    def __init__(self, X, Y, f, name, latex):
         self.x_values, self.y_values = X, Y
-        self.function, self.name, self.latex = function, name, latex
+        self.f, self.name, self.latex = f, name, latex
+
+        self.calculator = Calculator(f)
 
         # plot params shared
         self.grid = False
@@ -17,21 +26,28 @@ class Function:
         self.parameters = {'derivatives':set()}
 
         self.original_x_values = X
-        self.refinement = 0.
+        self.refinement = 0
 
     def __repr__(self):
         return f'Function(name={self.name})'
 
     def plot(self) -> None:
+        # DEBUG ONLY -> DELETE
         for xval in self.x_values:
-            print(f'(DEBUG) Refinement: {self.refinement} Partitions: {len(xval)}')
+            print(f'(DEBUG) Refinement: {self.refinement} Intervals: {len(xval)-1} Values: {len(xval)}')
         fig, ax = plt.subplots()
         fig.set_size_inches(6, 5)
-        plot_main_function(self, ax)
-        plot_derivative(self, ax)
-        plot_zero_points(self, ax)
-        plot_legend(ax)
+
+        painter = Painter(self, ax)
+        painter.plot_main_function()
+        painter.plot_derivative()
+        painter.plot_zero_points()
+        painter.plot_legend()
+
         fig.show()
+
+    def get_calculator(self):
+        return self.calculator
 
     def set_parameter(self, name, value):
         self.parameters[name] = value
@@ -53,9 +69,9 @@ class Function:
         new_x_values = []
         for xval in self.original_x_values:
             minima, maxima = min(xval), max(xval)
-            partitions = len(xval)
-            new_partitions = int(partitions * (10 ** self.refinement))
-            new_x_values.append(np.linspace(minima, maxima, new_partitions))
+            intervals = len(xval) - 1
+            new_intervals = intervals* (10 ** self.refinement)
+            new_x_values.append(np.linspace(minima, maxima, new_intervals + 1))
         self.x_values = new_x_values
 
     def get_name(self) -> str:
@@ -76,7 +92,7 @@ class FunctionManager:
 
     def _load_default_functions(self) -> None:
         for name, data in DEFAULT_FUNCTIONS.items():
-            function, X, latex = data['function'], data['linspace'], data['latex']
+            function, X, latex = data['f'], data['linspace'], data['latex']
             func = Function([X], [function(X)], function, name, latex)
             lines = [Line2D(X, function(X))]
             func.set_parameter('lines', lines)
@@ -88,13 +104,13 @@ class FunctionManager:
             self.functions[name] = func
 
     def _load_user_function(self, user_data: dict) -> None:
-        fig, ax, function = user_data['figure'], user_data['axis'], user_data['function']
+        fig, ax, f = user_data['figure'], user_data['axis'], user_data['f']
         X = [xvals for xvals in user_data['xvals']]
-        Y = [function(xvals) for xvals in X]
+        Y = [f(xvals) for xvals in X]
         self.current_function = self.functions['user function'] = Function(
             X = X,
             Y = Y,
-            function=function,
+            f=f,
             name='user function',
             latex=transform_title(ax.get_title())
         )
@@ -115,7 +131,7 @@ class FunctionManager:
         return self.functions[function_name]
 
     def __repr__(self):
-        return 'FunctionCarousel(\n\t' + '\n\t'.join(self.functions) + '\n)'
+        return 'FunctionManager(\n\t' + '\n\t'.join(self.functions) + '\n)'
 
     def get_all(self) -> dict.values:
         return self.functions.values()

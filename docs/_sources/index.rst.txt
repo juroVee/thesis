@@ -37,6 +37,20 @@ Základné informácie
 Log
 ===
 
+4. december 2019
+----------------
+
+- opravené zjemňovanie x-ovej osi (násobenie počtu intervalov mocninou 10)
+- pridaný log užívateľských krokov
+
+3. december 2019
+----------------
+
+- vytvorená trieda ``Painter``, ktorá združuje metódy na vykreslovanie do grafu
+- vytvorená trieda ``Calculator``, ktorá združuje všetky výpočty ako napr. derivácia, hľadanie nulových bodov a pod.
+- zvýraznenie rozdielu medzi predpisom funkcie ``f`` a objektom funkcie ``Function`` v kóde
+
+
 22. november 2019
 -----------------
 

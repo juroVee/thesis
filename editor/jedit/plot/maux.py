@@ -1,4 +1,4 @@
-## author: ???
+# Author: J. Komara
 
 def init_subplot(ax):
 

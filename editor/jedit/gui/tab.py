@@ -1,3 +1,4 @@
+# external modules
 import ipywidgets as w
 
 GRID_ROWS = 18

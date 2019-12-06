@@ -1,4 +1,7 @@
+# package-level modules
 from .custom_errors import MissingParameterException
+
+# external modules
 from IPython.display import display, HTML
 import random, string
 
@@ -14,14 +17,14 @@ def transform_title(title: str) -> str:
         result = result.replace('y', 'f(x)')
     return result
 
-def get_user_parameters(fig, ax, func, xvals) -> dict:
-    number_of_missing_parameters = check_params(fig, ax, func, xvals)
+def get_user_parameters(fig, ax, f, xvals) -> dict:
+    number_of_missing_parameters = check_params(fig, ax, f, xvals)
     if number_of_missing_parameters == N_PARAMETERS:
         return None
     return {
         'figure': fig,
         'axis': ax,
-        'function': func,
+        'f': f,
         'xvals': xvals
     }
 

@@ -1,5 +1,9 @@
+# external modules
 import ipywidgets as w
+
+# project-level modules
 from ..settings import DEFAULT_FUNCTIONS, DEFAULT_FUNCTION_TO_SHOW
+
 
 DEFAULT_DESCRIPTION_LENGTH = '120px'
 
