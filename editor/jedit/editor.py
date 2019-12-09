@@ -18,7 +18,7 @@ class Editor:
         if 'inline' in get_backend():
             raise NotSupportedException('Clause %matplotlib inline is not supported. Please use %matplotlib notebook.')
         self.board = Board(get_user_parameters(figure, axis, f, X_values))
-        plot = self.board.get_plot()
+        plot = self.board.get_plot_object()
         display(self.board.get_widget())
 
         with plot.output:

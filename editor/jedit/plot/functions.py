@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib.lines import Line2D
 
 # project-level modules
-from ..settings import DEFAULT_FUNCTIONS, DEFAULT_FUNCTION_TO_SHOW
+from ..settings import DEFAULT_FUNCTIONS, DEFAULT_FUNCTION_TO_SHOW, DERIV_COLORS
 from ..util import transform_title
 from ..calculations import Calculator
 
@@ -23,6 +23,7 @@ class Function:
         # plot params shared
         self.grid = False
         self.color = 'C0'
+        self.derivative_colors = DERIV_COLORS
         self.parameters = {'derivatives':set()}
 
         self.original_x_values = X
@@ -33,8 +34,8 @@ class Function:
 
     def plot(self) -> None:
         # DEBUG ONLY -> DELETE
-        for xval in self.x_values:
-            print(f'(DEBUG) Refinement: {self.refinement} Intervals: {len(xval)-1} Values: {len(xval)}')
+        # for xval in self.x_values:
+        #     print(f'(DEBUG) Refinement: {self.refinement} Intervals: {len(xval)-1} Values: {len(xval)}')
         fig, ax = plt.subplots()
         fig.set_size_inches(6, 5)
 
@@ -42,7 +43,7 @@ class Function:
         painter.plot_main_function()
         painter.plot_derivative()
         painter.plot_zero_points()
-        painter.plot_legend()
+        painter.plot_title()
 
         fig.show()
 
@@ -63,6 +64,12 @@ class Function:
 
     def set_color(self, value='C0') -> None:
         self.color = value
+
+    def set_derivative_color(self, n, value='C0'):
+        self.derivative_colors[n] = value
+
+    def get_derivative_color(self, n):
+        return self.derivative_colors[n]
 
     def set_refinement(self, value=0) -> None:
         self.refinement = value
@@ -96,7 +103,7 @@ class FunctionManager:
             func = Function([X], [function(X)], function, name, latex)
             lines = [Line2D(X, function(X))]
             func.set_parameter('lines', lines)
-            func.set_parameter('title', name)
+            func.set_parameter('title', latex)
             func.set_parameter('aspect', 'auto')
             if 'xticks_data' in data.keys():
                 func.set_parameter('xticks', data['xticks_data']['xticks'])

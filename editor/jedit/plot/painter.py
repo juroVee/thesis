@@ -38,13 +38,11 @@ class Painter:
                 for n in self.function.parameters['derivatives']:
                     _, dydx = self.calculator.derive(X, n)
                     quotes = n * "'"
-                    self.ax.plot(X, dydx, color=DERIV_COLORS[n], label=fr"f{quotes}(x)" if number_of_lines == 1 else '')
+                    color = self.function.get_derivative_color(n)
+                    self.ax.plot(X, dydx, color=color, label=fr"f{quotes}(x)" if number_of_lines == 1 else '')
 
     def plot_zero_points(self):
         ...
 
-    def plot_legend(self):
-        legend = self.ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.15),
-                           ncol=2)
-        legend.get_frame().set_linewidth(0.0)
-        legend.get_frame().set_facecolor('none')
+    def plot_title(self):
+        self.ax.set_title(self.function.get_latex())

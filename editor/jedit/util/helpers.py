@@ -9,12 +9,10 @@ N_PARAMETERS = 4
 
 def transform_title(title: str) -> str:
     if title == '':
-        return 'f(x)'
+        return ''
     start = title.find('$')
     end = title.rfind('$')
     result = r'' + title[start:end + 1]
-    if 'y' in result:
-        result = result.replace('y', 'f(x)')
     return result
 
 def get_user_parameters(fig, ax, f, xvals) -> dict:

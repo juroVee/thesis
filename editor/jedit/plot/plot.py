@@ -21,3 +21,6 @@ class Plot:
             if self.updated:
                 plt.close('all') # very important, possible memory exceeding
             self.function_manager.get_current().plot()
+
+    def get_widget(self):
+        return self.output

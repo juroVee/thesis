@@ -17,8 +17,8 @@ Základné informácie
    |    `PDF <#>`__
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/editor_v3.tar.gz>`
-   |    :download:`zip <files/editor_v3.zip>`
+   |    :download:`tar.gz <files/editor_v4.tar.gz>`
+   |    :download:`zip <files/editor_v4.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -36,6 +36,14 @@ Základné informácie
 
 Log
 ===
+
+7. december 2019
+----------------
+
+- odstránená legenda po dohode s vedúcim práce (ponechaný len predpis funkcie)
+- vyznačenie farieb funkcií (derivácií) vyriešené cez ``ColorPicker``
+- doplnené výpisy do logu pre všetky užívateľské interakcie
+- zjednotenie GUI elementov pod jednu triedu ``GUIElementManager``
 
 4. december 2019
 ----------------

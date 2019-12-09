@@ -19,3 +19,6 @@ class Logger:
         with open(str(datetime.now().strftime("log-%d-%m-%Y-%H-%M-%S.txt")), 'w') as file:
             for log in self.log_backup:
                 file.write(log)
+
+    def get_widget(self):
+        return self.output
