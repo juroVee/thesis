@@ -42,7 +42,13 @@ class Painter:
                     self.ax.plot(X, dydx, color=color, label=fr"f{quotes}(x)" if number_of_lines == 1 else '')
 
     def plot_zero_points(self):
-        ...
+        if self.function.zero_points != 'none':
+            for X, Y in zip(self.function.x_values, self.function.y_values):
+                zero_points = self.calculator.zero_points(X, self.function.zero_points)
+                self.function.zero_points_values = list(zero_points)
+                if self.function.zero_points_values is not None:
+                    for x in self.function.zero_points_values:
+                        self.ax.plot(x, 0, 'ko', c=self.function.zero_points_color)
 
     def plot_title(self):
         self.ax.set_title(self.function.get_latex())

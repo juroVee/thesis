@@ -17,8 +17,8 @@ Základné informácie
    |    `PDF <#>`__
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/editor_v4.tar.gz>`
-   |    :download:`zip <files/editor_v4.zip>`
+   |    :download:`tar.gz <files/editor_v5.tar.gz>`
+   |    :download:`zip <files/editor_v5.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -36,6 +36,12 @@ Základné informácie
 
 Log
 ===
+
+10. december 2019
+-----------------
+
+- vyskúšané prepojenie dvoch aktívnych prvkov (nedá sa vybrať farba derivácie, pokiaľ nie je samotná derivácia zobrazená)
+- výpočet a zobrazenie nulových bodov cez knižnicu ``scipy`` a jej metódy ``optimize.newton``, ``optimize.brentq`` a ``optimize.bisect``
 
 7. december 2019
 ----------------

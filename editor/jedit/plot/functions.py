@@ -28,6 +28,9 @@ class Function:
 
         self.original_x_values = X
         self.refinement = 0
+        self.zero_points = 'none'
+        self.zero_points_values = []
+        self.zero_points_color = '#000000'
 
     def __repr__(self):
         return f'Function(name={self.name})'
@@ -80,6 +83,15 @@ class Function:
             new_intervals = intervals* (10 ** self.refinement)
             new_x_values.append(np.linspace(minima, maxima, new_intervals + 1))
         self.x_values = new_x_values
+
+    def set_zero_points(self, value):
+        self.zero_points = value
+
+    def set_zero_points_color(self, value):
+        self.zero_points_color = value
+
+    def get_zero_points(self):
+        return self.zero_points_values
 
     def get_name(self) -> str:
         return self.name

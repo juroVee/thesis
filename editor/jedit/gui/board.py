@@ -38,7 +38,8 @@ class Board:
                             (3, gui_elements[f'hbox_derivative1']),
                             (4, gui_elements[f'hbox_derivative2']),
                             (5, gui_elements[f'hbox_derivative3']),
-                            (7, gui_elements['dropdown_refinement'])
+                            (7, gui_elements['dropdown_refinement']),
+                            (8, gui_elements['hbox_zero_points'])
                             ]
                    )
         tab2 = Tab(name='Settings')

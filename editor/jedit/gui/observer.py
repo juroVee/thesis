@@ -97,6 +97,23 @@ class Observer:
         self.plot.update()
         self.logger.write(f'Refinement set to {b["new"]} of it\'s original')
 
+    def _changed_zero_points(self, b) -> None:
+        self.plot.updated = True
+        choice = b['new']
+        for function in self.function_manager.get_all():
+            function.set_zero_points(choice)
+        self.plot.update()
+        current = self.function_manager.get_current()
+        self.logger.write(f'Plotting zero points using {choice.upper()} method\n{current.get_zero_points()}')
+
+    def _changed_zero_points_color(self, b) -> None:
+        self.plot.updated = True
+        choice = b['new']
+        for function in self.function_manager.get_all():
+            function.set_zero_points_color(choice)
+        self.plot.update()
+        self.logger.write(f'Color of zero points changed to {choice}')
+
     def start(self) -> None:
         gui_elements = self.gui_manager.get_elements()
 
@@ -119,3 +136,7 @@ class Observer:
         color_picker.observe(self._changed_color_derivative3, 'value')
 
         gui_elements['dropdown_refinement'].observe(self._changed_refinement, 'value')
+
+        dropdown, color_picker = gui_elements['hbox_zero_points'].children
+        dropdown.observe(self._changed_zero_points, 'value')
+        color_picker.observe(self._changed_zero_points_color, 'value')
