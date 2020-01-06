@@ -37,64 +37,54 @@ Základné informácie
 Log
 ===
 
-10. december 2019
------------------
+
+9.12.2019 - 15.12.2019
+----------------------
 
 - vyskúšané prepojenie dvoch aktívnych prvkov (nedá sa vybrať farba derivácie, pokiaľ nie je samotná derivácia zobrazená)
 - výpočet a zobrazenie nulových bodov cez knižnicu ``scipy`` a jej metódy ``optimize.newton``, ``optimize.brentq`` a ``optimize.bisect``
 
-7. december 2019
-----------------
 
+2.12.2019 - 8.12.2019
+---------------------
+
+- vytvorená trieda ``Painter``, ktorá združuje metódy na vykreslovanie do grafu
+- vytvorená trieda ``Calculator``, ktorá združuje všetky výpočty ako napr. derivácia, hľadanie nulových bodov a pod.
+- zvýraznenie rozdielu medzi predpisom funkcie ``f`` a objektom funkcie ``Function`` v kóde
+- opravené zjemňovanie x-ovej osi (násobenie počtu intervalov mocninou 10)
+- pridaný log užívateľských krokov
 - odstránená legenda po dohode s vedúcim práce (ponechaný len predpis funkcie)
 - vyznačenie farieb funkcií (derivácií) vyriešené cez ``ColorPicker``
 - doplnené výpisy do logu pre všetky užívateľské interakcie
 - zjednotenie GUI elementov pod jednu triedu ``GUIElementManager``
 
-4. december 2019
-----------------
 
-- opravené zjemňovanie x-ovej osi (násobenie počtu intervalov mocninou 10)
-- pridaný log užívateľských krokov
-
-3. december 2019
-----------------
-
-- vytvorená trieda ``Painter``, ktorá združuje metódy na vykreslovanie do grafu
-- vytvorená trieda ``Calculator``, ktorá združuje všetky výpočty ako napr. derivácia, hľadanie nulových bodov a pod.
-- zvýraznenie rozdielu medzi predpisom funkcie ``f`` a objektom funkcie ``Function`` v kóde
-
-
-22. november 2019
------------------
+18.11.2019 - 24.11.2019
+-----------------------
 
 - slider na zjemnenia delenia zmenený na dropdown, opravený funkčnosť (mocniny 10)
 - pridaný dropdown na 1., 2., 3. deriváciu
 - začiatok práce na vyhľadávaní nulových bodov
 
-13. november 2019
------------------
+11.11.2019 - 17.11.2019
+-----------------------
 
 - pridaná literatúra do zoznamu literatúry
 - pridaná možnosť zobrazenia prvej až piatej derivácie funkcie
 - pridaný slider na zjemnenie delenia x-ovej osi
 - pridaná funkcionalita pre správne vykreslenie ``lines`` aj v prípade zaujímavejších funkcií, ako napr. tangens
 
-9. november 2019
-----------------
+4.11.2019 - 10.11.2019
+----------------------
 
+- Odstránený dropdown pre aspect ratio po konzultácii so školiteľom
+- Pridané ďalšie dva parametre ``X`` a ``f`` po konzultácii so školiteľom
 - Pridané zobrazenie grafu derivácie pri jednoduchých funkciách
 - pridaná možnosť zadania n argumentov pre hodnoty ``X``, t.j. ``run(fig, ax, f, X1..Xn)``
 - upravené zobrazovanie názvov funkcií (premiestnenie do legendy)
 
-8. november 2019
-----------------
-
-- Odstránený dropdown pre aspect ratio po konzultácii so školiteľom
-- Pridané ďalšie dva parametre ``X`` a ``f`` po konzultácii so školiteľom
-
-27. október 2019
-----------------
+21.10.2019 - 27.10.2019
+-----------------------
 
 - Naprogramovaná prvotná verzia editoru
 - Obsahuje načítanie grafu od užívateľa
@@ -102,8 +92,8 @@ Log
 - Naprogramovaná funkcionalita prepínania týchto predvolených funkcií + užívateľovej
 - Obsahuje ďalšie jednoduché interaktívne prvky ako zmena farby krivky, nastavenie mriežky, aspectu
 
-15. október 2019
-----------------
+14.10.2019 - 20.10.2019
+-----------------------
 
 - Aktualizácia webovej stránky k novej bakalárskej práci.
 - Vytvorenie GitHub repozitára
