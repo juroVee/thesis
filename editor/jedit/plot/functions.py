@@ -4,45 +4,71 @@ import numpy as np
 from matplotlib.lines import Line2D
 
 # project-level modules
-from ..settings import DEFAULT_FUNCTIONS, DEFAULT_FUNCTION_TO_SHOW, DERIV_COLORS
+from ..config import config
 from ..util import transform_title
-from ..calculations import Calculator
 
 # package-level modules
-from .painter import Painter
+from .maux import init_subplot, smart_ticklabel
+from .calculations import Calculator
 
 
 class Function:
 
     def __init__(self, X, Y, f, name, latex):
-        self.x_values, self.y_values = X, Y
-        self.f, self.name, self.latex = f, name, latex
+        self.parameters = {}
+        self._init_function_details(X, Y, f, name, latex)
+        self._init_plot_parameters()
+        self._init_derivatives()
+        self._init_zero_points()
+        self._init_refinement()
 
-        self.calculator = Calculator(f)
+    def _init_function_details(self, X, Y, formula, name, latex_representation):
+        self.set_parameter('x_values', X)
+        self.set_parameter('original_x_values', X)
+        self.set_parameter('y_values', Y)
+        self.set_parameter('formula', formula)
+        self.set_parameter('name', name)
+        self.set_parameter('latex', latex_representation)
+        self.set_parameter('lines_count', len(list(X)))
 
-        # plot params shared
-        self.grid = False
-        self.color = 'C0'
-        self.derivative_colors = DERIV_COLORS
-        self.parameters = {'derivatives':set()}
+    def _init_plot_parameters(self):
+        self.set_parameter('grid', True if config['default_plot_params']['grid'] == 'yes' else False)
+        self.set_parameter('main_function_color', config['default_colors']['main_function'])
+        derivative_colors = {}
+        for n in range(1, config['default_plot_params']['max_derivative'] + 1):
+            derivative_colors[n] = config['default_colors']['derivative_' + str(n)]
+        self.set_parameter('derivative_colors', derivative_colors)
 
-        self.original_x_values = X
-        self.refinement = 0
-        self.zero_points = 'none'
-        self.zero_points_values = []
-        self.zero_points_color = '#000000'
+    def _init_derivatives(self):
+        self.recalculate_derivatives()
+        self.set_parameter('active_derivatives', set())
 
-    def __repr__(self):
-        return f'Function(name={self.name})'
+    def _init_zero_points(self):
+        self.set_parameter('zero_points_method', 'none')
+        self.set_parameter('zero_points_values', set())
+        self.set_parameter('zero_points_color', config['default_colors']['zero_points'])
+
+    def _init_refinement(self):
+        self.set_parameter('refinement', 0)
+
+    def recalculate_derivatives(self):
+        calculator = Calculator(self.get_parameter('formula'))
+        x_values, y_values = self.get_parameter('x_values'), self.get_parameter('y_values')
+        derivatives = {}
+        for X, Y in zip(x_values, y_values):
+            for n in range(1, config['default_plot_params']['max_derivative'] + 1):
+                _, dydx = calculator.derive(X, n)
+                derivatives[n] = (X, dydx)
+        self.set_parameter('derivatives', derivatives)
 
     def plot(self) -> None:
-        # DEBUG ONLY -> DELETE
-        # for xval in self.x_values:
-        #     print(f'(DEBUG) Refinement: {self.refinement} Intervals: {len(xval)-1} Values: {len(xval)}')
+        # # DEBUG ONLY -> DELETE
+        # for xval in self.get_parameter('x_values'):
+        #     print(f'(DEBUG) Refinement: {self.get_parameter("refinement")} Intervals: {len(xval)-1} Values: {len(xval)}')
         fig, ax = plt.subplots()
         fig.set_size_inches(6, 5)
 
-        painter = Painter(self, ax)
+        painter = FunctionPainter(self, ax)
         painter.plot_main_function()
         painter.plot_derivative()
         painter.plot_zero_points()
@@ -50,107 +76,84 @@ class Function:
 
         fig.show()
 
-    def get_calculator(self):
-        return self.calculator
+    def set_parameter(self, name, value, sub=None):
+        if sub is None:
+            self.parameters[name] = value
+        else:
+            self.parameters[name][sub] = value
 
-    def set_parameter(self, name, value):
-        self.parameters[name] = value
+    def get_parameter(self, parameter):
+        return self.parameters[parameter]
 
-    def add_derivative(self, n):
-        self.parameters['derivatives'].add(n)
-
-    def remove_derivative(self, n):
-        self.parameters['derivatives'].discard(n)
-
-    def set_grid(self, value=False) -> None:
-        self.grid = value
-
-    def set_color(self, value='C0') -> None:
-        self.color = value
-
-    def set_derivative_color(self, n, value='C0'):
-        self.derivative_colors[n] = value
-
-    def get_derivative_color(self, n):
-        return self.derivative_colors[n]
+    def show_derivative(self, n, visible=False):
+        if visible:
+            self.parameters['active_derivatives'].add(n)
+        else:
+            self.parameters['active_derivatives'].discard(n)
 
     def set_refinement(self, value=0) -> None:
-        self.refinement = value
+        self.set_parameter('refinement', value)
         new_x_values = []
-        for xval in self.original_x_values:
+        for xval in self.get_parameter('original_x_values'):
             minima, maxima = min(xval), max(xval)
             intervals = len(xval) - 1
-            new_intervals = intervals* (10 ** self.refinement)
+            new_intervals = intervals* (10 ** self.get_parameter('refinement'))
             new_x_values.append(np.linspace(minima, maxima, new_intervals + 1))
-        self.x_values = new_x_values
+        self.set_parameter('x_values', new_x_values)
+        
+class UserFunction(Function):
+    
+    def __init__(self, user_data=None):
+        fig, ax, f = user_data['figure'], user_data['axis'], user_data['f']
+        X = [xvals for xvals in user_data['xvals']]
+        Y = [f(xvals) for xvals in X]
+        super().__init__(X, Y, f, name='user function', latex=transform_title(ax.get_title()))
+        self._init_params(ax)
+        
+    def _init_params(self, ax):
+        self.set_parameter('title', ax.get_title())
+        self.set_parameter('aspect', ax.get_aspect())
+        self.set_parameter('xticks', ax.get_xticks())
+        self.set_parameter('yticks', ax.get_yticks())
+        if ax.get_xticklabels()[0].get_text() != '':
+            self.set_parameter('xticklabels', ax.get_xticklabels())
+        if ax.get_yticklabels()[0].get_text() != '':
+            self.set_parameter('yticklabels', ax.get_yticklabels())
+        self.set_parameter('xlim', ax.get_xlim())
+        self.set_parameter('ylim', ax.get_ylim())
+        lines = [line for line in ax.get_lines() if line.get_xdata() != [] and line.get_ydata() != []]
+        self.set_parameter('lines', lines)
 
-    def set_zero_points(self, value):
-        self.zero_points = value
 
-    def set_zero_points_color(self, value):
-        self.zero_points_color = value
+class DefaultFunction(Function):
 
-    def get_zero_points(self):
-        return self.zero_points_values
-
-    def get_name(self) -> str:
-        return self.name
-
-    def get_latex(self) -> str:
-        return self.latex
-
+    def __init__(self, name='undefined', config_data=None):
+        function = eval(config_data['formula'])
+        X = eval(config_data['linspace'])
+        latex = eval(config_data['latex'])
+        super().__init__([X], [function(X)], function, name, latex)
+        self.set_parameter('lines', [Line2D(X, function(X))])
+        self.set_parameter('title', latex)
+        self.set_parameter('aspect', 'equal' if config['default_plot_params']['aspect'] == 'equal' else 'auto')
+        if 'xticks_data' in config_data:
+            self.set_parameter('xticks', eval(config_data['xticks_data']['xticks']))
+            self.set_parameter('xticklabels', eval(config_data['xticks_data']['xticklabels']))
+        
 
 class FunctionManager:
 
     def __init__(self, user_data: dict):
         self.functions = {}
-        self._load_default_functions()
-        self.current_function = self.functions[DEFAULT_FUNCTION_TO_SHOW]
+        default_functions = config['default_functions']
+        for _, parameters in default_functions.items():
+            name = parameters['name']
+            self.functions[name] = DefaultFunction(name, parameters)
+        self.current_function = self.functions[config['default_plot_params']['function']]
         if user_data is not None:
-            self._load_user_function(user_data)
-
-    def _load_default_functions(self) -> None:
-        for name, data in DEFAULT_FUNCTIONS.items():
-            function, X, latex = data['f'], data['linspace'], data['latex']
-            func = Function([X], [function(X)], function, name, latex)
-            lines = [Line2D(X, function(X))]
-            func.set_parameter('lines', lines)
-            func.set_parameter('title', latex)
-            func.set_parameter('aspect', 'auto')
-            if 'xticks_data' in data.keys():
-                func.set_parameter('xticks', data['xticks_data']['xticks'])
-                func.set_parameter('xticklabels', data['xticks_data']['xticklabels'])
-            self.functions[name] = func
-
-    def _load_user_function(self, user_data: dict) -> None:
-        fig, ax, f = user_data['figure'], user_data['axis'], user_data['f']
-        X = [xvals for xvals in user_data['xvals']]
-        Y = [f(xvals) for xvals in X]
-        self.current_function = self.functions['user function'] = Function(
-            X = X,
-            Y = Y,
-            f=f,
-            name='user function',
-            latex=transform_title(ax.get_title())
-        )
-        self.current_function.set_parameter('title', ax.get_title())
-        self.current_function.set_parameter('aspect', ax.get_aspect())
-        self.current_function.set_parameter('xticks', ax.get_xticks())
-        self.current_function.set_parameter('yticks', ax.get_yticks())
-        if ax.get_xticklabels()[0].get_text() != '':
-            self.current_function.set_parameter('xticklabels', ax.get_xticklabels())
-        if ax.get_yticklabels()[0].get_text() != '':
-            self.current_function.set_parameter('yticklabels', ax.get_yticklabels())
-        self.current_function.set_parameter('xlim', ax.get_xlim())
-        self.current_function.set_parameter('ylim', ax.get_ylim())
-        lines = [line for line in ax.get_lines() if line.get_xdata() != [] and line.get_ydata() != []]
-        self.current_function.set_parameter('lines', lines)
+            self.current_function = self.functions['user function'] = UserFunction(user_data)
 
     def __getitem__(self, function_name: str):
         return self.functions[function_name]
-
-    def __repr__(self):
-        return 'FunctionManager(\n\t' + '\n\t'.join(self.functions) + '\n)'
 
     def get_all(self) -> dict.values:
         return self.functions.values()
@@ -163,3 +166,49 @@ class FunctionManager:
 
     def has_user_function(self) -> bool:
         return 'user function' in self.functions.keys()
+
+
+class FunctionPainter:
+
+    def __init__(self, function, axes):
+        self.function, self.ax = function, axes
+
+    def plot_main_function(self):
+        lines_count = self.function.get_parameter('lines_count')
+        for line in self.function.get_parameter('lines'):
+            X, Y = line.get_xdata(), line.get_ydata()
+            init_subplot(self.ax)
+            for param in self.function.parameters:
+                try:
+                    method = getattr(self.ax, 'set_' + param)
+                    method(self.function.parameters[param])
+                except AttributeError:
+                    pass
+            self.ax.grid(self.function.get_parameter('grid'))
+            self.ax.plot(X, Y,
+                    color=self.function.get_parameter('main_function_color') if line.get_linestyle() == '-' else line.get_color(),
+                    label=self.function.get_parameter('latex') if lines_count == 1 else '',
+                    linestyle=line.get_linestyle(),
+                    linewidth=line.get_linewidth())
+
+    def plot_derivative(self):
+        lines_count = self.function.get_parameter('lines_count')
+        for n in self.function.get_parameter('active_derivatives'):
+            X, dydx = self.function.get_parameter('derivatives').get(n)
+            quotes = n * "'"
+            color = self.function.get_parameter('derivative_colors').get(n)
+            self.ax.plot(X, dydx, color=color, label=fr"f{quotes}(x)" if lines_count == 1 else '')
+
+    def plot_zero_points(self):
+        if self.function.get_parameter('zero_points_method') != 'none':
+            calculator = Calculator(self.function.get_parameter('formula'))
+            x_values, y_values = self.function.get_parameter('x_values'), self.function.get_parameter('y_values')
+            zero_points = set()
+            for X, Y in zip(x_values, y_values):
+                zero_points.update(list(calculator.zero_points(X, method=self.function.get_parameter('zero_points_method'))))
+            self.function.set_parameter('zero_points_values', zero_points)
+            for x in self.function.get_parameter('zero_points_values'):
+                self.ax.plot(x, 0, 'ko', c=self.function.get_parameter('zero_points_color'))
+
+    def plot_title(self):
+        self.ax.set_title(self.function.get_parameter('latex'))

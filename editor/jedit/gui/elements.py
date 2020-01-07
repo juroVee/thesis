@@ -3,12 +3,12 @@ import ipywidgets as w
 from traitlets import directional_link
 
 # project-level modules
-from ..settings import DEFAULT_FUNCTIONS, DEFAULT_FUNCTION_TO_SHOW, DERIV_COLORS
+from ..settings import DEFAULT_FUNCTIONS
+from ..config import config
 
 
 class GUIElementManager:
 
-    DEFAULT_DESCRIPTION_LENGTH = '120px'
 
     def __init__(self, user_defined=False):
         self.user_defined = user_defined
@@ -22,18 +22,20 @@ class GUIElementManager:
         self.elements['hbox_function'] = self._function_hbox()
         self.elements['dropdown_grid'] = self._grid_dropdown()
         for n in range(1, 4):
-            self.elements[f'hbox_derivative{n}'] = self._derivative_hbox(n, DERIV_COLORS[n])
+            self.elements[f'hbox_derivative{n}'] = self._derivative_hbox(n)
         self.elements['dropdown_refinement'] = self._refinement_dropdown()
         self.elements['hbox_zero_points'] = self._zero_points_hbox()
 
-    def _function_hbox(self, default_color='#1f77b4'):
+    def _function_hbox(self):
+        default_color = config['default_colors']['main_function']
+        functions_names = [parameters['name'] for func, parameters in config['default_functions'].items()]
         dropdown = w.Dropdown(
-            options=['user function'] + list(DEFAULT_FUNCTIONS.keys()) if self.user_defined else DEFAULT_FUNCTIONS.keys(),
-            value='user function' if self.user_defined else DEFAULT_FUNCTION_TO_SHOW,
+            options=['user function'] + functions_names if self.user_defined else functions_names,
+            value='user function' if self.user_defined else config['default_plot_params']['function'],
             description='Function:',
             disabled=False,
             layout=w.Layout(width='100%'),
-            style={'description_width': self.DEFAULT_DESCRIPTION_LENGTH}
+            style={'description_width': config['default_sizes']['menu_element_description']}
         )
         cpicker = w.ColorPicker(
             concise=True,
@@ -52,17 +54,18 @@ class GUIElementManager:
             description='Grid:',
             disabled=False,
             layout=w.Layout(width='auto', height='auto'),
-            style={'description_width': self.DEFAULT_DESCRIPTION_LENGTH}
+            style={'description_width': config['default_sizes']['menu_element_description']}
         )
 
-    def _derivative_hbox(self, n=1, default_color='#1f77b4'):
+    def _derivative_hbox(self, n=1):
+        default_color = config['default_colors']['derivative_' + str(n)]
         dropdown = w.Dropdown(
             options=['false', 'true'],
             value='false',
             description=f'{n}.' + ' derivative:',
             disabled=False,
             layout=w.Layout(width='100%'),
-            style={'description_width': self.DEFAULT_DESCRIPTION_LENGTH}
+            style={'description_width': config['default_sizes']['menu_element_description']}
         )
         cpicker = w.ColorPicker(
             concise=True,
@@ -86,17 +89,18 @@ class GUIElementManager:
             description='Refinement:',
             disabled=False,
             layout=w.Layout(width='auto', height='auto'),
-            style={'description_width': self.DEFAULT_DESCRIPTION_LENGTH}
+            style={'description_width': config['default_sizes']['menu_element_description']}
         )
 
-    def _zero_points_hbox(self, default_color='#000000'):
+    def _zero_points_hbox(self):
+        default_color = config['default_colors']['zero_points']
         dropdown = w.Dropdown(
             options=['none', 'newton', 'brentq', 'bisect'],
             value='none',
             description='Zero points:',
             disabled=False,
             layout=w.Layout(width='100%'),
-            style={'description_width': self.DEFAULT_DESCRIPTION_LENGTH}
+            style={'description_width': config['default_sizes']['menu_element_description']}
         )
         cpicker = w.ColorPicker(
             concise=True,
@@ -106,9 +110,6 @@ class GUIElementManager:
             layout=w.Layout(width='28px')
         )
 
-        def transform(case):
-            return True if case == 'none' else False
-
-        directional_link((dropdown, 'value'), (cpicker, 'disabled'), transform)
+        directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: True if case == 'none' else False)
 
         return w.HBox(children=[dropdown, cpicker])

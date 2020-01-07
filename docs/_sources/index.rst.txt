@@ -38,6 +38,18 @@ Log
 ===
 
 
+30.12.2019 - 5.1.2020
+---------------------
+
+- upravený a zprehľadnený kód
+- vytvorené triedy ``UserFunction`` a ``DefaultFunction``, ktoré dedia od ``Function``
+- trieda ``Function`` ukladá všetky parametre funkcie v dátovej štruktúre ``dictionary``
+- vytvorený nový konfiguračný súbor ``YAML``, pre rýchle a prehľadné nastavovanie parametrov programu
+- trieda ``Calculator`` presunutá do package ``plot``
+- výpočet derivácii sa deje pri inštancovaní funkcie a prepočítavajú sa len pri zmene ``refinement``
+- príprava pre zefektívnenie programu (prepočítavanie funkcií)
+- začiatok práce na samotnej analýze
+
 9.12.2019 - 15.12.2019
 ----------------------
 

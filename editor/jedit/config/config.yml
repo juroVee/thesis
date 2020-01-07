@@ -1,0 +1,71 @@
+editor_settings:
+    figure_header: 'no'
+
+default_sizes:
+    board_grid_rows: 18
+    board_grid_cols: 10
+    main_window_rows: 16
+    main_window_cols: 7
+    board_grid_height: '600px'
+    menu_element_description: '120px'
+
+default_plot_params:
+    function: 'y = x'
+    grid: 'no'
+    aspect: 'auto'
+    max_derivative: 3
+
+default_colors:
+    main_function: '#1f77b4'
+    derivative_1: '#ff8647'
+    derivative_2: '#39ff33'
+    derivative_3: '#7b6cef'
+    zero_points: '#000000'
+
+default_functions:
+    linear:
+        name: 'y = x'
+        formula: 'lambda x: x'
+        linspace: 'np.linspace(-10, 10, 101)'
+        latex: 'r"$y = x$"'
+    quadratic:
+        name: 'y = x^2'
+        formula: 'lambda x: np.power(x, 2)'
+        linspace: 'np.linspace(-10, 10, 101)'
+        latex: 'r"$y = x^2$"'
+    cubic:
+        name: 'y = x^3'
+        formula: 'lambda x: np.power(x, 3)'
+        linspace: 'np.linspace(-10, 10, 101)'
+        latex: 'r"$y = x^3$"'
+    sqrt:
+        name: 'y = sqrt x'
+        formula: 'lambda x: np.sqrt(x)'
+        linspace: 'np.linspace(0.1, 20, 101)'
+        latex: 'r"$y = \sqrt{x}$"'
+    e:
+        name: 'y = e^x'
+        formula: 'lambda x: np.exp(x)'
+        linspace: 'np.linspace(-10, 10, 101)'
+        latex: 'r"$y = e^x$"'
+    log:
+        name: 'y = log x'
+        formula: 'lambda x: np.log(x)'
+        linspace: 'np.linspace(0.1, 10.1, 101)'
+        latex: 'r"$y = \log\ x$"'
+    sin:
+        name: 'y = sin x'
+        formula: 'lambda x: np.sin(x)'
+        linspace: 'np.linspace(-2 * np.pi, 4 * np.pi, 12 * 10 + 1)'
+        latex: 'r"$y = \sin\ x$"'
+        xticks_data:
+            xticks: '[n * np.pi / 2 for n in range(-4, 8 + 1)]'
+            xticklabels: '[smart_ticklabel(n, r"\pi", 2) for n in range(-4, 8 + 1)]'
+    cos:
+        name: 'y = cos x'
+        formula: 'lambda x: np.cos(x)'
+        linspace: 'np.linspace(-2 * np.pi, 4 * np.pi, 12 * 10 + 1)'
+        latex: 'r"$y = \cos\ x$"'
+        xticks_data:
+            xticks: '[n * np.pi / 2 for n in range(-4, 8 + 1)]'
+            xticklabels: '[smart_ticklabel(n, r"\pi", 2) for n in range(-4, 8 + 1)]'

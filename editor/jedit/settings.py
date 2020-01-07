@@ -1,8 +1,6 @@
 import numpy as np
 from .plot.maux import smart_ticklabel
 
-# DISABLE DEFAULT INTERACTIVE HEADER FROM MATPLOTLIB
-FIGURE_HEADER = False
 
 # SET DEFAULT FUNCTION NAMES
 LINEAR = 'y = x'
@@ -54,8 +52,8 @@ DEFAULT_FUNCTIONS = {
                         'xticklabels': [smart_ticklabel(n, r"\pi", 2) for n in range(-4, 8 + 1)]}},
 }
 
-# DEFAULT DERIVATION COLORS
-DERIV_COLORS = {1: '#ff8647', 2: '#39ff33', 3: '#7b6cef'}
+# SET DEFAULT FUNCTION COLOR
+DEFAULT_FUNCTION_COLOR = '#1f77b4'
 
-# SET FIRST FUNCTION TO SHOW IF USER FUNCTION NOT PROVIDED
-DEFAULT_FUNCTION_TO_SHOW = LINEAR
+# SET DEFAULT DERIVATION COLORS
+DEFAULT_DERIVATIVE_COLORS = {1: '#ff8647', 2: '#39ff33', 3: '#7b6cef'}

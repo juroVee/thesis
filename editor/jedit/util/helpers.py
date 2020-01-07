@@ -51,3 +51,6 @@ def hide_interactive_toolbars():
 
 def generate_id():
     return ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+
+def assign(var: str, code: str):
+    return var + ' = ' + code
