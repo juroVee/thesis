@@ -50,6 +50,12 @@ Log
 - príprava pre zefektívnenie programu (prepočítavanie funkcií)
 - začiatok práce na samotnej analýze
 
+16.12.2019 - 22.12.2019
+-----------------------
+
+- pripravená ``LaTeX`` šablóna bakalárskej práce
+
+
 9.12.2019 - 15.12.2019
 ----------------------
 
