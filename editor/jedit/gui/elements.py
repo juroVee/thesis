@@ -3,7 +3,6 @@ import ipywidgets as w
 from traitlets import directional_link
 
 # project-level modules
-from ..settings import DEFAULT_FUNCTIONS
 from ..config import config
 
 
@@ -29,9 +28,10 @@ class GUIElementManager:
     def _function_hbox(self):
         default_color = config['default_colors']['main_function']
         functions_names = [parameters['name'] for func, parameters in config['default_functions'].items()]
+        default_function = config['default_plot_params']['function']
         dropdown = w.Dropdown(
             options=['user function'] + functions_names if self.user_defined else functions_names,
-            value='user function' if self.user_defined else config['default_plot_params']['function'],
+            value='user function' if self.user_defined else config['default_functions'][default_function]['name'],
             description='Function:',
             disabled=False,
             layout=w.Layout(width='100%'),
@@ -58,7 +58,7 @@ class GUIElementManager:
         )
 
     def _derivative_hbox(self, n=1):
-        default_color = config['default_colors']['derivative_' + str(n)]
+        default_color = config['default_colors']['derivatives'][n-1]
         dropdown = w.Dropdown(
             options=['false', 'true'],
             value='false',
@@ -84,7 +84,7 @@ class GUIElementManager:
 
     def _refinement_dropdown(self):
         return w.Dropdown(
-            options=['original', '10x', '100x', '1000x', '10000x'],
+            options=['original'] + [str(value) + 'x' for value in config['default_plot_params']['refinements']],
             value='original',
             description='Refinement:',
             disabled=False,

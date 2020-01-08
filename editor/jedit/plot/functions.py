@@ -34,14 +34,13 @@ class Function:
     def _init_plot_parameters(self):
         self.set_parameter('grid', True if config['default_plot_params']['grid'] == 'yes' else False)
         self.set_parameter('main_function_color', config['default_colors']['main_function'])
-        derivative_colors = {}
         for n in range(1, config['default_plot_params']['max_derivative'] + 1):
-            derivative_colors[n] = config['default_colors']['derivative_' + str(n)]
-        self.set_parameter('derivative_colors', derivative_colors)
+            self.set_parameter('derivative_color' + str(n), config['default_colors']['derivatives'][n-1])
 
     def _init_derivatives(self):
         self.recalculate_derivatives()
-        self.set_parameter('active_derivatives', set())
+        for n in range(1, config['default_plot_params']['max_derivative'] + 1):
+            self.set_parameter('active_derivative' + str(n), False)
 
     def _init_zero_points(self):
         self.set_parameter('zero_points_method', 'none')
@@ -50,6 +49,11 @@ class Function:
 
     def _init_refinement(self):
         self.set_parameter('refinement', 0)
+
+    def recalculate_main_function(self):
+        function = self.get_parameter('formula')
+        self.set_parameter('y_values', [function(X) for X in self.get_parameter('x_values')])
+        self.set_parameter('lines', [Line2D(X, Y) for X, Y in zip(self.get_parameter('x_values'), self.get_parameter('y_values'))])
 
     def recalculate_derivatives(self):
         calculator = Calculator(self.get_parameter('formula'))
@@ -76,34 +80,29 @@ class Function:
 
         fig.show()
 
-    def set_parameter(self, name, value, sub=None):
-        if sub is None:
-            self.parameters[name] = value
-        else:
-            self.parameters[name][sub] = value
+    def set_parameter(self, name, value):
+        self.parameters[name] = value
 
     def get_parameter(self, parameter):
         return self.parameters[parameter]
 
-    def show_derivative(self, n, visible=False):
-        if visible:
-            self.parameters['active_derivatives'].add(n)
-        else:
-            self.parameters['active_derivatives'].discard(n)
-
     def set_refinement(self, value=0) -> None:
         self.set_parameter('refinement', value)
+        if value == 0:
+            self.set_parameter('x_values', self.get_parameter('original_x_values'))
+            return
         new_x_values = []
         for xval in self.get_parameter('original_x_values'):
             minima, maxima = min(xval), max(xval)
             intervals = len(xval) - 1
-            new_intervals = intervals* (10 ** self.get_parameter('refinement'))
+            new_intervals = intervals * self.get_parameter('refinement')
             new_x_values.append(np.linspace(minima, maxima, new_intervals + 1))
         self.set_parameter('x_values', new_x_values)
         
 class UserFunction(Function):
     
     def __init__(self, user_data=None):
+        self.user_data = user_data
         fig, ax, f = user_data['figure'], user_data['axis'], user_data['f']
         X = [xvals for xvals in user_data['xvals']]
         Y = [f(xvals) for xvals in X]
@@ -148,12 +147,22 @@ class FunctionManager:
         for _, parameters in default_functions.items():
             name = parameters['name']
             self.functions[name] = DefaultFunction(name, parameters)
-        self.current_function = self.functions[config['default_plot_params']['function']]
+        default_function = config['default_plot_params']['function']
+        self.current_function = self.functions[config['default_functions'][default_function]['name']]
         if user_data is not None:
             self.current_function = self.functions['user function'] = UserFunction(user_data)
 
     def __getitem__(self, function_name: str):
         return self.functions[function_name]
+
+    def apply_configuration(self, configuration):
+        for parameter, value in configuration.items():
+            if parameter == 'refinement':
+                self.current_function.set_refinement(value)
+                self.current_function.recalculate_main_function()
+                self.current_function.recalculate_derivatives()
+            else:
+                self.current_function.set_parameter(parameter, value)
 
     def get_all(self) -> dict.values:
         return self.functions.values()
@@ -193,11 +202,12 @@ class FunctionPainter:
 
     def plot_derivative(self):
         lines_count = self.function.get_parameter('lines_count')
-        for n in self.function.get_parameter('active_derivatives'):
-            X, dydx = self.function.get_parameter('derivatives').get(n)
-            quotes = n * "'"
-            color = self.function.get_parameter('derivative_colors').get(n)
-            self.ax.plot(X, dydx, color=color, label=fr"f{quotes}(x)" if lines_count == 1 else '')
+        for n in range(1, config['default_plot_params']['max_derivative'] + 1):
+            if self.function.get_parameter('active_derivative' + str(n)):
+                X, dydx = self.function.get_parameter('derivatives').get(n)
+                quotes = n * "'"
+                color = self.function.get_parameter('derivative_color' + str(n))
+                self.ax.plot(X, dydx, color=color, label=fr"f{quotes}(x)" if lines_count == 1 else '')
 
     def plot_zero_points(self):
         if self.function.get_parameter('zero_points_method') != 'none':

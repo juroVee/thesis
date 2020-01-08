@@ -5,21 +5,27 @@ default_sizes:
     board_grid_rows: 18
     board_grid_cols: 10
     main_window_rows: 16
-    main_window_cols: 7
+    main_window_cols: 6
     board_grid_height: '600px'
     menu_element_description: '120px'
 
 default_plot_params:
-    function: 'y = x'
+    function: linear
     grid: 'no'
     aspect: 'auto'
     max_derivative: 3
+    refinements:
+        - 10
+        - 100
+        - 1000
+        - 10000
 
 default_colors:
     main_function: '#1f77b4'
-    derivative_1: '#ff8647'
-    derivative_2: '#39ff33'
-    derivative_3: '#7b6cef'
+    derivatives:
+        - '#ff8647'
+        - '#39ff33'
+        - '#7b6cef'
     zero_points: '#000000'
 
 default_functions:

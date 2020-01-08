@@ -37,6 +37,13 @@ Základné informácie
 Log
 ===
 
+6.1.2020 - 12.1.2020
+--------------------
+
+- opravená funkcionalita zjemňovania x-ovej osi (hlavná funkcia pôvodne nereagovala na túto zmenu)
+- prepočítavanie užívateľom zadaných hodnôt sa vykoná len pri zmene vybratej funkcie (zrýchlenie programu)
+- v súvislosti s predchádzajúcim bodom pridané uloženie užívateľom vybratých hodnôt do konfigurácie
+
 
 30.12.2019 - 5.1.2020
 ---------------------
