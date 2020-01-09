@@ -23,7 +23,7 @@ class Editor:
         display(self.board.get_widget())
 
         with plot.output:
-            plot.update()
+            plot.update(self.board.get_logger_object())
 
 # run instance after importing editor
 editor = Editor()

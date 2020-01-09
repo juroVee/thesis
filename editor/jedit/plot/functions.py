@@ -32,20 +32,20 @@ class Function:
         self.set_parameter('lines_count', len(list(X)))
 
     def _init_plot_parameters(self):
-        self.set_parameter('grid', True if config['default_plot_params']['grid'] == 'yes' else False)
-        self.set_parameter('main_function_color', config['default_colors']['main_function'])
-        for n in range(1, config['default_plot_params']['max_derivative'] + 1):
-            self.set_parameter('derivative_color' + str(n), config['default_colors']['derivatives'][n-1])
+        self.set_parameter('grid', True if config['plot_parameters']['grid'] == 'yes' else False)
+        self.set_parameter('main_function_color', config['main_function']['color'])
+        for n in range(1, config['derivative']['max_derivative'] + 1):
+            self.set_parameter('derivative_color' + str(n), config['derivative']['colors'][n-1])
 
     def _init_derivatives(self):
         self.recalculate_derivatives()
-        for n in range(1, config['default_plot_params']['max_derivative'] + 1):
+        for n in range(1, config['derivative']['max_derivative'] + 1):
             self.set_parameter('active_derivative' + str(n), False)
 
     def _init_zero_points(self):
         self.set_parameter('zero_points_method', 'none')
         self.set_parameter('zero_points_values', set())
-        self.set_parameter('zero_points_color', config['default_colors']['zero_points'])
+        self.set_parameter('zero_points_color', config['zero_points']['color'])
 
     def _init_refinement(self):
         self.set_parameter('refinement', 0)
@@ -60,19 +60,19 @@ class Function:
         x_values, y_values = self.get_parameter('x_values'), self.get_parameter('y_values')
         derivatives = {}
         for X, Y in zip(x_values, y_values):
-            for n in range(1, config['default_plot_params']['max_derivative'] + 1):
+            for n in range(1, config['derivative']['max_derivative'] + 1):
                 _, dydx = calculator.derive(X, n)
                 derivatives[n] = (X, dydx)
         self.set_parameter('derivatives', derivatives)
 
-    def plot(self) -> None:
+    def plot(self, logger) -> None:
         # # DEBUG ONLY -> DELETE
         # for xval in self.get_parameter('x_values'):
         #     print(f'(DEBUG) Refinement: {self.get_parameter("refinement")} Intervals: {len(xval)-1} Values: {len(xval)}')
         fig, ax = plt.subplots()
         fig.set_size_inches(6, 5)
 
-        painter = FunctionPainter(self, ax)
+        painter = FunctionPainter(self, ax, logger)
         painter.plot_main_function()
         painter.plot_derivative()
         painter.plot_zero_points()
@@ -133,7 +133,7 @@ class DefaultFunction(Function):
         super().__init__([X], [function(X)], function, name, latex)
         self.set_parameter('lines', [Line2D(X, function(X))])
         self.set_parameter('title', latex)
-        self.set_parameter('aspect', 'equal' if config['default_plot_params']['aspect'] == 'equal' else 'auto')
+        self.set_parameter('aspect', 'equal' if config['plot_parameters']['aspect'] == 'equal' else 'auto')
         if 'xticks_data' in config_data:
             self.set_parameter('xticks', eval(config_data['xticks_data']['xticks']))
             self.set_parameter('xticklabels', eval(config_data['xticks_data']['xticklabels']))
@@ -147,7 +147,7 @@ class FunctionManager:
         for _, parameters in default_functions.items():
             name = parameters['name']
             self.functions[name] = DefaultFunction(name, parameters)
-        default_function = config['default_plot_params']['function']
+        default_function = config['main_function']['default']
         self.current_function = self.functions[config['default_functions'][default_function]['name']]
         if user_data is not None:
             self.current_function = self.functions['user function'] = UserFunction(user_data)
@@ -179,8 +179,9 @@ class FunctionManager:
 
 class FunctionPainter:
 
-    def __init__(self, function, axes):
+    def __init__(self, function, axes, logger):
         self.function, self.ax = function, axes
+        self.logger = logger
 
     def plot_main_function(self):
         lines_count = self.function.get_parameter('lines_count')
@@ -197,12 +198,12 @@ class FunctionPainter:
             self.ax.plot(X, Y,
                     color=self.function.get_parameter('main_function_color') if line.get_linestyle() == '-' else line.get_color(),
                     label=self.function.get_parameter('latex') if lines_count == 1 else '',
-                    linestyle=line.get_linestyle(),
-                    linewidth=line.get_linewidth())
+                    linestyle=config['main_function']['linestyle'],
+                    linewidth=config['main_function']['linewidth'])
 
     def plot_derivative(self):
         lines_count = self.function.get_parameter('lines_count')
-        for n in range(1, config['default_plot_params']['max_derivative'] + 1):
+        for n in range(1, config['derivative']['max_derivative'] + 1):
             if self.function.get_parameter('active_derivative' + str(n)):
                 X, dydx = self.function.get_parameter('derivatives').get(n)
                 quotes = n * "'"
@@ -213,12 +214,23 @@ class FunctionPainter:
         if self.function.get_parameter('zero_points_method') != 'none':
             calculator = Calculator(self.function.get_parameter('formula'))
             x_values, y_values = self.function.get_parameter('x_values'), self.function.get_parameter('y_values')
+            method = self.function.get_parameter('zero_points_method')
             zero_points = set()
             for X, Y in zip(x_values, y_values):
-                zero_points.update(list(calculator.zero_points(X, method=self.function.get_parameter('zero_points_method'))))
+                calculated = calculator.zero_points(X, method=method)
+                if calculated is None:
+                    # self.logger.write(f'{method.upper()} method failed to calculate zero points.\n\tTry setting the refinement higher.')
+                    self.function.set_parameter('zero_points_values', None)
+                    self.logger.write(f'{method.upper()} method failed to calculate zero points.\n\tTry setting the refinement higher.')
+                    return
+                zero_points.update(calculated)
             self.function.set_parameter('zero_points_values', zero_points)
+            if zero_points is not None:
+                zero_points_sorted = np.around(sorted(self.function.get_parameter('zero_points_values')), decimals=4)
+                self.logger.write(f'Plotting zero points using {method.upper()} method\n\t{zero_points_sorted}')
+            markersize = config['zero_points']['markersize']
             for x in self.function.get_parameter('zero_points_values'):
-                self.ax.plot(x, 0, 'ko', c=self.function.get_parameter('zero_points_color'))
+                self.ax.plot(x, 0, 'o', c=self.function.get_parameter('zero_points_color'), markersize=markersize)
 
     def plot_title(self):
         self.ax.set_title(self.function.get_parameter('latex'))

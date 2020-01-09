@@ -10,7 +10,7 @@ class Calculator:
         self.f = f
 
     def _find_sign_changes(self, X):
-        return np.where(np.diff(np.signbit(self.f(X))))[0]
+        return np.where(np.diff(np.signbit(np.around(self.f(X), 8))))[0]
 
     def derive(self, X, n):
         order = n + 1 if n % 2 == 0 else n + 2
@@ -19,10 +19,13 @@ class Calculator:
     def zero_points(self, X, method='newton'):
         indexes = self._find_sign_changes(X)
         sign_changes = zip(indexes, np.add(1, indexes))
-        for i, j in sign_changes:
+
+        try:
             if method == 'newton':
-                yield newton(self.f, X[i])
+                return [newton(self.f, X[i]) for i, j in sign_changes]
             elif method == 'brentq':
-                yield brentq(self.f, X[i], X[j])
+                return [brentq(self.f, X[i], X[j]) for i, j in sign_changes]
             elif method == 'bisect':
-                yield bisect(self.f, X[i], X[j])
+                return [bisect(self.f, X[i], X[j]) for i, j in sign_changes]
+        except RuntimeError:
+            return None

@@ -11,7 +11,7 @@ class Logger:
 
     def write(self, message):
         with self.output:
-            out = f'[{datetime.now().strftime("%d.%m.%Y %H:%M:%S")}] {message}'
+            out = f'[{datetime.now().strftime("%d.%m.%Y %H:%M:%S")}]\n\t{message}'
             print(out)
             self.log_backup.append(out)
 

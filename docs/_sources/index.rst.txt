@@ -43,6 +43,7 @@ Log
 - opravená funkcionalita zjemňovania x-ovej osi (hlavná funkcia pôvodne nereagovala na túto zmenu)
 - prepočítavanie užívateľom zadaných hodnôt sa vykoná len pri zmene vybratej funkcie (zrýchlenie programu)
 - v súvislosti s predchádzajúcim bodom pridané uloženie užívateľom vybratých hodnôt do konfigurácie
+- na web pridané screenshoty z aplikácie
 
 
 30.12.2019 - 5.1.2020
@@ -144,6 +145,27 @@ Tutoriály, manuály
 - ipywidgets dokumentácia (https://ipywidgets.readthedocs.io/en/latest/)
 
 - matplotlib dokumentácia (https://matplotlib.org/3.1.1/contents.html)
+
+Z aplikácie
+===========
+
+.. figure:: images/screen01.png
+   :align: center
+
+.. figure:: images/screen02.png
+   :align: center
+
+.. figure:: images/screen03.png
+   :align: center
+
+.. figure:: images/screen04.png
+   :align: center
+
+.. figure:: images/screen05.png
+   :align: center
+
+.. figure:: images/screen06.png
+   :align: center
 
 
 .. toctree::

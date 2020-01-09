@@ -26,9 +26,9 @@ class GUIElementManager:
         self.elements['hbox_zero_points'] = self._zero_points_hbox()
 
     def _function_hbox(self):
-        default_color = config['default_colors']['main_function']
+        default_color = config['main_function']['color']
         functions_names = [parameters['name'] for func, parameters in config['default_functions'].items()]
-        default_function = config['default_plot_params']['function']
+        default_function = config['main_function']['default']
         dropdown = w.Dropdown(
             options=['user function'] + functions_names if self.user_defined else functions_names,
             value='user function' if self.user_defined else config['default_functions'][default_function]['name'],
@@ -58,7 +58,7 @@ class GUIElementManager:
         )
 
     def _derivative_hbox(self, n=1):
-        default_color = config['default_colors']['derivatives'][n-1]
+        default_color = config['derivative']['colors'][n-1]
         dropdown = w.Dropdown(
             options=['false', 'true'],
             value='false',
@@ -84,7 +84,7 @@ class GUIElementManager:
 
     def _refinement_dropdown(self):
         return w.Dropdown(
-            options=['original'] + [str(value) + 'x' for value in config['default_plot_params']['refinements']],
+            options=['original'] + [str(value) + 'x' for value in config['refinement']['values']],
             value='original',
             description='Refinement:',
             disabled=False,
@@ -93,7 +93,7 @@ class GUIElementManager:
         )
 
     def _zero_points_hbox(self):
-        default_color = config['default_colors']['zero_points']
+        default_color = config['zero_points']['color']
         dropdown = w.Dropdown(
             options=['none', 'newton', 'brentq', 'bisect'],
             value='none',
