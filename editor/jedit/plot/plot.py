@@ -15,12 +15,12 @@ class Plot:
     def is_user_defined(self) -> bool:
         return self.function_manager.has_user_function()
 
-    def update(self, logger) -> None:
+    def update(self) -> None:
         with self.output:
             clear_output()
             if self.updated:
                 plt.close('all') # very important, possible memory exceeding
-            self.function_manager.get_current().plot(logger)
+            self.function_manager.get_current().plot()
 
     def get_widget(self):
         return self.output

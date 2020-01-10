@@ -3,29 +3,24 @@ import ipywidgets as w
 
 # project-level modules
 from ..plot import Plot, FunctionManager
-from ..config import config
 
 # package-level modules
 from .tabs import AnalysisTab, SettingsTab, LogTab, InfoTab
 from .observer import Observer
-from .logger import Logger
 from .elements import GUIElementManager
 
 
 class Board:
 
-    def __init__(self, user_data: dict):
+    def __init__(self, user_data: dict, logger):
+        self.logger = logger
         self._init_plot(user_data)
-        self._init_logger()
         self._init_gui_elements_manager()
         self._init_tabs()
         self._init_observer()
 
     def _init_plot(self, user_data: dict):
         self.plot = Plot(FunctionManager(user_data))
-
-    def _init_logger(self):
-        self.logger = Logger()
 
     def _init_gui_elements_manager(self):
         self.gui_manager = GUIElementManager(self.plot.is_user_defined())

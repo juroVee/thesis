@@ -1,4 +1,5 @@
 import numpy as np
+import pprint
 
 from ..config import config
 
@@ -30,7 +31,7 @@ class Observer:
         self.function_manager.set_current(self.function_manager[choice])
         self.function_manager.apply_configuration(self.configuration.get())
         self.logger.write(f'Function changed to {choice}')
-        self.plot.update(self.logger)
+        self.plot.update()
 
     def _changed_grid(self, b) -> None:
         self.plot.updated = True
@@ -38,7 +39,7 @@ class Observer:
         function = self.function_manager.get_current()
         function.set_parameter('grid', choice)
         self.configuration.save('grid', choice)
-        self.plot.update(self.logger)
+        self.plot.update()
         self.logger.write('Grid visible' if choice else 'Grid hidden')
 
     def _changed_derivative1(self, b) -> None:
@@ -47,7 +48,7 @@ class Observer:
         function = self.function_manager.get_current()
         function.set_parameter('active_derivative1', choice)
         self.configuration.save('active_derivative1', choice)
-        self.plot.update(self.logger)
+        self.plot.update()
         self.logger.write('Plotting 1. derivative' if choice else '1. derivative plot removed')
 
     def _changed_derivative2(self, b) -> None:
@@ -56,7 +57,7 @@ class Observer:
         function = self.function_manager.get_current()
         function.set_parameter('active_derivative2', choice)
         self.configuration.save('active_derivative2', choice)
-        self.plot.update(self.logger)
+        self.plot.update()
         self.logger.write('Plotting 2. derivative' if choice else '2. derivative plot removed')
 
     def _changed_derivative3(self, b) -> None:
@@ -65,7 +66,7 @@ class Observer:
         function = self.function_manager.get_current()
         function.set_parameter('active_derivative3', choice)
         self.configuration.save('active_derivative3', choice)
-        self.plot.update(self.logger)
+        self.plot.update()
         self.logger.write('Plotting 3. derivative' if choice else '3. derivative plot removed')
 
     def _changed_color_main(self, b) -> None:
@@ -74,7 +75,7 @@ class Observer:
         function = self.function_manager.get_current()
         function.set_parameter('main_function_color', choice)
         self.configuration.save('main_function_color', choice)
-        self.plot.update(self.logger)
+        self.plot.update()
         self.logger.write(f'Color of main function changed to {choice}')
 
     def _changed_color_derivative1(self, b) -> None:
@@ -83,7 +84,7 @@ class Observer:
         function = self.function_manager.get_current()
         function.set_parameter('derivative_color1', choice)
         self.configuration.save('derivative_color1', choice)
-        self.plot.update(self.logger)
+        self.plot.update()
         self.logger.write(f'Color of 1. derivative changed to {choice}')
 
     def _changed_color_derivative2(self, b) -> None:
@@ -92,7 +93,7 @@ class Observer:
         function = self.function_manager.get_current()
         function.set_parameter('derivative_color2', choice)
         self.configuration.save('derivative_color2', choice)
-        self.plot.update(self.logger)
+        self.plot.update()
         self.logger.write(f'Color of 2. derivative changed to {choice}')
 
     def _changed_color_derivative3(self, b) -> None:
@@ -101,7 +102,7 @@ class Observer:
         function = self.function_manager.get_current()
         function.set_parameter('derivative_color3', choice)
         self.configuration.save('derivative_color3', choice)
-        self.plot.update(self.logger)
+        self.plot.update()
         self.logger.write(f'Color of 3. derivative changed to {choice}')
 
     def _changed_refinement(self, b) -> None:
@@ -114,7 +115,7 @@ class Observer:
         function.recalculate_derivatives()
         self.configuration.save('refinement', choice)
         self.logger.write(f'Refinement set to {b["new"]} of it\'s original')
-        self.plot.update(self.logger)
+        self.plot.update()
 
     def _changed_zero_points(self, b) -> None:
         self.plot.updated = True
@@ -122,7 +123,17 @@ class Observer:
         function = self.function_manager.get_current()
         function.set_parameter('zero_points_method', choice)
         self.configuration.save('zero_points_method', choice)
-        self.plot.update(self.logger)
+        self.plot.update()
+        zp_sorted = np.sort(list(function.get_parameter('zero_points_values')), axis=None)
+        zp_rounded = list(np.around(zp_sorted, decimals=4))
+        self.logger.write(f'Plotting zero points using {choice.upper()} method')
+        output = []
+        for i, val in enumerate(zp_rounded):
+            if (i + 1) % 7 == 0:
+                output.append(f'\n{str(val)}')
+            else:
+                output.append(str(val))
+        self.logger.write(f'Zero points found: \n\t[{", ".join(output)}]')
 
     def _changed_zero_points_color(self, b) -> None:
         self.plot.updated = True
@@ -130,7 +141,7 @@ class Observer:
         function = self.function_manager.get_current()
         function.set_parameter('zero_points_color', choice)
         self.configuration.save('zero_points_color', choice)
-        self.plot.update(self.logger)
+        self.plot.update()
         self.logger.write(f'Color of zero points changed to {choice}')
 
     def start(self) -> None:

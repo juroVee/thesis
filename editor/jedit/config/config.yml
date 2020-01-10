@@ -4,14 +4,16 @@ editor_settings:
 default_sizes:
     board_grid_rows: 18
     board_grid_cols: 10
-    main_window_rows: 16
-    main_window_cols: 6
-    board_grid_height: '600px'
+    main_window_rows: 18
+    main_window_cols: 7
+    board_grid_height: '580px'
     menu_element_description: '120px'
 
 plot_parameters:
     grid: 'no'
     aspect: 'auto'
+    height: 5.5
+    width: 6
 
 main_function:
     linestyle: '-'

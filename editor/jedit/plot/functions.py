@@ -65,14 +65,17 @@ class Function:
                 derivatives[n] = (X, dydx)
         self.set_parameter('derivatives', derivatives)
 
-    def plot(self, logger) -> None:
+    def plot(self) -> None:
         # # DEBUG ONLY -> DELETE
         # for xval in self.get_parameter('x_values'):
         #     print(f'(DEBUG) Refinement: {self.get_parameter("refinement")} Intervals: {len(xval)-1} Values: {len(xval)}')
-        fig, ax = plt.subplots()
-        fig.set_size_inches(6, 5)
 
-        painter = FunctionPainter(self, ax, logger)
+        width, height = config['plot_parameters']['width'], config['plot_parameters']['height']
+
+        fig, ax = plt.subplots()
+        fig.set_size_inches(width, height)
+
+        painter = FunctionPainter(self, ax)
         painter.plot_main_function()
         painter.plot_derivative()
         painter.plot_zero_points()
@@ -179,9 +182,8 @@ class FunctionManager:
 
 class FunctionPainter:
 
-    def __init__(self, function, axes, logger):
+    def __init__(self, function, axes):
         self.function, self.ax = function, axes
-        self.logger = logger
 
     def plot_main_function(self):
         lines_count = self.function.get_parameter('lines_count')
@@ -219,15 +221,11 @@ class FunctionPainter:
             for X, Y in zip(x_values, y_values):
                 calculated = calculator.zero_points(X, method=method)
                 if calculated is None:
-                    # self.logger.write(f'{method.upper()} method failed to calculate zero points.\n\tTry setting the refinement higher.')
                     self.function.set_parameter('zero_points_values', None)
-                    self.logger.write(f'{method.upper()} method failed to calculate zero points.\n\tTry setting the refinement higher.')
+                    #self.logger.write(f'{method.upper()} method failed to calculate zero points.\n\tTry setting the refinement higher.')
                     return
                 zero_points.update(calculated)
             self.function.set_parameter('zero_points_values', zero_points)
-            if zero_points is not None:
-                zero_points_sorted = np.around(sorted(self.function.get_parameter('zero_points_values')), decimals=4)
-                self.logger.write(f'Plotting zero points using {method.upper()} method\n\t{zero_points_sorted}')
             markersize = config['zero_points']['markersize']
             for x in self.function.get_parameter('zero_points_values'):
                 self.ax.plot(x, 0, 'o', c=self.function.get_parameter('zero_points_color'), markersize=markersize)

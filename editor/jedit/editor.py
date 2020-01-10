@@ -1,5 +1,6 @@
 # package-level modules
 from .gui import Board
+from .gui import Logger
 from .util import NotSupportedException, hide_interactive_toolbars, get_user_parameters
 from .config import config
 
@@ -12,18 +13,19 @@ class Editor:
 
     def __init__(self):
         self.board = None
+        self.logger = Logger()
 
     def run(self, figure=None, axis=None, f=None, *X_values):
         if not config['editor_settings']['figure_header'] == 'yes':
             hide_interactive_toolbars()
         if 'inline' in get_backend():
             raise NotSupportedException('Clause %matplotlib inline is not supported. Please use %matplotlib notebook.')
-        self.board = Board(get_user_parameters(figure, axis, f, X_values))
+        self.board = Board(get_user_parameters(figure, axis, f, X_values), self.logger)
         plot = self.board.get_plot_object()
         display(self.board.get_widget())
 
         with plot.output:
-            plot.update(self.board.get_logger_object())
+            plot.update()
 
 # run instance after importing editor
 editor = Editor()
