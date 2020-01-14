@@ -1,10 +1,15 @@
 # external modules
 import ipywidgets as w
+from IPython.display import clear_output
 from datetime import datetime
+
+# project-level modules
+from ..config import config
 
 class Logger:
 
     output = w.Output()
+    output_mini = w.Output()
 
     def __init__(self):
         self.log_backup = []
@@ -15,10 +20,25 @@ class Logger:
             print(out)
             self.log_backup.append(out)
 
+    def write_mini(self, message):
+        """
+        :param message: Message to be printed to log (better be 50 characters per line)
+        :return: None
+        """
+        if config['editor_settings']['footer_log'] != 'yes':
+            return
+        with self.output_mini:
+            clear_output()
+            print(f'[LATEST] {message}')
+            # time.sleep(3)
+
+
     def to_file(self):
         with open(str(datetime.now().strftime("log-%d-%m-%Y-%H-%M-%S.txt")), 'w') as file:
             for log in self.log_backup:
                 file.write(log)
 
-    def get_widget(self):
+    def get_widget(self, mini=False):
+        if mini:
+            return self.output_mini
         return self.output

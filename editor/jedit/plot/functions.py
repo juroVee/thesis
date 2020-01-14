@@ -14,22 +14,24 @@ from .calculations import Calculator
 
 class Function:
 
-    def __init__(self, X, Y, f, name, latex):
+    def __init__(self, f, X, name, latex, user_derivatives=None, asymptotes=None):
         self.parameters = {}
-        self._init_function_details(X, Y, f, name, latex)
+        self._init_function_details(X, f, name, latex, user_derivatives, asymptotes)
         self._init_plot_parameters()
         self._init_derivatives()
         self._init_zero_points()
         self._init_refinement()
 
-    def _init_function_details(self, X, Y, formula, name, latex_representation):
+    def _init_function_details(self, X, formula, name, latex_representation, user_derivatives, asymptotes):
         self.set_parameter('x_values', X)
         self.set_parameter('original_x_values', X)
-        self.set_parameter('y_values', Y)
         self.set_parameter('formula', formula)
         self.set_parameter('name', name)
         self.set_parameter('latex', latex_representation)
+        self.set_parameter('user_derivatives', [] if user_derivatives is None else user_derivatives)
+        self.set_parameter('asymptotes', [] if asymptotes is None else asymptotes)
         self.set_parameter('lines_count', len(list(X)))
+        self.recalculate_main_function()
 
     def _init_plot_parameters(self):
         self.set_parameter('grid', True if config['plot_parameters']['grid'] == 'yes' else False)
@@ -48,7 +50,7 @@ class Function:
         self.set_parameter('zero_points_color', config['zero_points']['color'])
 
     def _init_refinement(self):
-        self.set_parameter('refinement', 0)
+        self.set_parameter('refinement', 1)
 
     def recalculate_main_function(self):
         function = self.get_parameter('formula')
@@ -61,8 +63,12 @@ class Function:
         derivatives = {}
         for X, Y in zip(x_values, y_values):
             for n in range(1, config['derivative']['max_derivative'] + 1):
-                _, dydx = calculator.derive(X, n)
-                derivatives[n] = (X, dydx)
+                if len(self.get_parameter('user_derivatives')) >= n:
+                    d = self.get_parameter('user_derivatives')[n-1]
+                    derivatives[n] = (X, d(X))
+                else:
+                    _, dydx = calculator.derive(X, n)
+                    derivatives[n] = (X, dydx)
         self.set_parameter('derivatives', derivatives)
 
     def plot(self) -> None:
@@ -77,6 +83,7 @@ class Function:
 
         painter = FunctionPainter(self, ax)
         painter.plot_main_function()
+        painter.plot_asymptotes()
         painter.plot_derivative()
         painter.plot_zero_points()
         painter.plot_title()
@@ -89,7 +96,7 @@ class Function:
     def get_parameter(self, parameter):
         return self.parameters[parameter]
 
-    def set_refinement(self, value=0) -> None:
+    def set_refinement(self, value=1) -> None:
         self.set_parameter('refinement', value)
         if value == 0:
             self.set_parameter('x_values', self.get_parameter('original_x_values'))
@@ -104,15 +111,29 @@ class Function:
         
 class UserFunction(Function):
     
-    def __init__(self, user_data=None):
-        self.user_data = user_data
-        fig, ax, f = user_data['figure'], user_data['axis'], user_data['f']
-        X = [xvals for xvals in user_data['xvals']]
-        Y = [f(xvals) for xvals in X]
-        super().__init__(X, Y, f, name='user function', latex=transform_title(ax.get_title()))
-        self._init_params(ax)
+    def __init__(self, user_params):
+        user_params = self._prepare_user_params(user_params)
+        ax, X, f = user_params['ax'], user_params['X'], user_params['f']
+        user_derivatives = user_params.get('derivatives', None)
+        asymptotes = user_params.get('asymptotes', None)
+        super().__init__(f, X, name='user function',
+                         latex=transform_title(ax.get_title()),
+                         user_derivatives=user_derivatives,
+                         asymptotes=asymptotes)
+        self._init_params(ax, asymptotes)
+
+    def _prepare_user_params(self, user_params):
+        ax = user_params['ax']
+        if user_params.get('X', None) is None:
+            lines = [line.get_xdata() for line in ax.get_lines() if line.get_xdata() != []]
+            if 'asymptotes' in user_params:
+                user_lines_number = len(user_params['X'])
+                user_params['X'] = lines[:user_lines_number]
+
+        return user_params
+
         
-    def _init_params(self, ax):
+    def _init_params(self, ax, asymptotes=None):
         self.set_parameter('title', ax.get_title())
         self.set_parameter('aspect', ax.get_aspect())
         self.set_parameter('xticks', ax.get_xticks())
@@ -124,7 +145,14 @@ class UserFunction(Function):
         self.set_parameter('xlim', ax.get_xlim())
         self.set_parameter('ylim', ax.get_ylim())
         lines = [line for line in ax.get_lines() if line.get_xdata() != [] and line.get_ydata() != []]
+        if asymptotes is not None:
+            user_lines_number = len(self.get_parameter('x_values'))
+            self.set_parameter('lines', lines[:user_lines_number])
+            self.set_parameter('asymptotes', lines[user_lines_number:])
+            return
         self.set_parameter('lines', lines)
+        self.set_parameter('asymptotes', [])
+
 
 
 class DefaultFunction(Function):
@@ -133,7 +161,7 @@ class DefaultFunction(Function):
         function = eval(config_data['formula'])
         X = eval(config_data['linspace'])
         latex = eval(config_data['latex'])
-        super().__init__([X], [function(X)], function, name, latex)
+        super().__init__(function, [X], name, latex, user_derivatives=None, asymptotes=None)
         self.set_parameter('lines', [Line2D(X, function(X))])
         self.set_parameter('title', latex)
         self.set_parameter('aspect', 'equal' if config['plot_parameters']['aspect'] == 'equal' else 'auto')
@@ -144,7 +172,7 @@ class DefaultFunction(Function):
 
 class FunctionManager:
 
-    def __init__(self, user_data: dict):
+    def __init__(self, user_params):
         self.functions = {}
         default_functions = config['default_functions']
         for _, parameters in default_functions.items():
@@ -152,8 +180,8 @@ class FunctionManager:
             self.functions[name] = DefaultFunction(name, parameters)
         default_function = config['main_function']['default']
         self.current_function = self.functions[config['default_functions'][default_function]['name']]
-        if user_data is not None:
-            self.current_function = self.functions['user function'] = UserFunction(user_data)
+        if bool(user_params):
+            self.current_function = self.functions['user function'] = UserFunction(user_params)
 
     def __getitem__(self, function_name: str):
         return self.functions[function_name]
@@ -186,7 +214,6 @@ class FunctionPainter:
         self.function, self.ax = function, axes
 
     def plot_main_function(self):
-        lines_count = self.function.get_parameter('lines_count')
         for line in self.function.get_parameter('lines'):
             X, Y = line.get_xdata(), line.get_ydata()
             init_subplot(self.ax)
@@ -198,19 +225,32 @@ class FunctionPainter:
                     pass
             self.ax.grid(self.function.get_parameter('grid'))
             self.ax.plot(X, Y,
-                    color=self.function.get_parameter('main_function_color') if line.get_linestyle() == '-' else line.get_color(),
-                    label=self.function.get_parameter('latex') if lines_count == 1 else '',
+                    color=self.function.get_parameter('main_function_color'),
                     linestyle=config['main_function']['linestyle'],
                     linewidth=config['main_function']['linewidth'])
 
+    def plot_asymptotes(self):
+        for line in self.function.get_parameter('asymptotes'):
+            X, Y = line.get_xdata(), line.get_ydata()
+            linestyle = config['asymptote']['linestyle']
+            linewidth = config['asymptote']['linewidth']
+            color = config['asymptote']['color']
+            self.ax.plot(X, Y,
+                         color=color,
+                         linestyle=linestyle,
+                         linewidth=linewidth)
+
     def plot_derivative(self):
-        lines_count = self.function.get_parameter('lines_count')
-        for n in range(1, config['derivative']['max_derivative'] + 1):
+        for n in range(1, len(self.function.get_parameter('derivatives')) + 1):
             if self.function.get_parameter('active_derivative' + str(n)):
                 X, dydx = self.function.get_parameter('derivatives').get(n)
-                quotes = n * "'"
                 color = self.function.get_parameter('derivative_color' + str(n))
-                self.ax.plot(X, dydx, color=color, label=fr"f{quotes}(x)" if lines_count == 1 else '')
+                linestyle = config['derivative']['linestyle']
+                linewidth = config['derivative']['linewidth']
+                self.ax.plot(X, dydx,
+                             color=color,
+                             linestyle=linestyle,
+                             linewidth=linewidth)
 
     def plot_zero_points(self):
         if self.function.get_parameter('zero_points_method') != 'none':
@@ -219,11 +259,7 @@ class FunctionPainter:
             method = self.function.get_parameter('zero_points_method')
             zero_points = set()
             for X, Y in zip(x_values, y_values):
-                calculated = calculator.zero_points(X, method=method)
-                if calculated is None:
-                    self.function.set_parameter('zero_points_values', None)
-                    #self.logger.write(f'{method.upper()} method failed to calculate zero points.\n\tTry setting the refinement higher.')
-                    return
+                calculated = calculator.zero_points(X, method=method, refinement=self.function.get_parameter('refinement'))
                 zero_points.update(calculated)
             self.function.set_parameter('zero_points_values', zero_points)
             markersize = config['zero_points']['markersize']
@@ -231,4 +267,4 @@ class FunctionPainter:
                 self.ax.plot(x, 0, 'o', c=self.function.get_parameter('zero_points_color'), markersize=markersize)
 
     def plot_title(self):
-        self.ax.set_title(self.function.get_parameter('latex'))
+        self.ax.set_title(self.function.get_parameter('latex'), y=1.06)

@@ -37,6 +37,14 @@ Základné informácie
 Log
 ===
 
+13.1.2020 - 19.1.2020
+---------------------
+
+- čiastočne vyriešený výpočet nulových bodov v zhustenom priestore nad/pod x-ovou osou (príliš mnoho hodnôt s malou odchýlkou)
+- upravené a spracované argumenty v ``run(fig, ax, f, X=[...], derivatives=[...], asymptotes=[...])``
+- doplnená možnosť konfigurácie metód hľadajúcich nulové body (yaml)
+
+
 6.1.2020 - 12.1.2020
 --------------------
 

@@ -95,7 +95,7 @@ class GUIElementManager:
     def _zero_points_hbox(self):
         default_color = config['zero_points']['color']
         dropdown = w.Dropdown(
-            options=['none', 'newton', 'brentq', 'bisect'],
+            options=['none'] + config['zero_points']['methods'],
             value='none',
             description='Zero points:',
             disabled=False,

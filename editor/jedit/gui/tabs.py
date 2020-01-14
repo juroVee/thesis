@@ -23,8 +23,7 @@ class Tab:
         grid[:main_window_rows, :main_window_cols] = w.VBox(children=self.main_window)
         for pos, item in self.sidebar:
             grid[pos, main_window_cols:] = w.VBox(children=[item])
-        for pos, item in self.footer:
-            grid[main_window_rows + pos, :main_window_cols] = w.VBox(children=[item])
+        grid[main_window_rows:, :main_window_cols] = w.VBox(children=self.footer)
         return grid
 
 
@@ -34,6 +33,7 @@ class AnalysisTab(Tab):
         plot = board.get_plot_object()
         gui_manager = board.get_gui_manager_object()
         gui_elements = gui_manager.get_elements()
+        logger = board.get_logger_object()
         super().__init__(name='Analysis',
                    main_window=[plot.get_widget()],
                    sidebar=[(0, gui_elements['hbox_function']),
@@ -43,7 +43,8 @@ class AnalysisTab(Tab):
                             (5, gui_elements[f'hbox_derivative3']),
                             (7, gui_elements['dropdown_refinement']),
                             (8, gui_elements['hbox_zero_points'])
-                            ]
+                            ],
+                    footer=[logger.get_widget(mini=True)]
                    )
 
 

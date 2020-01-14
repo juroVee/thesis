@@ -15,28 +15,24 @@ def transform_title(title: str) -> str:
     result = r'' + title[start:end + 1]
     return result
 
-def get_user_parameters(fig, ax, f, xvals) -> dict:
-    number_of_missing_parameters = check_params(fig, ax, f, xvals)
-    if number_of_missing_parameters == N_PARAMETERS:
-        return None
-    return {
-        'figure': fig,
-        'axis': ax,
-        'f': f,
-        'xvals': xvals
-    }
-
-def check_params(fig, ax, f, X):
-    missing = []
-    for name, var in zip(['figure', 'axis', 'function'], [fig, ax, f]):
-        if var is None:
-            missing.append(name)
-    if len(X) == 0:
-        missing.append('X_values')
-    if 0 < len(missing) < N_PARAMETERS:
-        raise MissingParameterException('Not all parameters entered. Enter all parameters or none at all.\n\t'
-                                        f'Missing parameters: {missing}')
-    return len(missing)
+def check_user_parameters(fig, ax, f, params, logger) -> dict:
+    allowed_params = ['X', 'Y', 'derivatives', 'asymptotes']
+    result = {}
+    if all(value is not None for value in [fig, ax]):
+        result = {'fig': fig, 'ax': ax, 'f': f}
+        for param, value in params.items():
+            if type(value) != list:
+                logger.write_mini('Optional parameters must be in list. E.g. X=[X, ...]\n'
+                                  + len('[LATEST] ') * ' ' + 'Plotting default functions.')
+                return {}
+            if param not in allowed_params:
+                logger.write_mini(f'Unrecognized parameter {param}.\n'
+                                  + len('[LATEST] ') * ' ' + 'Plotting default functions.')
+            result[param] = value
+    else:
+        logger.write_mini('Parameters fig, ax and f must be specified.\n'
+                          + len('[LATEST] ') * ' ' + 'Plotting default functions.')
+    return result
 
 def hide_interactive_toolbars():
     html = '''

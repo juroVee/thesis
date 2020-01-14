@@ -12,9 +12,9 @@ from .elements import GUIElementManager
 
 class Board:
 
-    def __init__(self, user_data: dict, logger):
+    def __init__(self, user_params, logger):
         self.logger = logger
-        self._init_plot(user_data)
+        self._init_plot(user_params)
         self._init_gui_elements_manager()
         self._init_tabs()
         self._init_observer()
