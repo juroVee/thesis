@@ -17,8 +17,8 @@ Základné informácie
    |    `PDF <#>`__
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/editor_v5.tar.gz>`
-   |    :download:`zip <files/editor_v5.zip>`
+   |    :download:`tar.gz <files/editor_v6.tar.gz>`
+   |    :download:`zip <files/editor_v6.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
