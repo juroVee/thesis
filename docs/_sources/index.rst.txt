@@ -17,8 +17,8 @@ Základné informácie
    |    `PDF <#>`__
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/editor_v6.tar.gz>`
-   |    :download:`zip <files/editor_v6.zip>`
+   |    :download:`tar.gz <files/editor_v7.tar.gz>`
+   |    :download:`zip <files/editor_v7.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -37,12 +37,19 @@ Základné informácie
 Log
 ===
 
+20.1.2020 - 26.1.2020
+---------------------
+
+
 13.1.2020 - 19.1.2020
 ---------------------
 
 - čiastočne vyriešený výpočet nulových bodov v zhustenom priestore nad/pod x-ovou osou (príliš mnoho hodnôt s malou odchýlkou)
 - upravené a spracované argumenty v ``run(fig, ax, f, X=[...], derivatives=[...], asymptotes=[...])``
 - doplnená možnosť konfigurácie metód hľadajúcich nulové body (yaml)
+- opravené vypisovanie negatívnej nuly
+- doplnený výpočet "priamych" nulových bodov, t.j. takých ``x``, kde jednoducho ``f(x) == 0`` a ich zjednotenie s vypočítanými nulovými bodmi pomocou definovaných metód
+- pridaný výpočet znamienok n-tých derivácií v jednotlivých nulových bodoch pre ďalší progres
 
 
 6.1.2020 - 12.1.2020

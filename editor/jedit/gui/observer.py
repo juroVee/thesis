@@ -138,6 +138,7 @@ class Observer:
         function.set_refinement(choice)
         function.recalculate_main_function()
         function.recalculate_derivatives()
+        function.recalculate_zero_points_derivative_signs()
         self.configuration.save('refinement', choice)
         self.plot.update()
         message = f'Refinement set to {b["new"]} of it\'s original'
@@ -182,29 +183,47 @@ class Observer:
         self.logger.write_mini(message)
         self.logger.write(message)
 
+    def _changed_zero_points_derivative_signs(self, b) -> None:
+        self.plot.updated = True
+        choice = True if b['new'] == 'true' else False
+        function = self.function_manager.get_current()
+        function.recalculate_zero_points_derivative_signs()
+        self.plot.update()
+        if choice:
+            if function.get_parameter('zero_points_derivatives_signs') is not None:
+                d_signs = function.get_parameter('zero_points_derivatives_signs')
+                sorted_keys = sorted(d_signs.keys())
+                out = '\n\t'.join([f'{zp}: {d_signs[zp]}' for zp in sorted_keys])
+                self.logger.write(f'Printing derivative signs for zero points: \n\t{out}')
+            else:
+                self.logger.write(f'Printing derivative signs for zero points')
+                self.logger.write(f'Zero points need to be calculated first')
+
     def start(self) -> None:
         gui_elements = self.gui_manager.get_elements()
 
-        dropdown, color_picker = gui_elements[f'hbox_function'].children
+        dropdown, color_picker = gui_elements['hbox']['function'].children
         dropdown.observe(self._changed_function, 'value')
         color_picker.observe(self._changed_color_main, 'value')
 
-        gui_elements['dropdown_grid'].observe(self._changed_grid, 'value')
+        gui_elements['dropdown']['grid'].observe(self._changed_grid, 'value')
 
-        dropdown, color_picker = gui_elements[f'hbox_derivative1'].children
+        dropdown, color_picker = gui_elements['hbox']['derivative1'].children
         dropdown.observe(self._changed_derivative1, 'value')
         color_picker.observe(self._changed_color_derivative1, 'value')
 
-        dropdown, color_picker = gui_elements[f'hbox_derivative2'].children
+        dropdown, color_picker = gui_elements['hbox']['derivative2'].children
         dropdown.observe(self._changed_derivative2, 'value')
         color_picker.observe(self._changed_color_derivative2, 'value')
 
-        dropdown, color_picker = gui_elements[f'hbox_derivative3'].children
+        dropdown, color_picker = gui_elements['hbox']['derivative3'].children
         dropdown.observe(self._changed_derivative3, 'value')
         color_picker.observe(self._changed_color_derivative3, 'value')
 
-        gui_elements['dropdown_refinement'].observe(self._changed_refinement, 'value')
+        gui_elements['dropdown']['refinement'].observe(self._changed_refinement, 'value')
 
-        dropdown, color_picker = gui_elements['hbox_zero_points'].children
+        dropdown, color_picker = gui_elements['hbox']['zero_points'].children
         dropdown.observe(self._changed_zero_points, 'value')
         color_picker.observe(self._changed_zero_points_color, 'value')
+
+        gui_elements['dropdown']['zp_derivatives_signs'].observe(self._changed_zero_points_derivative_signs, 'value')

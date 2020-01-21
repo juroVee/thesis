@@ -3,33 +3,55 @@ from scipy.misc import derivative
 from scipy import optimize
 import numpy as np
 
+# project-level modules
+from ..config import config
 
 class Calculator:
 
     def __init__(self, f):
         self.f = f
 
-    def _find_sign_changes(self, X):
-        fX = self.f(X)
-        fX[fX == 0.] = 0.
-        return np.where(np.diff(np.signbit(fX)))[0]
+
+class DerivativeCalculator(Calculator):
+
+    def __init__(self, f):
+        super().__init__(f)
 
     def derive(self, X, n):
         order = n + 1 if n % 2 == 0 else n + 2
         return X, derivative(self.f, X, dx=0.001, n=n, order=order)
 
-    def zero_points(self, X, method='newton', refinement=1):
+
+class ZeroPointsCalculator(Calculator):
+
+    def __init__(self, f):
+        super().__init__(f)
+        self.rounding = int(config['zero_points']['round'])
+
+    def _find_sign_changes(self, X):
+        fX = self.f(X)
+        fX[fX == 0.] = 0.
+        return np.where(np.diff(np.signbit(fX)))[0]
+
+    def _process(self, X, found_points) -> set:
+        touching_zero = set(X[self.f(X) == 0.0])
+        rounded = np.around(found_points, self.rounding)
+        rounded += 0.
+        return touching_zero.union(set(rounded))
+
+    def zero_points(self, X, method='newton'):
         indexes = self._find_sign_changes(X)
-        sign_changes = zip(indexes, np.add(1, indexes))
-        atol = 10 ** - (7 + np.log10([refinement])[0])
-        y_is_zero_or_close = set(np.around(X[np.isclose(self.f(X), 0.0, atol=atol)], 5))
+        sign_changes = list(zip(indexes, np.add(1, indexes)))
         try:
             if method == 'newton':
                 func = optimize.newton
-                result = set(np.around([func(self.f, X[i]) for i, j in sign_changes], 5))
+                found = [func(self.f, X[i]) for i, j in sign_changes]
             else:
                 func = getattr(optimize, method)
-                result = set(np.around([func(self.f, X[i], X[j]) for i, j in sign_changes], 5))
-            return result.union(y_is_zero_or_close)
+                found = [func(self.f, X[i], X[j]) for i, j in sign_changes]
+            return self._process(X, found)
         except RuntimeError:
-            return []
+            return self._process(X, [])
+
+
+

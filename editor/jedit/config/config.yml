@@ -25,10 +25,12 @@ main_function:
 derivative:
     linestyle: 'solid'
     linewidth: 1.5
-    max_derivative: 3
-    colors:
+    max_derivative: 5
+    colors: # number of colors must match 'max_derivative'
         - '#ff8647'
         - '#39ff33'
+        - '#7b6cef'
+        - '#7b6cef'
         - '#7b6cef'
 
 asymptote:
@@ -46,6 +48,7 @@ zero_points:
         - bisect
         - toms748
         - ridder
+    round: 6
 
 refinement:
     values:

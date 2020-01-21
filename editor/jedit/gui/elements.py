@@ -1,6 +1,7 @@
 # external modules
 import ipywidgets as w
 from traitlets import directional_link
+from collections import defaultdict
 
 # project-level modules
 from ..config import config
@@ -11,19 +12,23 @@ class GUIElementManager:
 
     def __init__(self, user_defined=False):
         self.user_defined = user_defined
-        self.elements = {}
-        self._init_elements()
+        self.elements = defaultdict(dict)
+        self._init_hboxes()
+        self._init_dropdowns()
 
     def get_elements(self):
         return self.elements
 
-    def _init_elements(self):
-        self.elements['hbox_function'] = self._function_hbox()
-        self.elements['dropdown_grid'] = self._grid_dropdown()
+    def _init_hboxes(self):
+        self.elements['hbox']['function'] = self._function_hbox()
         for n in range(1, 4):
-            self.elements[f'hbox_derivative{n}'] = self._derivative_hbox(n)
-        self.elements['dropdown_refinement'] = self._refinement_dropdown()
-        self.elements['hbox_zero_points'] = self._zero_points_hbox()
+            self.elements['hbox'][f'derivative{n}'] = self._derivative_hbox(n)
+        self.elements['hbox']['zero_points'] = self._zero_points_hbox_and_dropdown()[0]
+
+    def _init_dropdowns(self):
+        self.elements['dropdown']['grid'] = self._grid_dropdown()
+        self.elements['dropdown']['refinement'] = self._refinement_dropdown()
+        self.elements['dropdown']['zp_derivatives_signs'] = self._zero_points_hbox_and_dropdown()[1]
 
     def _function_hbox(self):
         default_color = config['main_function']['color']
@@ -92,7 +97,7 @@ class GUIElementManager:
             style={'description_width': config['default_sizes']['menu_element_description']}
         )
 
-    def _zero_points_hbox(self):
+    def _zero_points_hbox_and_dropdown(self):
         default_color = config['zero_points']['color']
         dropdown = w.Dropdown(
             options=['none'] + config['zero_points']['methods'],
@@ -112,4 +117,13 @@ class GUIElementManager:
 
         directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: True if case == 'none' else False)
 
-        return w.HBox(children=[dropdown, cpicker])
+        dropdown_signs =  w.Dropdown(
+            options=['false', 'true'],
+            value='false',
+            description='ZP derivative signs:',
+            disabled=False,
+            layout=w.Layout(width='auto', height='auto'),
+            style={'description_width': config['default_sizes']['menu_element_description']}
+        )
+
+        return w.HBox(children=[dropdown, cpicker]), dropdown_signs

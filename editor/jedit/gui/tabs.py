@@ -36,13 +36,14 @@ class AnalysisTab(Tab):
         logger = board.get_logger_object()
         super().__init__(name='Analysis',
                    main_window=[plot.get_widget()],
-                   sidebar=[(0, gui_elements['hbox_function']),
-                            (1, gui_elements['dropdown_grid']),
-                            (3, gui_elements[f'hbox_derivative1']),
-                            (4, gui_elements[f'hbox_derivative2']),
-                            (5, gui_elements[f'hbox_derivative3']),
-                            (7, gui_elements['dropdown_refinement']),
-                            (8, gui_elements['hbox_zero_points'])
+                   sidebar=[(0, gui_elements['hbox']['function']),
+                            (1, gui_elements['dropdown']['grid']),
+                            (3, gui_elements['hbox']['derivative1']),
+                            (4, gui_elements['hbox']['derivative2']),
+                            (5, gui_elements['hbox']['derivative3']),
+                            (7, gui_elements['dropdown']['refinement']),
+                            (8, gui_elements['hbox']['zero_points']),
+                            (9, gui_elements['dropdown']['zp_derivatives_signs'])
                             ],
                     footer=[logger.get_widget(mini=True)]
                    )
