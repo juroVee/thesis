@@ -2,7 +2,7 @@
 import ipywidgets as w
 
 # project-level modules
-from ..plot import Plot, FunctionManager
+from ..plot import Plot, Manager
 
 # package-level modules
 from .tabs import AnalysisTab, SettingsTab, LogTab, InfoTab
@@ -20,7 +20,7 @@ class Board:
         self._init_observer()
 
     def _init_plot(self, user_data: dict):
-        self.plot = Plot(FunctionManager(user_data))
+        self.plot = Plot(Manager(user_data))
 
     def _init_gui_elements_manager(self):
         self.gui_manager = GUIElementManager(self.plot.is_user_defined())

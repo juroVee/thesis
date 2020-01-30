@@ -1,2 +1,4 @@
 from .plot import Plot
-from .functions import FunctionManager
+from .function import Function
+from .manager import Manager
+from .painter import Painter

@@ -8,7 +8,7 @@ class Plot:
 
     output = w.Output()
 
-    def __init__(self, manager, logger=None):
+    def __init__(self, manager):
         self.function_manager = manager
         self.updated = False
 

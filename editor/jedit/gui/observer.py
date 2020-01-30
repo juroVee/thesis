@@ -135,10 +135,11 @@ class Observer:
         options = {**{'original' : 1}, **{str(value) + 'x': value for value in config['refinement']['values']}}
         choice = options[b['new']]
         function = self.function_manager.get_current()
+        calculator = function.get_calculator()
         function.set_refinement(choice)
-        function.recalculate_main_function()
-        function.recalculate_derivatives()
-        function.recalculate_zero_points_derivative_signs()
+        calculator.calculate_main_function()
+        calculator.calculate_derivatives()
+        #function.recalculate_zero_points_derivative_signs()
         self.configuration.save('refinement', choice)
         self.plot.update()
         message = f'Refinement set to {b["new"]} of it\'s original'
@@ -226,4 +227,4 @@ class Observer:
         dropdown.observe(self._changed_zero_points, 'value')
         color_picker.observe(self._changed_zero_points_color, 'value')
 
-        gui_elements['dropdown']['zp_derivatives_signs'].observe(self._changed_zero_points_derivative_signs, 'value')
+        #gui_elements['dropdown']['zp_derivatives_signs'].observe(self._changed_zero_points_derivative_signs, 'value')
