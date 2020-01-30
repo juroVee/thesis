@@ -21,11 +21,11 @@ class Editor:
         if 'inline' in get_backend():
             raise NotSupportedException('Clause %matplotlib inline is not supported. Please use %matplotlib notebook.')
         self.board = Board(check_parameters(params, self.logger), self.logger)
-        plot = self.board.get_plot_object()
+        manager = self.board.get_manager_object()
         display(self.board.get_widget())
 
-        with plot.output:
-            plot.update()
+        with manager.output:
+            manager.update_plot()
 
 # run instance after importing editor
 editor = Editor()
