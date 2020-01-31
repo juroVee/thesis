@@ -30,20 +30,20 @@ class Tab:
 class AnalysisTab(Tab):
 
     def __init__(self, board=None):
-        plot = board.get_plot_object()
+        manager = board.get_manager_object()
         gui_manager = board.get_gui_manager_object()
         gui_elements = gui_manager.get_elements()
         logger = board.get_logger_object()
         super().__init__(name='Analysis',
-                   main_window=[plot.get_widget()],
+                   main_window=[manager.get_plot_widget()],
                    sidebar=[(0, gui_elements['hbox']['function']),
                             (1, gui_elements['dropdown']['grid']),
                             (3, gui_elements['hbox']['derivative1']),
                             (4, gui_elements['hbox']['derivative2']),
                             (5, gui_elements['hbox']['derivative3']),
                             (7, gui_elements['dropdown']['refinement']),
-                            (8, gui_elements['hbox']['zero_points']),
-                            (9, gui_elements['dropdown']['zp_derivatives_signs'])
+                            (8, gui_elements['hbox']['zero_points'])
+                            #(9, gui_elements['dropdown']['zp_derivatives_signs'])
                             ],
                     footer=[logger.get_widget(mini=True)]
                    )

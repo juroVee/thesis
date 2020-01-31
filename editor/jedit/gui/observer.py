@@ -18,11 +18,10 @@ class Observer:
             self.configuration[parameter] = value
 
     def __init__(self, board):
-        self.plot = board.get_plot_object()
+        self.manager = board.get_manager_object()
         self.logger = board.get_logger_object()
         self.gui_manager = board.get_gui_manager_object()
         self.logger.write('Session started')
-        self.function_manager = self.plot.function_manager
         self.configuration = self.Configuration()
 
     def _format(self, data):
@@ -35,112 +34,113 @@ class Observer:
         return output
 
     def _changed_function(self, b) -> None:
-        self.plot.updated = True
+        self.manager.set_plot_updated(True)
         choice = b['new']
-        self.function_manager.set_current(self.function_manager[choice])
-        self.function_manager.apply_configuration(self.configuration.get())
-        self.plot.update()
+        self.manager.set_current(self.manager[choice])
+        self.manager.apply_configuration(self.configuration.get())
+        self.manager.update_plot()
         message = f'Function changed to {choice}'
         self.logger.write_mini(message)
         self.logger.write(message)
 
     def _changed_grid(self, b) -> None:
-        self.plot.updated = True
+        self.manager.set_plot_updated(True)
         choice = True if b['new'] == 'true' else False
-        function = self.function_manager.get_current()
+        function = self.manager.get_current()
         function.set_parameter('grid', choice)
         self.configuration.save('grid', choice)
-        self.plot.update()
+        self.manager.update_plot()
         self.logger.write('Grid visible' if choice else 'Grid hidden')
 
     def _changed_derivative1(self, b) -> None:
-        self.plot.updated = True
+        self.manager.set_plot_updated(True)
         choice = True if b['new'] == 'true' else False
-        function = self.function_manager.get_current()
+        function = self.manager.get_current()
         function.set_parameter('active_derivative1', choice)
         self.configuration.save('active_derivative1', choice)
-        self.plot.update()
+        self.manager.update_plot()
         message = 'Plotting 1. derivative' if choice else '1. derivative plot removed'
         self.logger.write_mini(message)
         self.logger.write(message)
 
     def _changed_derivative2(self, b) -> None:
-        self.plot.updated = True
+        self.manager.set_plot_updated(True)
         choice = True if b['new'] == 'true' else False
-        function = self.function_manager.get_current()
+        function = self.manager.get_current()
         function.set_parameter('active_derivative2', choice)
         self.configuration.save('active_derivative2', choice)
-        self.plot.update()
+        self.manager.update_plot()
         message = 'Plotting 2. derivative' if choice else '2. derivative plot removed'
         self.logger.write_mini(message)
         self.logger.write(message)
 
     def _changed_derivative3(self, b) -> None:
-        self.plot.updated = True
+        self.manager.set_plot_updated(True)
         choice = True if b['new'] == 'true' else False
-        function = self.function_manager.get_current()
+        function = self.manager.get_current()
         function.set_parameter('active_derivative3', choice)
         self.configuration.save('active_derivative3', choice)
-        self.plot.update()
+        self.manager.update_plot()
         message = 'Plotting 3. derivative' if choice else '3. derivative plot removed'
         self.logger.write_mini(message)
         self.logger.write(message)
 
     def _changed_color_main(self, b) -> None:
-        self.plot.updated = True
+        self.manager.set_plot_updated(True)
         choice = b['new']
-        function = self.function_manager.get_current()
+        function = self.manager.get_current()
         function.set_parameter('main_function_color', choice)
         self.configuration.save('main_function_color', choice)
-        self.plot.update()
+        self.manager.update_plot()
         message = f'Color of main function changed to {choice}'
         self.logger.write_mini(message)
         self.logger.write(message)
 
     def _changed_color_derivative1(self, b) -> None:
-        self.plot.updated = True
+        self.manager.set_plot_updated(True)
         choice = b['new']
-        function = self.function_manager.get_current()
+        function = self.manager.get_current()
         function.set_parameter('derivative_color1', choice)
         self.configuration.save('derivative_color1', choice)
-        self.plot.update()
+        self.manager.update_plot()
         message = f'Color of 1. derivative changed to {choice}'
         self.logger.write_mini(message)
         self.logger.write(message)
 
     def _changed_color_derivative2(self, b) -> None:
-        self.plot.updated = True
+        self.manager.set_plot_updated(True)
         choice = b['new']
-        function = self.function_manager.get_current()
+        function = self.manager.get_current()
         function.set_parameter('derivative_color2', choice)
         self.configuration.save('derivative_color2', choice)
-        self.plot.update()
+        self.manager.update_plot()
         message = f'Color of 2. derivative changed to {choice}'
         self.logger.write_mini(message)
         self.logger.write(message)
 
     def _changed_color_derivative3(self, b) -> None:
-        self.plot.updated = True
+        self.manager.set_plot_updated(True)
         choice = b['new']
-        function = self.function_manager.get_current()
+        function = self.manager.get_current()
         function.set_parameter('derivative_color3', choice)
         self.configuration.save('derivative_color3', choice)
-        self.plot.update()
+        self.manager.update_plot()
         message = f'Color of 3. derivative changed to {choice}'
         self.logger.write_mini(message)
         self.logger.write(message)
 
     def _changed_refinement(self, b) -> None:
-        self.plot.updated = True
+        self.manager.set_plot_updated(True)
         options = {**{'original' : 1}, **{str(value) + 'x': value for value in config['refinement']['values']}}
         choice = options[b['new']]
-        function = self.function_manager.get_current()
+        function = self.manager.get_current()
+        calculator = function.get_calculator()
         function.set_refinement(choice)
-        function.recalculate_main_function()
-        function.recalculate_derivatives()
-        function.recalculate_zero_points_derivative_signs()
+        calculator.calculate_main_function()
+        calculator.calculate_derivatives()
+        #function.recalculate_zero_points_derivative_signs()
         self.configuration.save('refinement', choice)
-        self.plot.update()
+        self.manager.update_plot()
         message = f'Refinement set to {b["new"]} of it\'s original'
         self.logger.write_mini(message)
         self.logger.write(message)
@@ -151,12 +151,12 @@ class Observer:
                 self.logger.write(message2)
 
     def _changed_zero_points(self, b) -> None:
-        self.plot.updated = True
+        self.manager.set_plot_updated(True)
         choice = b['new']
-        function = self.function_manager.get_current()
+        function = self.manager.get_current()
         function.set_parameter('zero_points_method', choice)
         self.configuration.save('zero_points_method', choice)
-        self.plot.update()
+        self.manager.update_plot()
         if choice == 'none':
             message = 'Zero points removed from the plot'
             self.logger.write_mini(message)
@@ -173,22 +173,22 @@ class Observer:
         self.logger.write(message2)
 
     def _changed_zero_points_color(self, b) -> None:
-        self.plot.updated = True
+        self.manager.set_plot_updated(True)
         choice = b['new']
-        function = self.function_manager.get_current()
+        function = self.manager.get_current()
         function.set_parameter('zero_points_color', choice)
         self.configuration.save('zero_points_color', choice)
-        self.plot.update()
+        self.manager.update_plot()
         message = f'Color of zero points changed to {choice}'
         self.logger.write_mini(message)
         self.logger.write(message)
 
     def _changed_zero_points_derivative_signs(self, b) -> None:
-        self.plot.updated = True
+        self.manager.set_plot_updated(True)
         choice = True if b['new'] == 'true' else False
-        function = self.function_manager.get_current()
+        function = self.manager.get_current()
         function.recalculate_zero_points_derivative_signs()
-        self.plot.update()
+        self.manager.update_plot()
         if choice:
             if function.get_parameter('zero_points_derivatives_signs') is not None:
                 d_signs = function.get_parameter('zero_points_derivatives_signs')
@@ -226,4 +226,4 @@ class Observer:
         dropdown.observe(self._changed_zero_points, 'value')
         color_picker.observe(self._changed_zero_points_color, 'value')
 
-        gui_elements['dropdown']['zp_derivatives_signs'].observe(self._changed_zero_points_derivative_signs, 'value')
+        #gui_elements['dropdown']['zp_derivatives_signs'].observe(self._changed_zero_points_derivative_signs, 'value')

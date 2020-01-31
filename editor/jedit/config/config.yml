@@ -91,16 +91,16 @@ default_functions:
     sin:
         name: 'y = sin x'
         formula: 'lambda x: np.sin(x)'
-        linspace: 'np.linspace(-2 * np.pi, 4 * np.pi, 12 * 10 + 1)'
+        linspace: 'np.linspace(-4 * np.pi, 4 * np.pi, 12 * 10 + 1)'
         latex: 'r"$y = \sin\ x$"'
         xticks_data:
-            xticks: '[n * np.pi / 2 for n in range(-4, 8 + 1)]'
-            xticklabels: '[smart_ticklabel(n, r"\pi", 2) for n in range(-4, 8 + 1)]'
+            xticks: '[n * np.pi / 2 for n in range(-8, 8 + 1)]'
+            xticklabels: '[smart_ticklabel(n, r"\pi", 2) for n in range(-8, 8 + 1)]'
     cos:
         name: 'y = cos x'
         formula: 'lambda x: np.cos(x)'
-        linspace: 'np.linspace(-2 * np.pi, 4 * np.pi, 12 * 10 + 1)'
+        linspace: 'np.linspace(-4 * np.pi, 4 * np.pi, 12 * 10 + 1)'
         latex: 'r"$y = \cos\ x$"'
         xticks_data:
-            xticks: '[n * np.pi / 2 for n in range(-4, 8 + 1)]'
-            xticklabels: '[smart_ticklabel(n, r"\pi", 2) for n in range(-4, 8 + 1)]'
+            xticks: '[n * np.pi / 2 for n in range(-8, 8 + 1)]'
+            xticklabels: '[smart_ticklabel(n, r"\pi", 2) for n in range(-8, 8 + 1)]'

@@ -40,6 +40,11 @@ Log
 20.1.2020 - 26.1.2020
 ---------------------
 
+- vrámci vetvy ``dev_cleanup`` prečistený a zprehľadnený kód v náväznosti na ďalšiu prácu
+- kód pripravený na zmenu výpočtu nulových bodov po dohode so školiteľom
+- zjednotené triedy ``Plot`` a ``Manager`` z dôvodu podobného účelu
+- upravený popis programu v ``README.md``
+
 
 13.1.2020 - 19.1.2020
 ---------------------
