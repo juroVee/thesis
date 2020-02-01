@@ -1,6 +1,3 @@
-import numpy as np
-import pprint
-
 from ..config import config
 
 
@@ -14,6 +11,9 @@ class Observer:
         def get(self):
             return self.configuration
 
+        def __getitem__(self, item):
+            return self.configuration[item]
+
         def save(self, parameter, value):
             self.configuration[parameter] = value
 
@@ -22,6 +22,7 @@ class Observer:
         self.logger = board.get_logger_object()
         self.gui_manager = board.get_gui_manager_object()
         self.logger.write('Session started')
+        self.manager.get_warnings(self.logger)
         self.configuration = self.Configuration()
 
     def _format(self, data):
@@ -33,15 +34,27 @@ class Observer:
                 output.append(str(val))
         return output
 
+    def _log_zero_points(self):
+        if 'zero_points_method' in self.configuration.get():
+            if self.configuration['zero_points_method'] != 'none':
+                zp_sorted = self.manager.get_current().get_parameter('zero_points_values')
+                if len(zp_sorted) > 0:
+                    message = f'{len(zp_sorted)} zero point(s) found: \n\t[{", ".join(self._format(zp_sorted))}]'
+                else:
+                    message = f'No zero points found'
+                self.logger.write(message)
+
     def _changed_function(self, b) -> None:
         self.manager.set_plot_updated(True)
         choice = b['new']
-        self.manager.set_current(self.manager[choice])
+        self.manager.set_current(choice)
         self.manager.apply_configuration(self.configuration.get())
-        self.manager.update_plot()
+        self.manager.update_plot(full=True)
         message = f'Function changed to {choice}'
         self.logger.write_mini(message)
         self.logger.write(message)
+        self.manager.get_warnings(self.logger)
+        self._log_zero_points()
 
     def _changed_grid(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -134,21 +147,13 @@ class Observer:
         options = {**{'original' : 1}, **{str(value) + 'x': value for value in config['refinement']['values']}}
         choice = options[b['new']]
         function = self.manager.get_current()
-        calculator = function.get_calculator()
         function.set_refinement(choice)
-        calculator.calculate_main_function()
-        calculator.calculate_derivatives()
-        #function.recalculate_zero_points_derivative_signs()
         self.configuration.save('refinement', choice)
-        self.manager.update_plot()
+        self.manager.update_plot(full=True)
         message = f'Refinement set to {b["new"]} of it\'s original'
         self.logger.write_mini(message)
         self.logger.write(message)
-        if function.get_parameter('zero_points_method') != 'none':
-            zp_sorted = np.sort(list(function.get_parameter('zero_points_values')), axis=None)
-            if len(zp_sorted) > 0:
-                message2 = f'Zero points found: \n\t[{", ".join(self._format(zp_sorted))}]'
-                self.logger.write(message2)
+        self._log_zero_points()
 
     def _changed_zero_points(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -162,13 +167,14 @@ class Observer:
             self.logger.write_mini(message)
             self.logger.write(message)
             return
-        zp_sorted = np.sort(list(function.get_parameter('zero_points_values')), axis=None)
-        message1 = f'Plotting zero points using {choice.upper()} method ({len(zp_sorted)})'
+        # zp_sorted = np.sort(list(function.get_parameter('zero_points_values')), axis=None)
+        zp_sorted = function.get_parameter('zero_points_values')
+        message1 = f'Plotting zero points using {choice.upper()} method'
         if len(zp_sorted) > 0:
-            message2 = f'Zero points found: \n\t[{", ".join(self._format(zp_sorted))}]'
+            message2 = f'{len(zp_sorted)} zero point(s) found: \n\t[{", ".join(self._format(zp_sorted))}]'
         else:
             message2 = f'No zero points found'
-        self.logger.write_mini(message1)
+        self.logger.write_mini(message1 + f' ({len(zp_sorted)})')
         self.logger.write(message1)
         self.logger.write(message2)
 

@@ -37,6 +37,17 @@ Základné informácie
 Log
 ===
 
+27.1.2020 - 2.2.2020
+--------------------
+
+- aplikovaný nový spôsob hľadania nulových bodov pomocou Newtonovej metódy
+- hromadná metóda pre nájdenie kandidátov, následný filter unikátnych hodnôt a test na blízkosť nule vo funkčných hodnotách
+- odstránená trieda ``Calculator``, pretože pracovala viacmenej len so statickými metódami
+- vylepšená logika prepočtu funkcií
+- pre vysokú pravdepodobnosť varovaní (``warnings``) pri výpočte nulových bodov bol pridaný odchyt týchto varovaní a ich presun do logu
+- výpočet nulových bodov pomocou Newtonovej metódy vie spracovať aj užívateľom zadanú prvú deriváciu
+- pridaný výpis nulových bodov do logu, aj v prípade zmeny konfigurácie plochy (e.g. zjemnenie)
+
 20.1.2020 - 26.1.2020
 ---------------------
 

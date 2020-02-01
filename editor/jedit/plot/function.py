@@ -9,7 +9,6 @@ from ..util import transform_title
 
 # package-level modules
 from .maux import init_subplot, smart_ticklabel
-from .calculator import Calculator
 from .painter import Painter
 
 
@@ -32,8 +31,6 @@ class Function:
         self.set_parameter('user_derivatives', [] if user_derivatives is None else user_derivatives)
         self.set_parameter('asymptotes', [] if asymptotes is None else asymptotes)
         self.set_parameter('lines_count', len(list(X)))
-        self.calculator = Calculator(self)
-        self.calculator.calculate_main_function()
 
     def _init_plot_parameters(self):
         self.set_parameter('grid', True if config['plot_parameters']['grid'] == 'yes' else False)
@@ -42,13 +39,11 @@ class Function:
             self.set_parameter('derivative_color' + str(n), config['derivative']['colors'][n - 1])
 
     def _init_derivatives(self):
-        self.calculator.calculate_derivatives()
         for n in range(1, config['derivative']['max_derivative'] + 1):
             self.set_parameter('active_derivative' + str(n), False)
 
     def _init_zero_points(self):
         self.set_parameter('zero_points_method', 'none')
-        self.set_parameter('zero_points_values', set())
         self.set_parameter('zero_points_color', config['zero_points']['color'])
 
     def _init_refinement(self):
@@ -79,9 +74,6 @@ class Function:
     def get_parameter(self, parameter):
         return self.parameters.get(parameter, None)
 
-    def get_calculator(self):
-        return self.calculator
-
     def set_refinement(self, value=1) -> None:
         self.set_parameter('refinement', value)
         if value == 0:
@@ -101,8 +93,8 @@ class UserFunction(Function):
     def __init__(self, user_params):
         user_params = self._prepare_user_params(user_params)
         ax, X, f = user_params['ax'], user_params['X'], user_params['f']
-        user_derivatives = user_params.get('derivatives', None)
-        asymptotes = user_params.get('asymptotes', None)
+        user_derivatives = user_params.get('d', None)
+        asymptotes = user_params.get('a', None)
         super().__init__(f, X, name='user function',
                          latex=transform_title(ax.get_title()),
                          user_derivatives=user_derivatives,

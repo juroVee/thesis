@@ -25,7 +25,9 @@ class Editor:
         display(self.board.get_widget())
 
         with manager.output:
-            manager.update_plot()
+            manager.update_plot(full=True)
+
+        manager.get_warnings(logger=self.logger)
 
 # run instance after importing editor
 editor = Editor()
