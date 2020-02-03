@@ -62,7 +62,7 @@ class Manager:
     def get_warnings(self, logger):
         while not self.warnings.empty():
             warning_type, warning = self.warnings.get()
-            logger.write(f'{warning_type}: {warning.message}')
+            logger.write_warning(f'{warning_type}: {warning.message}')
 
     def update_plot(self, full=False) -> None:
         if full:

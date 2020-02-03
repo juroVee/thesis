@@ -37,6 +37,10 @@ Základné informácie
 Log
 ===
 
+3.2.2020 - 9.2.2020
+--------------------
+
+
 27.1.2020 - 2.2.2020
 --------------------
 
@@ -44,9 +48,10 @@ Log
 - hromadná metóda pre nájdenie kandidátov, následný filter unikátnych hodnôt a test na blízkosť nule vo funkčných hodnotách
 - odstránená trieda ``Calculator``, pretože pracovala viacmenej len so statickými metódami
 - vylepšená logika prepočtu funkcií
-- pre vysokú pravdepodobnosť varovaní (``warnings``) pri výpočte nulových bodov bol pridaný odchyt týchto varovaní a ich presun do logu
+- pre vysokú pravdepodobnosť varovaní (``warnings``) pri výpočte nulových bodov bol pridaný odchyt týchto varovaní a ich presun do samostatného tabu ``Warnings``
 - výpočet nulových bodov pomocou Newtonovej metódy vie spracovať aj užívateľom zadanú prvú deriváciu
 - pridaný výpis nulových bodov do logu, aj v prípade zmeny konfigurácie plochy (e.g. zjemnenie)
+- pridané nové príklady notebookov z výučby
 
 20.1.2020 - 26.1.2020
 ---------------------

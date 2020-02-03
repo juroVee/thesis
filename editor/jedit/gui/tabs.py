@@ -45,7 +45,7 @@ class AnalysisTab(Tab):
                             (8, gui_elements['hbox']['zero_points'])
                             #(9, gui_elements['dropdown']['zp_derivatives_signs'])
                             ],
-                    footer=[logger.get_widget(mini=True)]
+                    footer=[logger.get_widget(t='mini')]
                    )
 
 
@@ -61,6 +61,11 @@ class LogTab(Tab):
         logger = board.get_logger_object()
         super().__init__(name='Log', main_window=[logger.get_widget()])
 
+class WarningTab(Tab):
+
+    def __init__(self, board=None):
+        logger = board.get_logger_object()
+        super().__init__(name='Warnings', main_window=[logger.get_widget(t='warnings')])
 
 class InfoTab(Tab):
 

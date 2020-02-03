@@ -108,7 +108,6 @@ class UserFunction(Function):
             if 'asymptotes' in user_params:
                 user_lines_number = len(user_params['X'])
                 user_params['X'] = lines[:user_lines_number]
-
         return user_params
 
     def _init_params(self, ax, asymptotes=None):

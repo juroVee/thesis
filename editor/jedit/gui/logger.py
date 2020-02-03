@@ -10,6 +10,7 @@ class Logger:
 
     output = w.Output()
     output_mini = w.Output()
+    output_warnings = w.Output()
 
     def __init__(self):
         self.log_backup = []
@@ -32,13 +33,20 @@ class Logger:
             print(f'[LATEST] {message}')
             # time.sleep(3)
 
+    def write_warning(self, message):
+        with self.output_warnings:
+            out = f'{datetime.now().strftime("%d.%m.%Y %H:%M:%S")} -> {message}'
+            print(out)
 
     def to_file(self):
         with open(str(datetime.now().strftime("log-%d-%m-%Y-%H-%M-%S.txt")), 'w') as file:
             for log in self.log_backup:
                 file.write(log)
 
-    def get_widget(self, mini=False):
-        if mini:
+    def get_widget(self, t=None):
+        if t == 'warnings':
+            return self.output_warnings
+        elif t == 'mini':
             return self.output_mini
-        return self.output
+        else:
+            return self.output
