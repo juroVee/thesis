@@ -25,6 +25,11 @@ def check_parameters(params, logger) -> dict:
     else:
         others = { k : params[k] for k in set(params) - {'fig', 'ax', 'f'} }
         for param, value in others.items():
+            if param == 'X':
+                for i, X in enumerate(value):
+                    if len(X) < 2:
+                        logger.write_mini(f'Cannot plot X at position {i}, need at least 2 values.\nPlotting default.')
+                        return result
             if type(value) != list:
                 logger.write_mini('Optional parameters must be in list. E.g. X=[X, ...].\nPlotting default.')
                 return result

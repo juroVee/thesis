@@ -27,7 +27,7 @@ class Board:
 
     def _init_tabs(self):
         tabs = [AnalysisTab(board=self),
-                SettingsTab(board=self),
+                # SettingsTab(board=self),
                 LogTab(board=self),
                 WarningTab(board=self),
                 InfoTab(board=self)]

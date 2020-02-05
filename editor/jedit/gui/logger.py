@@ -30,7 +30,7 @@ class Logger:
             return
         with self.output_mini:
             clear_output()
-            print(f'[LATEST] {message}')
+            print(f'{message}')
             # time.sleep(3)
 
     def write_warning(self, message):

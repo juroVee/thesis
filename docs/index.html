@@ -26,6 +26,7 @@
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
         <script type="text/javascript" src="_static/translations.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -162,6 +163,12 @@
 <div class="sidebar">
 <p class="sidebar-title">Odkazy/Na stiahnutie</p>
 <div class="line-block">
+<div class="line"><strong>Aktualizácia odkazov</strong></div>
+<div class="line-block">
+<div class="line">5. február 2020</div>
+</div>
+</div>
+<div class="line-block">
 <div class="line"><strong>Repozitár práce</strong></div>
 <div class="line-block">
 <div class="line"><a class="reference external" href="https://github.com/juroVee/thesis">GitHub</a></div>
@@ -176,8 +183,8 @@
 <div class="line-block">
 <div class="line"><strong>Aktuálna verzia programu</strong></div>
 <div class="line-block">
-<div class="line"><a class="reference download internal" download="" href="_downloads/3d67f0617beeaa9beee1492eaf6ad6af/editor_v7.tar.gz"><code class="xref download docutils literal notranslate"><span class="pre">tar.gz</span></code></a></div>
-<div class="line"><a class="reference download internal" download="" href="_downloads/aa8b72a6ac5dfa571092b02e12b5692a/editor_v7.zip"><code class="xref download docutils literal notranslate"><span class="pre">zip</span></code></a></div>
+<div class="line"><a class="reference download internal" download="" href="_downloads/fe7f491444af4cf748f9b2806c1b5995/editor_v8.tar.gz"><code class="xref download docutils literal notranslate"><span class="pre">tar.gz</span></code></a></div>
+<div class="line"><a class="reference download internal" download="" href="_downloads/13e0d796e99515e672d7f222df1062fd/editor_v8.zip"><code class="xref download docutils literal notranslate"><span class="pre">zip</span></code></a></div>
 </div>
 </div>
 </div>
@@ -207,6 +214,17 @@
 <h1>Log<a class="headerlink" href="#log" title="Trvalý odkaz na tento nadpis">¶</a></h1>
 <div class="section" id="id1">
 <h2>3.2.2020 - 9.2.2020<a class="headerlink" href="#id1" title="Trvalý odkaz na tento nadpis">¶</a></h2>
+<ul class="simple">
+<li><p>do tabu <code class="docutils literal notranslate"><span class="pre">Warnings</span></code> pridaný výpis takých bodov <span class="math notranslate nohighlight">\(x \in D\)</span>, kde Newtonova metóda nevedela konvergovať, resp. narazila na nulovú deriváciu</p></li>
+<li><p>pridané upozornenie, že nulové body sa počítajú metódou sečníc, miesto Newtonovej, v prípade, źe užívateľ neposkytol prvú deriváciu manuálne (program nevie navrhnúť predpis derivácie)</p></li>
+<li><p>zmena parametru <code class="docutils literal notranslate"><span class="pre">tol</span></code> v Newtonovej metóde, teraz je to <span class="math notranslate nohighlight">\(\Delta x\)</span>, teda rozdiel akýchkoľvek dvoch susedných bodov na osi <span class="math notranslate nohighlight">\(\Delta x\)</span>, pretože predpokladáme rovnomerné rozloženie bodov pri použití <code class="docutils literal notranslate"><span class="pre">numpy.linspace</span></code></p></li>
+<li><p>hľadanie nulových bodov funguje pomerne stabilne, asi treba ešte vyriešiť funkcie, kde funkčné hodnoty z väčšej časti kopírujú os <span class="math notranslate nohighlight">\(x\)</span></p></li>
+<li><p>opravený výpočet derivácií pri nespojitých funkciách (doteraz počítalo len posledný „interval“)</p></li>
+<li><p>pridané upozornenie na prebiehajúcí prepočet dát v prípade zmeny zjemnenia osi <span class="math notranslate nohighlight">\(x\)</span> (môže to trvať, prípadná optimalizácia na pláne neskôr)</p></li>
+<li><p>nulové body sa hľadajú na pôvodnom delení, zatiaľ čo tolerancia, <span class="math notranslate nohighlight">\(\Delta x\)</span>, sa počíta podľa nastaveného zjemnenia (zmena citeľná)</p></li>
+<li><p>pridaná možnosť meniť <code class="docutils literal notranslate"><span class="pre">maxiter</span></code> užívateľom (1-1000) (zmena však momentálne nepozorovateľná)</p></li>
+<li><p>zaokrúhlenie vypočítaných nulových bodov na <span class="math notranslate nohighlight">\(r\)</span> desatinných miest a zbavenie sa tak „duplikátov“, resp. hodnôt s príliš malým rozdielom</p></li>
+</ul>
 </div>
 <div class="section" id="id2">
 <h2>27.1.2020 - 2.2.2020<a class="headerlink" href="#id2" title="Trvalý odkaz na tento nadpis">¶</a></h2>
@@ -234,10 +252,10 @@
 <h2>13.1.2020 - 19.1.2020<a class="headerlink" href="#id4" title="Trvalý odkaz na tento nadpis">¶</a></h2>
 <ul class="simple">
 <li><p>čiastočne vyriešený výpočet nulových bodov v zhustenom priestore nad/pod x-ovou osou (príliš mnoho hodnôt s malou odchýlkou)</p></li>
-<li><p>upravené a spracované argumenty v <code class="docutils literal notranslate"><span class="pre">run(fig,</span> <span class="pre">ax,</span> <span class="pre">f,</span> <span class="pre">X=[...],</span> <span class="pre">derivatives=[...],</span> <span class="pre">asymptotes=[...])</span></code></p></li>
+<li><p>upravené a spracované argumenty v <code class="docutils literal notranslate"><span class="pre">run(fig,</span> <span class="pre">ax,</span> <span class="pre">f,</span> <span class="pre">X=[...],</span> <span class="pre">d=[...],</span> <span class="pre">a=[...])</span></code></p></li>
 <li><p>doplnená možnosť konfigurácie metód hľadajúcich nulové body (yaml)</p></li>
 <li><p>opravené vypisovanie negatívnej nuly</p></li>
-<li><p>doplnený výpočet „priamych“ nulových bodov, t.j. takých <code class="docutils literal notranslate"><span class="pre">x</span></code>, kde jednoducho <code class="docutils literal notranslate"><span class="pre">f(x)</span> <span class="pre">==</span> <span class="pre">0</span></code> a ich zjednotenie s vypočítanými nulovými bodmi pomocou definovaných metód</p></li>
+<li><p>doplnený výpočet „priamych“ nulových bodov, t.j. takých <span class="math notranslate nohighlight">\(x\)</span>, kde <span class="math notranslate nohighlight">\(f(x) = 0\)</span> a ich zjednotenie s vypočítanými nulovými bodmi pomocou definovaných metód</p></li>
 <li><p>pridaný výpočet znamienok n-tých derivácií v jednotlivých nulových bodoch pre ďalší progres</p></li>
 </ul>
 </div>
@@ -371,6 +389,12 @@
 </div>
 <div class="figure align-center">
 <img alt="_images/screen06.png" src="_images/screen06.png" />
+</div>
+<div class="figure align-center">
+<img alt="_images/screen07.png" src="_images/screen07.png" />
+</div>
+<div class="figure align-center">
+<img alt="_images/screen08.png" src="_images/screen08.png" />
 </div>
 <div class="toctree-wrapper compound">
 </div>

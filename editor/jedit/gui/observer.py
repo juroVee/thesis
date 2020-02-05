@@ -49,8 +49,16 @@ class Observer:
         choice = b['new']
         self.manager.set_current(choice)
         self.manager.apply_configuration(self.configuration.get())
-        self.manager.update_plot(full=True)
-        message = f'Function changed to {choice}'
+        self.manager.update_plot(main=True, derivatives=True, zero_points=True)
+        function = self.manager.get_current()
+        message = f'Function changed to {choice}.'
+        if function.get_parameter('zero_points_method') != 'none':
+            n_zp_values = len(function.get_parameter('zero_points_values'))
+            if len(function.get_parameter('user_derivatives')) > 0:
+                method = function.get_parameter('zero_points_method')
+                message += f'\nPlotting zero points calculated by {method.upper()} method ({n_zp_values}).'
+            else:
+                message += f'\nNo user derivatives provided.\nPlotting zero points calculated by SECANT method ({n_zp_values}).'
         self.logger.write_mini(message)
         self.logger.write(message)
         self.manager.get_warnings(self.logger)
@@ -149,8 +157,13 @@ class Observer:
         function = self.manager.get_current()
         function.set_refinement(choice)
         self.configuration.save('refinement', choice)
-        self.manager.update_plot(full=True)
+        self.logger.write_mini('Recalculating function...')
+        self.manager.update_plot(main=True, derivatives=True, zero_points=True)
         message = f'Refinement set to {b["new"]} of it\'s original'
+        if function.get_parameter('zero_points_method') != 'none':
+            method = function.get_parameter('zero_points_method')
+            n_zp_values = len(function.get_parameter('zero_points_values'))
+            message += f'\nPlotting zero points calculated by {method.upper()} method ({n_zp_values}).'
         self.logger.write_mini(message)
         self.logger.write(message)
         self._log_zero_points()
@@ -161,20 +174,22 @@ class Observer:
         function = self.manager.get_current()
         function.set_parameter('zero_points_method', choice)
         self.configuration.save('zero_points_method', choice)
-        self.manager.update_plot()
+        self.manager.update_plot(zero_points=True)
         if choice == 'none':
             message = 'Zero points removed from the plot'
             self.logger.write_mini(message)
             self.logger.write(message)
             return
-        # zp_sorted = np.sort(list(function.get_parameter('zero_points_values')), axis=None)
-        zp_sorted = function.get_parameter('zero_points_values')
-        message1 = f'Plotting zero points using {choice.upper()} method'
-        if len(zp_sorted) > 0:
-            message2 = f'{len(zp_sorted)} zero point(s) found: \n\t[{", ".join(self._format(zp_sorted))}]'
+        zero_points = function.get_parameter('zero_points_values')
+        if len(function.get_parameter('user_derivatives')) == 0:
+            message1 = f'No user derivatives provided.\nPlotting zero points calculated by SECANT method ({len(zero_points)}).'
+        else:
+            message1 = f'Plotting zero points calculated by {choice.upper()} method ({len(zero_points)}).'
+        if len(zero_points) > 0:
+            message2 = f'{len(zero_points)} zero point(s) found: \n\t[{", ".join(self._format(zero_points))}]'
         else:
             message2 = f'No zero points found'
-        self.logger.write_mini(message1 + f' ({len(zp_sorted)})')
+        self.logger.write_mini(message1)
         self.logger.write(message1)
         self.logger.write(message2)
 
@@ -205,6 +220,22 @@ class Observer:
                 self.logger.write(f'Printing derivative signs for zero points')
                 self.logger.write(f'Zero points need to be calculated first')
 
+    def _changed_zero_points_iterations(self, b) -> None:
+        self.manager.set_plot_updated(True)
+        choice = b['new']
+        function = self.manager.get_current()
+        function.set_parameter('zero_points_iterations', choice)
+        self.configuration.save('zero_points_iterations', choice)
+        self.manager.update_plot(zero_points=True)
+        message = f'Zero points iterations changed to {str(choice)}'
+        if function.get_parameter('zero_points_method') != 'none':
+            method = function.get_parameter('zero_points_method')
+            n_zp_values = len(function.get_parameter('zero_points_values'))
+            message += f'\nPlotting zero points calculated by {method.upper()} method ({n_zp_values}).'
+        self.logger.write_mini(message)
+        self.logger.write(message)
+        self._log_zero_points()
+
     def start(self) -> None:
         gui_elements = self.gui_manager.get_elements()
 
@@ -231,5 +262,7 @@ class Observer:
         dropdown, color_picker = gui_elements['hbox']['zero_points'].children
         dropdown.observe(self._changed_zero_points, 'value')
         color_picker.observe(self._changed_zero_points_color, 'value')
+
+        gui_elements['text']['zp_iterations'].observe(self._changed_zero_points_iterations, 'value')
 
         #gui_elements['dropdown']['zp_derivatives_signs'].observe(self._changed_zero_points_derivative_signs, 'value')

@@ -42,8 +42,8 @@ class AnalysisTab(Tab):
                             (4, gui_elements['hbox']['derivative2']),
                             (5, gui_elements['hbox']['derivative3']),
                             (7, gui_elements['dropdown']['refinement']),
-                            (8, gui_elements['hbox']['zero_points'])
-                            #(9, gui_elements['dropdown']['zp_derivatives_signs'])
+                            (8, gui_elements['text']['zp_iterations']),
+                            (9, gui_elements['hbox']['zero_points'])
                             ],
                     footer=[logger.get_widget(t='mini')]
                    )

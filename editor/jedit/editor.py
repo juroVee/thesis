@@ -6,7 +6,7 @@ from .config import config
 
 # external modules
 from matplotlib import get_backend
-from IPython.display import display
+from IPython.display import display, clear_output
 
 
 class Editor:
@@ -20,12 +20,14 @@ class Editor:
             hide_interactive_toolbars()
         if 'inline' in get_backend():
             raise NotSupportedException('Clause %matplotlib inline is not supported. Please use %matplotlib notebook.')
+        for t in 'warnings', 'mini', None:
+            self.logger.get_widget(t).clear_output()
         self.board = Board(check_parameters(params, self.logger), self.logger)
         manager = self.board.get_manager_object()
         display(self.board.get_widget())
 
         with manager.output:
-            manager.update_plot(full=True)
+            manager.update_plot(main=True, derivatives=True, zero_points=True)
 
         manager.get_warnings(logger=self.logger)
 

@@ -39,17 +39,19 @@ class Painter:
                          zorder=1)
 
     def plot_derivative(self):
-        for n in range(1, len(self.function.get_parameter('derivatives')) + 1):
-            if self.function.get_parameter('active_derivative' + str(n)):
-                X, dydx = self.function.get_parameter('derivatives').get(n)
-                color = self.function.get_parameter('derivative_color' + str(n))
-                linestyle = config['derivative']['linestyle']
-                linewidth = config['derivative']['linewidth']
-                self.ax.plot(X, dydx,
-                             color=color,
-                             linestyle=linestyle,
-                             linewidth=linewidth,
-                             zorder=2)
+        for Xi in self.function.get_parameter('derivatives'):
+            derivatives = self.function.get_parameter('derivatives').get(Xi)
+            for n in range(1, len(derivatives) + 1):
+                if self.function.get_parameter('active_derivative' + str(n)):
+                    X, dydx = derivatives.get(n)
+                    color = self.function.get_parameter('derivative_color' + str(n))
+                    linestyle = config['derivative']['linestyle']
+                    linewidth = config['derivative']['linewidth']
+                    self.ax.plot(X, dydx,
+                                 color=color,
+                                 linestyle=linestyle,
+                                 linewidth=linewidth,
+                                 zorder=2)
 
     def plot_zero_points(self):
         if self.function.get_parameter('zero_points_method') != 'none':

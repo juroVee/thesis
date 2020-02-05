@@ -10,6 +10,9 @@ Základné informácie
 
 .. sidebar:: Odkazy/Na stiahnutie
 
+   | **Aktualizácia odkazov**
+   |    5. február 2020
+
    | **Repozitár práce**
    |    GitHub_
 
@@ -17,8 +20,8 @@ Základné informácie
    |    `PDF <#>`__
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/editor_v7.tar.gz>`
-   |    :download:`zip <files/editor_v7.zip>`
+   |    :download:`tar.gz <files/editor_v8.tar.gz>`
+   |    :download:`zip <files/editor_v8.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -38,8 +41,17 @@ Log
 ===
 
 3.2.2020 - 9.2.2020
---------------------
+-------------------
 
+- do tabu ``Warnings`` pridaný výpis takých bodov :math:`x \in D`, kde Newtonova metóda nevedela konvergovať, resp. narazila na nulovú deriváciu
+- pridané upozornenie, že nulové body sa počítajú metódou sečníc, miesto Newtonovej, v prípade, źe užívateľ neposkytol prvú deriváciu manuálne (program nevie navrhnúť predpis derivácie)
+- zmena parametru ``tol`` v Newtonovej metóde, teraz je to :math:`\Delta x`, teda rozdiel akýchkoľvek dvoch susedných bodov na osi :math:`\Delta x`, pretože predpokladáme rovnomerné rozloženie bodov pri použití ``numpy.linspace``
+- hľadanie nulových bodov funguje pomerne stabilne, asi treba ešte vyriešiť funkcie, kde funkčné hodnoty z väčšej časti kopírujú os :math:`x`
+- opravený výpočet derivácií pri nespojitých funkciách (doteraz počítalo len posledný "interval")
+- pridané upozornenie na prebiehajúcí prepočet dát v prípade zmeny zjemnenia osi :math:`x` (môže to trvať, prípadná optimalizácia na pláne neskôr)
+- nulové body sa hľadajú na pôvodnom delení, zatiaľ čo tolerancia, :math:`\Delta x`, sa počíta podľa nastaveného zjemnenia (zmena citeľná)
+- pridaná možnosť meniť ``maxiter`` užívateľom (1-1000) (zmena však momentálne nepozorovateľná)
+- zaokrúhlenie vypočítaných nulových bodov na :math:`r` desatinných miest a zbavenie sa tak "duplikátov", resp. hodnôt s príliš malým rozdielom
 
 27.1.2020 - 2.2.2020
 --------------------
@@ -66,10 +78,10 @@ Log
 ---------------------
 
 - čiastočne vyriešený výpočet nulových bodov v zhustenom priestore nad/pod x-ovou osou (príliš mnoho hodnôt s malou odchýlkou)
-- upravené a spracované argumenty v ``run(fig, ax, f, X=[...], derivatives=[...], asymptotes=[...])``
+- upravené a spracované argumenty v ``run(fig, ax, f, X=[...], d=[...], a=[...])``
 - doplnená možnosť konfigurácie metód hľadajúcich nulové body (yaml)
 - opravené vypisovanie negatívnej nuly
-- doplnený výpočet "priamych" nulových bodov, t.j. takých ``x``, kde jednoducho ``f(x) == 0`` a ich zjednotenie s vypočítanými nulovými bodmi pomocou definovaných metód
+- doplnený výpočet "priamych" nulových bodov, t.j. takých :math:`x`, kde :math:`f(x) = 0` a ich zjednotenie s vypočítanými nulovými bodmi pomocou definovaných metód
 - pridaný výpočet znamienok n-tých derivácií v jednotlivých nulových bodoch pre ďalší progres
 
 
@@ -202,6 +214,12 @@ Z aplikácie
    :align: center
 
 .. figure:: images/screen06.png
+   :align: center
+
+.. figure:: images/screen07.png
+   :align: center
+
+.. figure:: images/screen08.png
    :align: center
 
 

@@ -45,6 +45,7 @@ class Function:
     def _init_zero_points(self):
         self.set_parameter('zero_points_method', 'none')
         self.set_parameter('zero_points_color', config['zero_points']['color'])
+        self.set_parameter('zero_points_iterations', config['zero_points']['iterations'])
 
     def _init_refinement(self):
         self.set_parameter('refinement', 1)
@@ -135,7 +136,8 @@ class DefaultFunction(Function):
         function = eval(config_data['formula'])
         X = eval(config_data['linspace'])
         latex = eval(config_data['latex'])
-        super().__init__(function, [X], name, latex, user_derivatives=None, asymptotes=None)
+        derivatives = [eval(derivative) for derivative in config_data.get('derivatives', [])]
+        super().__init__(function, [X], name, latex, user_derivatives=derivatives, asymptotes=None)
         self.set_parameter('lines', [Line2D(X, function(X))])
         self.set_parameter('title', latex)
         self.set_parameter('aspect', 'equal' if config['plot_parameters']['aspect'] == 'equal' else 'auto')

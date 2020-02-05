@@ -41,14 +41,10 @@ asymptote:
 zero_points:
     markersize: 6
     color: '#000000'
-    methods: # allowed: newton, bisect, brentq, brenth, ridder, toms748
+    iterations: 50
+    round: 10
+    methods: # allowed just newton for now
         - newton
-        - brentq
-        - brenth
-        - bisect
-        - toms748
-        - ridder
-    round: 6
 
 refinement:
     values:
@@ -56,21 +52,29 @@ refinement:
         - 100
         - 1000
         - 10000
+        - 100000
+        - 1000000
 
 default_functions:
     linear:
         name: 'y = x'
         formula: 'lambda x: x'
+        derivatives: # order matters...
+            - 'np.vectorize(lambda x: 1)'
         linspace: 'np.linspace(-10, 10, 101)'
         latex: 'r"$y = x$"'
     quadratic:
         name: 'y = x^2'
         formula: 'lambda x: np.power(x, 2)'
+        derivatives: # order matters...
+            - 'lambda x: 2*x'
         linspace: 'np.linspace(-10, 10, 101)'
         latex: 'r"$y = x^2$"'
     cubic:
         name: 'y = x^3'
         formula: 'lambda x: np.power(x, 3)'
+        derivatives: # order matters...
+            - 'lambda x: 3 * (x ** 2)'
         linspace: 'np.linspace(-10, 10, 101)'
         latex: 'r"$y = x^3$"'
     sqrt:
@@ -91,6 +95,8 @@ default_functions:
     sin:
         name: 'y = sin x'
         formula: 'lambda x: np.sin(x)'
+        derivatives: # order matters...
+            - 'lambda x: np.cos(x)'
         linspace: 'np.linspace(-4 * np.pi, 4 * np.pi, 12 * 10 + 1)'
         latex: 'r"$y = \sin\ x$"'
         xticks_data:

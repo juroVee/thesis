@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt
 import ipywidgets as w
 from IPython.display import clear_output
-import queue
+from queue import Queue
 
 # project-level modules
 from ..config import config
@@ -16,7 +16,7 @@ class Manager:
     def __init__(self, user_params):
         self.plot_updated = False
         self.functions = {}
-        self.warnings = queue.Queue()
+        self.warnings = Queue()
         self.names_mapping = {params['name']: key for key, params in config['default_functions'].items()}
         if bool(user_params):
             self.current_function = self.functions['user function'] = UserFunction(user_params)
@@ -54,22 +54,31 @@ class Manager:
     def has_user_function(self) -> bool:
         return 'user function' in self.functions.keys()
 
-    def add_warnings(self, message, warnings):
+    def add_warnings(self, message, triple):
+        warnings, not_conv, zero_der = triple
         if len(warnings) > 0:
             for warning in warnings:
-                self.warnings.put((message, warning))
+                self.warnings.put((message, warning, not_conv, zero_der))
 
     def get_warnings(self, logger):
         while not self.warnings.empty():
-            warning_type, warning = self.warnings.get()
-            logger.write_warning(f'{warning_type}: {warning.message}')
+            warning_type, warning, not_conv, zero_der = self.warnings.get()
+            message = str(warning.message)
+            if message == 'some derivatives were zero':
+                logger.write_warning(f'{warning_type}:\n\tDerivatives at point(s) {zero_der} were zero.')
+            elif message.startswith('some failed to converge after'):
+                logger.write_warning(f'{warning_type}:\n\tMethod {message[5:]} at point(s) {not_conv}.')
+            else:
+                logger.write_warning(f'{warning_type}: {warning.message}')
 
-    def update_plot(self, full=False) -> None:
-        if full:
+    def update_plot(self, main=False, derivatives=False, zero_points=False) -> None:
+        if main:
             calculate_main_function(self.get_current())
+        if derivatives:
             calculate_derivatives(self.get_current())
-            _, warnings = calculate_zero_points(self.get_current())
-            self.add_warnings(f'Calculating zero points ({self.get_current().get_parameter("name")}) warning', warnings)
+        if zero_points:
+            _, triple = calculate_zero_points(self.get_current())
+            self.add_warnings(f'Calculating zero points ({self.get_current().get_parameter("name")}) warning', triple)
         with self.output:
             clear_output()
             if self.plot_updated:
