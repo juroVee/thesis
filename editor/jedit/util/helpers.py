@@ -11,7 +11,7 @@ def transform_title(title: str) -> str:
     return result
 
 def check_parameters(params, logger) -> dict:
-    allowed_params = {'fig', 'ax', 'f', 'X', 'Y', 'd', 'a'}
+    allowed_params = {'fig', 'ax', 'f', 'X', 'Y', 'primes', 'asymptotes'}
     result = {}
     if len(params) == 0:
         return result
@@ -20,7 +20,7 @@ def check_parameters(params, logger) -> dict:
             logger.write_mini(f'Unrecognized parameter "{param}".\nPlotting default.')
             return result
     if any(param not in params for param in ['fig', 'ax', 'f', 'X']):
-        logger.write_mini('Parameters [fig, ax, f, X] are needed to plot your function.\nPlotting default.')
+        logger.write_mini('Parameters [fig, ax, f, X] are required to plot your function.\nPlotting default.')
         return result
     else:
         others = { k : params[k] for k in set(params) - {'fig', 'ax', 'f'} }

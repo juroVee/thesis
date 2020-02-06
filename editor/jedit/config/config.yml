@@ -14,7 +14,7 @@ plot_parameters:
     grid: 'no'
     aspect: 'auto'
     height: 5.2
-    width: 6
+    width: 6.8
 
 main_function:
     linestyle: 'solid'

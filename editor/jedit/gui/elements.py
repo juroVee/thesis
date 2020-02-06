@@ -10,8 +10,9 @@ from ..config import config
 class GUIElementManager:
 
 
-    def __init__(self, user_defined=False):
-        self.user_defined = user_defined
+    def __init__(self, manager=None):
+        self.manager = manager
+        self.user_defined = manager.has_user_function()
         self.elements = defaultdict(dict)
         self._init_hboxes()
         self._init_dropdowns()
@@ -29,10 +30,9 @@ class GUIElementManager:
     def _init_dropdowns(self):
         self.elements['dropdown']['grid'] = self._grid_dropdown()
         self.elements['dropdown']['refinement'] = self._refinement_dropdown()
-        self.elements['dropdown']['zp_derivatives_signs'] = self._zero_points_hbox_and_dropdown()[1]
 
     def _init_texts(self):
-        self.elements['text']['zp_iterations'] = self._zero_points_iter_text()
+        self.elements['text']['zp_iterations'] = self._zero_points_hbox_and_dropdown()[1]
 
     def _function_hbox(self):
         default_color = config['main_function']['color']
@@ -104,9 +104,9 @@ class GUIElementManager:
     def _zero_points_hbox_and_dropdown(self):
         default_color = config['zero_points']['color']
         dropdown = w.Dropdown(
-            options=['none'] + config['zero_points']['methods'],
-            value='none',
-            description='Method:',
+            options=[False, True],
+            value=False,
+            description='Roots:',
             disabled=False,
             layout=w.Layout(width='100%'),
             style={'description_width': config['default_sizes']['menu_element_description']}
@@ -118,22 +118,7 @@ class GUIElementManager:
             disabled=False,
             layout=w.Layout(width='28px')
         )
-
-        directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: True if case == 'none' else False)
-
-        dropdown_signs =  w.Dropdown(
-            options=['false', 'true'],
-            value='false',
-            description='ZP derivative signs:',
-            disabled=False,
-            layout=w.Layout(width='auto', height='auto'),
-            style={'description_width': config['default_sizes']['menu_element_description']}
-        )
-
-        return w.HBox(children=[dropdown, cpicker]), dropdown_signs
-
-    def _zero_points_iter_text(self):
-        return w.BoundedIntText(
+        iter_text = w.BoundedIntText(
             value=config['zero_points']['iterations'],
             min=1,
             max=1000,
@@ -143,3 +128,7 @@ class GUIElementManager:
             layout=w.Layout(width='auto', height='auto'),
             style={'description_width': config['default_sizes']['menu_element_description']}
         )
+
+        directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: not case)
+
+        return w.HBox(children=[dropdown, cpicker]), iter_text

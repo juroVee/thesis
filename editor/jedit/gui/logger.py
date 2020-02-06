@@ -17,7 +17,7 @@ class Logger:
 
     def write(self, message):
         with self.output:
-            out = f'{datetime.now().strftime("%d.%m.%Y %H:%M:%S")} -> {message}'
+            out = f'[{datetime.now().strftime("%d.%m.%Y %H:%M:%S")}] {message}'
             print(out)
             self.log_backup.append(out)
 
@@ -30,12 +30,13 @@ class Logger:
             return
         with self.output_mini:
             clear_output()
-            print(f'{message}')
+            message = f'\n{message}' if '\n' in message else f'\n\n{message}'
+            print(message)
             # time.sleep(3)
 
     def write_warning(self, message):
         with self.output_warnings:
-            out = f'{datetime.now().strftime("%d.%m.%Y %H:%M:%S")} -> {message}'
+            out = f'[{datetime.now().strftime("%d.%m.%Y %H:%M:%S")}] {message}'
             print(out)
 
     def to_file(self):

@@ -54,7 +54,7 @@ class Painter:
                                  zorder=2)
 
     def plot_zero_points(self):
-        if self.function.get_parameter('zero_points_method') != 'none':
+        if self.function.get_parameter('zero_points_visible'):
             markersize = config['zero_points']['markersize']
             for x in self.function.get_parameter('zero_points_values'):
                 self.ax.plot(x, 0, 'o', c=self.function.get_parameter('zero_points_color'), markersize=markersize, zorder=4)

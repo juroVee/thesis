@@ -5,7 +5,7 @@ import ipywidgets as w
 from ..plot import Manager
 
 # package-level modules
-from .tabs import AnalysisTab, SettingsTab, LogTab, InfoTab, WarningTab
+from .tabs import AnalysisTab, LogTab, WarningTab
 from .observer import Observer
 from .elements import GUIElementManager
 
@@ -19,18 +19,16 @@ class Board:
         self._init_tabs()
         self._init_observer()
 
-    def _init_manager(self, user_data: dict):
-        self.manager = Manager(user_data)
+    def _init_manager(self, user_params: dict) -> None:
+        self.manager = Manager(user_params)
 
-    def _init_gui_elements_manager(self):
-        self.gui_manager = GUIElementManager(self.manager.has_user_function())
+    def _init_gui_elements_manager(self) -> None:
+        self.gui_manager = GUIElementManager(self.manager)
 
     def _init_tabs(self):
         tabs = [AnalysisTab(board=self),
-                # SettingsTab(board=self),
                 LogTab(board=self),
-                WarningTab(board=self),
-                InfoTab(board=self)]
+                WarningTab(board=self)]
         self.tab_parent = w.Tab(children=[tab.get_widget() for tab in tabs])
         for i, tab in enumerate(tabs):
             self.tab_parent.set_title(i, tab.name)

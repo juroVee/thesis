@@ -43,7 +43,11 @@ class Function:
             self.set_parameter('active_derivative' + str(n), False)
 
     def _init_zero_points(self):
-        self.set_parameter('zero_points_method', 'none')
+        self.set_parameter('zero_points_visible', False)
+        if len(self.get_parameter('user_derivatives')) > 0:
+            self.set_parameter('zero_points_method', 'Newton')
+        else:
+            self.set_parameter('zero_points_method', 'Secant')
         self.set_parameter('zero_points_color', config['zero_points']['color'])
         self.set_parameter('zero_points_iterations', config['zero_points']['iterations'])
 
@@ -94,8 +98,8 @@ class UserFunction(Function):
     def __init__(self, user_params):
         user_params = self._prepare_user_params(user_params)
         ax, X, f = user_params['ax'], user_params['X'], user_params['f']
-        user_derivatives = user_params.get('d', None)
-        asymptotes = user_params.get('a', None)
+        user_derivatives = user_params.get('primes', None)
+        asymptotes = user_params.get('asymptotes', None)
         super().__init__(f, X, name='user function',
                          latex=transform_title(ax.get_title()),
                          user_derivatives=user_derivatives,
