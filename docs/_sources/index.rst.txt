@@ -52,6 +52,9 @@ Log
 - nulové body sa hľadajú na pôvodnom delení, zatiaľ čo tolerancia, :math:`\Delta x`, sa počíta podľa nastaveného zjemnenia (zmena citeľná)
 - pridaná možnosť meniť ``maxiter`` užívateľom (1-1000) (zmena však momentálne nepozorovateľná)
 - zaokrúhlenie vypočítaných nulových bodov na :math:`r` desatinných miest a zbavenie sa tak "duplikátov", resp. hodnôt s príliš malým rozdielom
+- opravené výpisy do logu v súvislosti s použitou metódou na výpočet nulových bodov
+- zlepšená implementácia triedy ``Observer`` (povyhadzovaný duplicitný kód, prehľadnejší kód)
+- v ``Logger`` zjednotenie troch metód na výpis logov do jednej
 
 27.1.2020 - 2.2.2020
 --------------------

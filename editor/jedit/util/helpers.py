@@ -17,10 +17,10 @@ def check_parameters(params, logger) -> dict:
         return result
     for param in params.keys():
         if param not in allowed_params:
-            logger.write_mini(f'Unrecognized parameter "{param}".\nPlotting default.')
+            logger.write(f'Unrecognized parameter "{param}".\nPlotting default.', mini=True)
             return result
     if any(param not in params for param in ['fig', 'ax', 'f', 'X']):
-        logger.write_mini('Parameters [fig, ax, f, X] are required to plot your function.\nPlotting default.')
+        logger.write('Parameters [fig, ax, f, X] are required to plot your function.\nPlotting default.', mini=True)
         return result
     else:
         others = { k : params[k] for k in set(params) - {'fig', 'ax', 'f'} }
@@ -28,10 +28,10 @@ def check_parameters(params, logger) -> dict:
             if param == 'X':
                 for i, X in enumerate(value):
                     if len(X) < 2:
-                        logger.write_mini(f'Cannot plot X at position {i}, need at least 2 values.\nPlotting default.')
+                        logger.write(f'Cannot plot X at position {i}, need at least 2 values.\nPlotting default.', mini=True)
                         return result
             if type(value) != list:
-                logger.write_mini('Optional parameters must be in list. E.g. X=[X, ...].\nPlotting default.')
+                logger.write('Optional parameters must be in list. E.g. X=[X, ...].\nPlotting default.', mini=True)
                 return result
     return params
 
@@ -43,5 +43,5 @@ def hide_interactive_toolbars():
               display: none;
             }
             </style>
-        '''
+           '''
     display(HTML(html))

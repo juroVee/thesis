@@ -46,5 +46,8 @@ class Board:
     def get_gui_manager_object(self):
         return self.gui_manager
 
+    def get_observer_object(self):
+        return self.observer
+
     def get_widget(self) -> w.VBox:
         return w.VBox(children=[self.tab_parent])

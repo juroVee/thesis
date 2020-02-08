@@ -8,36 +8,32 @@ from ..config import config
 
 class Logger:
 
-    output = w.Output()
-    output_mini = w.Output()
-    output_warnings = w.Output()
-
     def __init__(self):
+        self.outputs = {'main': w.Output(), 'mini': w.Output(), 'warnings': w.Output()}
         self.log_backup = []
 
-    def write(self, message):
-        with self.output:
-            out = f'[{datetime.now().strftime("%d.%m.%Y %H:%M:%S")}] {message}'
-            print(out)
-            self.log_backup.append(out)
-
-    def write_mini(self, message):
+    def write(self, message, main=False, mini=False, warnings=False):
         """
         :param message: Message to be printed to log (better be 50 characters per line)
+        :param main: printed to Log tab
+        :param mini: printed to mini log under the plot
+        :param warnings: printed to Warnings tab
         :return: None
         """
         if config['editor_settings']['footer_log'] != 'yes':
             return
-        with self.output_mini:
-            clear_output()
-            message = f'\n{message}' if '\n' in message else f'\n\n{message}'
-            print(message)
-            # time.sleep(3)
-
-    def write_warning(self, message):
-        with self.output_warnings:
-            out = f'[{datetime.now().strftime("%d.%m.%Y %H:%M:%S")}] {message}'
-            print(out)
+        out = f'[{datetime.now().strftime("%d.%m.%Y %H:%M:%S")}] {message}'
+        if main:
+            with self.outputs['main']:
+                print(out)
+                self.log_backup.append(out)
+        if mini:
+            with self.outputs['mini']:
+                clear_output()
+                print(message)
+        if warnings:
+            with self.outputs['warnings']:
+                print(out)
 
     def to_file(self):
         with open(str(datetime.now().strftime("log-%d-%m-%Y-%H-%M-%S.txt")), 'w') as file:
@@ -45,9 +41,4 @@ class Logger:
                 file.write(log)
 
     def get_widget(self, t=None):
-        if t == 'warnings':
-            return self.output_warnings
-        elif t == 'mini':
-            return self.output_mini
-        else:
-            return self.output
+        return self.outputs[t]

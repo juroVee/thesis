@@ -60,16 +60,8 @@ class Manager:
             for warning in warnings:
                 self.warnings.put((message, warning, not_conv, zero_der))
 
-    def get_warnings(self, logger):
-        while not self.warnings.empty():
-            warning_type, warning, not_conv, zero_der = self.warnings.get()
-            message = str(warning.message)
-            if message == 'some derivatives were zero':
-                logger.write_warning(f'{warning_type}:\n\tDerivatives at point(s) {zero_der} were zero.')
-            elif message.startswith('some failed to converge after'):
-                logger.write_warning(f'{warning_type}:\n\tMethod {message[5:]} at point(s) {not_conv}.')
-            else:
-                logger.write_warning(f'{warning_type}: {warning.message}')
+    def get_warnings(self):
+        return self.warnings
 
     def update_plot(self, main=False, derivatives=False, zero_points=False) -> None:
         if main:

@@ -53,7 +53,7 @@ class LogTab(Tab):
 
     def __init__(self, board=None):
         logger = board.get_logger_object()
-        super().__init__(name='Log', main_window=[logger.get_widget()])
+        super().__init__(name='Log', main_window=[logger.get_widget(t='main')])
 
     def get_widget(self) -> w.GridspecLayout:
         grid = w.GridspecLayout(self.board_grid_rows, self.board_grid_cols, height=self.height)
