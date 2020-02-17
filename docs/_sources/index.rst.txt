@@ -11,13 +11,13 @@ Základné informácie
 .. sidebar:: Odkazy/Na stiahnutie
 
    | **Aktualizácia odkazov**
-   |    5. február 2020
+   |    12. február 2020
 
    | **Repozitár práce**
    |    GitHub_
 
    | **Aktuálna verzia práce**
-   |    `PDF <#>`__
+   |    :download:`PDF <files/thesis_v1.pdf>`
 
    | **Aktuálna verzia programu**
    |    :download:`tar.gz <files/editor_v8.tar.gz>`
@@ -40,6 +40,14 @@ Základné informácie
 Log
 ===
 
+10.2.2020 - 16.2.2020
+---------------------
+
+- opravené výpisy do logu v súvislosti s použitou metódou na výpočet nulových bodov
+- zlepšená implementácia triedy ``Observer`` (povyhadzovaný duplicitný kód, prehľadnejší kód)
+- v ``Logger`` zjednotenie troch metód na výpis logov do jednej
+- pridaných 10 strán bakalárskej práce na web
+
 3.2.2020 - 9.2.2020
 -------------------
 
@@ -52,9 +60,6 @@ Log
 - nulové body sa hľadajú na pôvodnom delení, zatiaľ čo tolerancia, :math:`\Delta x`, sa počíta podľa nastaveného zjemnenia (zmena citeľná)
 - pridaná možnosť meniť ``maxiter`` užívateľom (1-1000) (zmena však momentálne nepozorovateľná)
 - zaokrúhlenie vypočítaných nulových bodov na :math:`r` desatinných miest a zbavenie sa tak "duplikátov", resp. hodnôt s príliš malým rozdielom
-- opravené výpisy do logu v súvislosti s použitou metódou na výpočet nulových bodov
-- zlepšená implementácia triedy ``Observer`` (povyhadzovaný duplicitný kód, prehľadnejší kód)
-- v ``Logger`` zjednotenie troch metód na výpis logov do jednej
 
 27.1.2020 - 2.2.2020
 --------------------
