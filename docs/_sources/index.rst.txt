@@ -40,6 +40,11 @@ Základné informácie
 Log
 ===
 
+17.2.2020 - 23.2.2020
+---------------------
+
+- skrytie zvyšných interaktívnych prvkov cez ``hide_interactive_toolbars()``
+
 10.2.2020 - 16.2.2020
 ---------------------
 

@@ -39,7 +39,9 @@ def hide_interactive_toolbars():
     html = '''
             <style>
             .output_wrapper button.btn.btn-default,
-            .output_wrapper .ui-dialog-titlebar {
+            .output_wrapper .ui-dialog-titlebar,
+            .output_wrapper .ui-resizable-handle,
+            .output_wrapper .mpl-message {
               display: none;
             }
             </style>
