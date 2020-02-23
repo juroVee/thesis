@@ -11,7 +11,7 @@ Základné informácie
 .. sidebar:: Odkazy/Na stiahnutie
 
    | **Aktualizácia odkazov**
-   |    12. február 2020
+   |    23. február 2020
 
    | **Repozitár práce**
    |    GitHub_
