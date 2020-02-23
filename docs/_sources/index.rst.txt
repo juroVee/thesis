@@ -20,8 +20,8 @@ Základné informácie
    |    :download:`PDF <files/thesis_v1.pdf>`
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/editor_v8.tar.gz>`
-   |    :download:`zip <files/editor_v8.zip>`
+   |    :download:`tar.gz <files/editor_v9.tar.gz>`
+   |    :download:`zip <files/editor_v9.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -44,6 +44,10 @@ Log
 ---------------------
 
 - skrytie zvyšných interaktívnych prvkov cez ``hide_interactive_toolbars()``
+- predpripravený prístup k učiteľským nastaveniam editora (parameter ``config`` v metóde ``run``)
+- opravená šírka okna pre výpisy logov a upozornení v tabe ``Logs``, resp. ``Warnings``
+- pridané výpočty extrémov a inflexných bodov cez ``scipy.signal.argrelextrema``
+- pridaná vizualizácia extrémov a inflexných bodov
 
 10.2.2020 - 16.2.2020
 ---------------------

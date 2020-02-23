@@ -23,11 +23,11 @@ class Observer:
         self.manager = board.get_manager_object()
         self.logger = board.get_logger_object()
         self.gui_manager = board.get_gui_manager_object()
-        self.logger.write('Session started')
+        self.logger.write(message='Session started', main=True)
         self.write_warnings()
         self.configuration = self.Configuration()
 
-    def add_zero_points_info(self, function, message, message_mini):
+    def _add_zero_points_info(self, function, message, message_mini):
         self.write_warnings()
         visible = function.get_parameter('zero_points_visible')
         if not visible:
@@ -36,8 +36,30 @@ class Observer:
         zp_values = function.get_parameter('zero_points_values')
         method = function.get_parameter('zero_points_method')
         maxiter = function.get_parameter('zero_points_iterations')
-        message_mini += logger_message('Roots', visible=visible, found=len(zp_values), user_fprime="Yes" if method == "Newton" else "No", method=method, maxiter=maxiter)
-        message = logger_message('Roots', values=zp_values)
+        message_mini += logger_message('Zero points', visible=visible, found=len(zp_values), user_fprime="Yes" if method == "Newton" else "No", method=method, maxiter=maxiter)
+        message = logger_message('Zero points', values=zp_values)
+        self.logger.write(message_mini, main=True, mini=True)
+        self.logger.write(message, main=True)
+
+    def _add_extremes_info(self, function, message, message_mini):
+        visible = function.get_parameter('extremes_visible')
+        if not visible:
+            self.logger.write(message, main=True, mini=True)
+            return
+        found = function.get_parameter('extremes_values')
+        message_mini += logger_message('Extremes', visible=visible, found=len(found))
+        message = logger_message('Extremes', visible=visible, found=found)
+        self.logger.write(message_mini, main=True, mini=True)
+        self.logger.write(message, main=True)
+
+    def _add_inflex_points_info(self, function, message, message_mini):
+        visible = function.get_parameter('inflex_points_visible')
+        if not visible:
+            self.logger.write(message, main=True, mini=True)
+            return
+        found = function.get_parameter('inflex_points_values')
+        message_mini += logger_message('Inflex points', visible=visible, found=len(found))
+        message = logger_message('Inflex points', visible=visible, found=found)
         self.logger.write(message_mini, main=True, mini=True)
         self.logger.write(message, main=True)
 
@@ -63,7 +85,7 @@ class Observer:
         self.write_warnings()
         function = self.manager.get_current()
         message = logger_message('Main function', set=choice)
-        self.add_zero_points_info(function, message, message)
+        self._add_zero_points_info(function, message, message)
 
     def _changed_grid(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -153,10 +175,12 @@ class Observer:
         function.set_refinement(choice)
         self.configuration.save('refinement', choice)
         self.logger.write('Recalculating function...', mini=True)
-        self.manager.update_plot(main=True, derivatives=True, zero_points=True)
+        self.manager.update_plot(main=True, derivatives=True, zero_points=True, extremes=True, inflex_points=True)
         n_x_values = sum(map(len, function.get_parameter("x_values")))
         message = logger_message('Refinement', refinement=b['new'], intervals=n_x_values-1, values=n_x_values)
-        self.add_zero_points_info(function, message, message)
+        self._add_zero_points_info(function, message, message)
+        self._add_extremes_info(function, message, message)
+        self._add_inflex_points_info(function, message, message)
 
     def _changed_zero_points(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -164,8 +188,8 @@ class Observer:
         function = self.manager.get_current()
         function.set_parameter('zero_points_visible', choice)
         self.configuration.save('zero_points_visible', choice)
-        self.manager.update_plot(zero_points=True)
-        self.add_zero_points_info(function, '', '')
+        self.manager.update_plot()
+        self._add_zero_points_info(function, '', '')
 
     def _changed_zero_points_color(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -174,7 +198,7 @@ class Observer:
         function.set_parameter('zero_points_color', choice)
         self.configuration.save('zero_points_color', choice)
         self.manager.update_plot()
-        self.logger.write(logger_message('Roots', color=choice), main=True, mini=True)
+        self.logger.write(logger_message('Zero points', color=choice), main=True, mini=True)
 
     def _changed_zero_points_iterations(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -183,7 +207,43 @@ class Observer:
         function.set_parameter('zero_points_iterations', choice)
         self.configuration.save('zero_points_iterations', choice)
         self.manager.update_plot(zero_points=True)
-        self.add_zero_points_info(function, '', '')
+        self._add_zero_points_info(function, '', '')
+
+    def _changed_extremes_points(self, b) -> None:
+        self.manager.set_plot_updated(True)
+        choice = b['new']
+        function = self.manager.get_current()
+        function.set_parameter('extremes_visible', choice)
+        self.configuration.save('extremes_visible', choice)
+        self.manager.update_plot()
+        self._add_extremes_info(function, '', '')
+
+    def _changed_extremes_color(self, b) -> None:
+        self.manager.set_plot_updated(True)
+        choice = b['new']
+        function = self.manager.get_current()
+        function.set_parameter('extremes_color', choice)
+        self.configuration.save('extremes_color', choice)
+        self.manager.update_plot()
+        self.logger.write(logger_message('Extremes', color=choice), main=True, mini=True)
+
+    def _changed_inflex_points(self, b) -> None:
+        self.manager.set_plot_updated(True)
+        choice = b['new']
+        function = self.manager.get_current()
+        function.set_parameter('inflex_points_visible', choice)
+        self.configuration.save('inflex_points_visible', choice)
+        self.manager.update_plot()
+        self._add_inflex_points_info(function, '', '')
+
+    def _changed_inflex_points_color(self, b) -> None:
+        self.manager.set_plot_updated(True)
+        choice = b['new']
+        function = self.manager.get_current()
+        function.set_parameter('inflex_points_color', choice)
+        self.configuration.save('inflex_points_color', choice)
+        self.manager.update_plot()
+        self.logger.write(logger_message('Inflex points', color=choice), main=True, mini=True)
 
     def start(self) -> None:
 
@@ -212,5 +272,13 @@ class Observer:
         dropdown, color_picker = gui_elements['hbox']['zero_points'].children
         dropdown.observe(self._changed_zero_points, 'value')
         color_picker.observe(self._changed_zero_points_color, 'value')
+
+        dropdown, color_picker = gui_elements['hbox']['extremes'].children
+        dropdown.observe(self._changed_extremes_points, 'value')
+        color_picker.observe(self._changed_extremes_color, 'value')
+
+        dropdown, color_picker = gui_elements['hbox']['inflex_points'].children
+        dropdown.observe(self._changed_inflex_points, 'value')
+        color_picker.observe(self._changed_inflex_points_color, 'value')
 
         gui_elements['text']['zp_iterations'].observe(self._changed_zero_points_iterations, 'value')

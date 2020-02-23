@@ -11,7 +11,7 @@ def transform_title(title: str) -> str:
     return result
 
 def check_parameters(params, logger) -> dict:
-    allowed_params = {'fig', 'ax', 'f', 'X', 'Y', 'primes', 'asymptotes'}
+    allowed_params = {'fig', 'ax', 'f', 'X', 'Y', 'primes', 'asymptotes', 'config'}
     result = {}
     if len(params) == 0:
         return result

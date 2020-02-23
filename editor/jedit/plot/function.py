@@ -20,6 +20,8 @@ class Function:
         self._init_plot_parameters()
         self._init_derivatives()
         self._init_zero_points()
+        self._init_extremes()
+        self._init_inflex_points()
         self._init_refinement()
 
     def _init_function_details(self, X, f, name, latex_representation, user_derivatives, asymptotes):
@@ -50,6 +52,14 @@ class Function:
             self.set_parameter('zero_points_method', 'Secant')
         self.set_parameter('zero_points_color', config['zero_points']['color'])
         self.set_parameter('zero_points_iterations', config['zero_points']['iterations'])
+        
+    def _init_extremes(self):
+        self.set_parameter('extremes_visible', False)
+        self.set_parameter('extremes_color', config['extremes']['color'])
+        
+    def _init_inflex_points(self):
+        self.set_parameter('inflex_points_visible', False)
+        self.set_parameter('inflex_points_color', config['inflex_points']['color'])
 
     def _init_refinement(self):
         self.set_parameter('refinement', 1)
@@ -69,6 +79,8 @@ class Function:
         painter.plot_asymptotes()
         painter.plot_derivative()
         painter.plot_zero_points()
+        painter.plot_extremes()
+        painter.plot_inflex_points()
         painter.plot_title()
 
         fig.show()

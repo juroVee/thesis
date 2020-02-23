@@ -28,7 +28,7 @@ class Editor:
         display(self.board.get_widget())
 
         with manager.output:
-            manager.update_plot(main=True, derivatives=True, zero_points=True)
+            manager.update_plot(main=True, derivatives=True, zero_points=True, extremes=True, inflex_points=True)
         observer.write_warnings()
 
 # run instance after importing editor

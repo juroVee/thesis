@@ -6,7 +6,7 @@ from queue import Queue
 
 # project-level modules
 from ..config import config
-from .calculations import calculate_main_function, calculate_derivatives, calculate_zero_points
+from .calculations import calculate_main_function, calculate_derivatives, calculate_zero_points, calculate_extremes, calculate_inflex_points
 from .function import Function, DefaultFunction, UserFunction
 
 class Manager:
@@ -63,7 +63,7 @@ class Manager:
     def get_warnings(self):
         return self.warnings
 
-    def update_plot(self, main=False, derivatives=False, zero_points=False) -> None:
+    def update_plot(self, main=False, derivatives=False, zero_points=False, extremes=False, inflex_points=False) -> None:
         if main:
             calculate_main_function(self.get_current())
         if derivatives:
@@ -71,6 +71,10 @@ class Manager:
         if zero_points:
             _, triple = calculate_zero_points(self.get_current())
             self.add_warnings(f'Calculating zero points ({self.get_current().get_parameter("name")}) warning', triple)
+        if extremes:
+            calculate_extremes(self.get_current())
+        if inflex_points:
+            calculate_inflex_points(self.get_current())
         with self.output:
             clear_output()
             if self.plot_updated:

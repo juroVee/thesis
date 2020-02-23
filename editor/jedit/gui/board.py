@@ -13,6 +13,8 @@ from .elements import GUIElementManager
 class Board:
 
     def __init__(self, user_params, logger):
+        if 'config' in user_params:
+            self.user_config = user_params['config']
         self.logger = logger
         self._init_manager(user_params)
         self._init_gui_elements_manager()

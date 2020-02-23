@@ -25,7 +25,7 @@ main_function:
 derivative:
     linestyle: 'solid'
     linewidth: 1.5
-    max_derivative: 5
+    max_derivative: 3
     colors: # number of colors must match 'max_derivative'
         - '#ff8647'
         - '#39ff33'
@@ -45,6 +45,14 @@ zero_points:
     round: 10
     methods: # allowed just newton for now
         - newton
+
+extremes:
+    markersize: 6
+    color: '#e32400'
+
+inflex_points:
+    markersize: 6
+    color: '#77bb40'
 
 refinement:
     values:

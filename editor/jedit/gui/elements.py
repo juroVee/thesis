@@ -26,6 +26,8 @@ class GUIElementManager:
         for n in range(1, 4):
             self.elements['hbox'][f'derivative{n}'] = self._derivative_hbox(n)
         self.elements['hbox']['zero_points'] = self._zero_points_hbox_and_dropdown()[0]
+        self.elements['hbox']['extremes'] = self._extremes_hbox_and_dropdown()
+        self.elements['hbox']['inflex_points'] = self._inflex_points_hbox_and_dropdown()
 
     def _init_dropdowns(self):
         self.elements['dropdown']['grid'] = self._grid_dropdown()
@@ -106,7 +108,7 @@ class GUIElementManager:
         dropdown = w.Dropdown(
             options=[False, True],
             value=False,
-            description='Roots:',
+            description='Zero points:',
             disabled=False,
             layout=w.Layout(width='100%'),
             style={'description_width': config['default_sizes']['menu_element_description']}
@@ -132,3 +134,47 @@ class GUIElementManager:
         directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: not case)
 
         return w.HBox(children=[dropdown, cpicker]), iter_text
+
+    def _extremes_hbox_and_dropdown(self):
+        default_color = config['extremes']['color']
+        dropdown = w.Dropdown(
+            options=[False, True],
+            value=False,
+            description='Extremes:',
+            disabled=False,
+            layout=w.Layout(width='100%'),
+            style={'description_width': config['default_sizes']['menu_element_description']}
+        )
+        cpicker = w.ColorPicker(
+            concise=True,
+            description='',
+            value=default_color,
+            disabled=False,
+            layout=w.Layout(width='28px')
+        )
+
+        directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: not case)
+
+        return w.HBox(children=[dropdown, cpicker])
+
+    def _inflex_points_hbox_and_dropdown(self):
+        default_color = config['inflex_points']['color']
+        dropdown = w.Dropdown(
+            options=[False, True],
+            value=False,
+            description='Inflex points:',
+            disabled=False,
+            layout=w.Layout(width='100%'),
+            style={'description_width': config['default_sizes']['menu_element_description']}
+        )
+        cpicker = w.ColorPicker(
+            concise=True,
+            description='',
+            value=default_color,
+            disabled=False,
+            layout=w.Layout(width='28px')
+        )
+
+        directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: not case)
+
+        return w.HBox(children=[dropdown, cpicker])

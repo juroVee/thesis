@@ -35,7 +35,9 @@ class AnalysisTab(Tab):
                             (5, gui_elements['hbox']['derivative3']),
                             (7, gui_elements['dropdown']['refinement']),
                             (8, gui_elements['text']['zp_iterations']),
-                            (9, gui_elements['hbox']['zero_points'])
+                            (9, gui_elements['hbox']['zero_points']),
+                            (10, gui_elements['hbox']['extremes']),
+                            (11, gui_elements['hbox']['inflex_points'])
                             ],
                     footer=[logger.get_widget(t='mini')]
                    )

@@ -59,5 +59,19 @@ class Painter:
             for x in self.function.get_parameter('zero_points_values'):
                 self.ax.plot(x, 0, 'o', c=self.function.get_parameter('zero_points_color'), markersize=markersize, zorder=4)
 
+    def plot_extremes(self):
+        if self.function.get_parameter('extremes_visible'):
+            markersize = config['extremes']['markersize']
+            f = self.function.get_parameter('f')
+            for x in self.function.get_parameter('extremes_values'):
+                self.ax.plot(x, f(x), 'o', c=self.function.get_parameter('extremes_color'), markersize=markersize, zorder=4)
+
+    def plot_inflex_points(self):
+        if self.function.get_parameter('inflex_points_visible'):
+            markersize = config['inflex_points']['markersize']
+            f = self.function.get_parameter('f')
+            for x in self.function.get_parameter('inflex_points_values'):
+                self.ax.plot(x, f(x), 'o', c=self.function.get_parameter('inflex_points_color'), markersize=markersize, zorder=4)
+
     def plot_title(self):
         self.ax.set_title(self.function.get_parameter('latex'), y=1.06)
