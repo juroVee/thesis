@@ -48,6 +48,8 @@ Log
 - opravená šírka okna pre výpisy logov a upozornení v tabe ``Logs``, resp. ``Warnings``
 - pridané výpočty extrémov a inflexných bodov cez ``scipy.signal.argrelextrema``
 - pridaná vizualizácia extrémov a inflexných bodov
+- pridané rozdelenie extrémov na lokálne (globálne) minimá a maximá a ich výpis v logoch
+- dočasne pozastavená funkcionalita výberu predefinovaných funkcií
 
 10.2.2020 - 16.2.2020
 ---------------------
@@ -193,17 +195,36 @@ Log
 Literatúra
 ==========
 
-(predbežne)
+(priebežne)
 
-[1] ČERNÝ, Ilja. 2002. *Úvod do inteligentního kalkulu (1000 příkladů z elementární analýzy)*. Akademie věd České republiky.
+[1] *Anaconda Distribution Documentation*. URL: docs.anaconda.com/anaconda
 
-[2] ELIÁŠ, Jozef. 1974. *Matematika (Úvod do numerickej analýzy)*. Slovenská vysoká škola technická v Bratislave.
+[2] ČERNÝ, Ilja. *Úvod do inteligentního kalkulu (1000 příkladů z elementární analýzy)*. Akademie věd České republiky, 2002.
 
-[3] KUBÁČEK Zbyněk, VALÁŠEK, Ján. 1989. *Cvičenia z matematickej analýzy I*. Univerzita Komenského v Bratislave.
+[3] ELIÁŠ, Jozef. *Matematika (Úvod do numerickej analýzy)*. Slovenská vysoká škola technická v Bratislave, 1974.
 
-[4] ŠVEC, Marko, KLUVÁNEK, Igor, MIŠÍK, Ladislav. 1959. *Matematika I pre štúdium technických vied*. Slovenské vydavateľstvo technickej literatúry.
+[4] *Jupyter Widgets Developer Docs*. URL: ipywidgets.readthedocs.io
 
-[5] VENCKO, Jozef, NEUBRUNN, Tibor. 1992. *Matematická analýza I vysokoškolské skriptá*. Matematicko-fyzikálna fakulta Univerzity Komenského.
+[5] KUBÁČEK, Zbyněk, VALÁŠEK, Ján. *Cvičenia z matematickej analýzy I*. Univerzita Komenského v Bratislave, 1989.
+
+[6] LACHNIET, Jason. *Introduction to GNU Octave, Second Edition*. lulu.com, Inc, 2019.
+
+[7] *MATLAB® Primer*. The MathWorks, Inc, 2014. URL: mathworks.com/help/releases/R2014b/pdf_doc/matlab/getstart.pdf
+
+[8] McKINNEY, Wes. *Python for Data Analysis, Second Edition*. O’Reilly Media, Inc, 2017.
+
+[9] PÉREZ, Fernando, GRANGER, Brian E. *IPython: A System for Interactive Scientific Computing, Computing in Science and Engineering, vol. 9, no. 3, pp. 21-29. 2007*. URL: ipython.org
+
+[10] ROSSANT, Cyrille. *IPython Cookbook, Second Edition*. 2018. URL: ipython-books.github.io
+
+[11] *SciPy v1.4.1 Reference Guide*. URL: docs.scipy.org/doc/scipy/reference
+
+[12] ŠVEC, Marko, KLUVÁNEK, Igor. *Matematika I pre štúdium technických vied*. Slovenské vydavateľstvo technickej literatúry, 1959.
+
+[13] TOSI, Sandro. *Matplotlib for Python Developers*. Packt Publishing Ltd., 2009.
+
+[14] VENCKO, Jozef, NEUBRUNN, Tibor. *Matematická analýza I, vysokoškolské skriptá*. Matematicko-fyzikálna fakulta Univerzity Komenského, 1992.
+
 
 Tutoriály, manuály
 ==================
@@ -237,6 +258,12 @@ Z aplikácie
    :align: center
 
 .. figure:: images/screen08.png
+   :align: center
+
+.. figure:: images/screen09.png
+   :align: center
+
+.. figure:: images/screen10.png
    :align: center
 
 

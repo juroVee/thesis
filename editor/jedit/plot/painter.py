@@ -62,9 +62,10 @@ class Painter:
     def plot_extremes(self):
         if self.function.get_parameter('extremes_visible'):
             markersize = config['extremes']['markersize']
-            f = self.function.get_parameter('f')
-            for x in self.function.get_parameter('extremes_values'):
-                self.ax.plot(x, f(x), 'o', c=self.function.get_parameter('extremes_color'), markersize=markersize, zorder=4)
+            local_minima = self.function.get_parameter('local_minima')
+            local_maxima = self.function.get_parameter('local_maxima')
+            for x, y in local_minima + local_maxima:
+                self.ax.plot(x, y, 'o', c=self.function.get_parameter('extremes_color'), markersize=markersize, zorder=4)
 
     def plot_inflex_points(self):
         if self.function.get_parameter('inflex_points_visible'):

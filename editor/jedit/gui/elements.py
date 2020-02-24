@@ -41,7 +41,7 @@ class GUIElementManager:
         functions_names = [parameters['name'] for func, parameters in config['default_functions'].items()]
         default_function = config['main_function']['default']
         dropdown = w.Dropdown(
-            options=['user function'] + functions_names if self.user_defined else functions_names,
+            options=['user function'], # + functions_names if self.user_defined else functions_names,
             value='user function' if self.user_defined else config['default_functions'][default_function]['name'],
             description='Function:',
             disabled=False,

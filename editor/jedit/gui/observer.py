@@ -46,9 +46,19 @@ class Observer:
         if not visible:
             self.logger.write(message, main=True, mini=True)
             return
-        found = function.get_parameter('extremes_values')
-        message_mini += logger_message('Extremes', visible=visible, found=len(found))
-        message = logger_message('Extremes', visible=visible, found=found)
+        local_minima = function.get_parameter('local_minima')
+        local_maxima = function.get_parameter('local_maxima')
+        global_minima = function.get_parameter('global_minima')[1] if function.get_parameter('global_minima') != [] else []
+        global_maxima = function.get_parameter('global_maxima')[1] if function.get_parameter('global_maxima') != [] else []
+        message_mini += logger_message('Extremes', visible=visible,
+                                       extremes=len(local_minima) + len(local_maxima),
+                                       minima=len(local_minima),
+                                       maxima=len(local_maxima))
+        message = logger_message('Extremes', visible=visible,
+                                 local_minima=[y for x, y in local_minima],
+                                 local_maxima=[y for x, y in local_maxima],
+                                 global_minima=global_minima,
+                                 global_maxima=global_maxima)
         self.logger.write(message_mini, main=True, mini=True)
         self.logger.write(message, main=True)
 

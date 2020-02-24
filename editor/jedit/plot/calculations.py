@@ -27,7 +27,7 @@ def calculate_main_function(function) -> None:
     function.set_parameter('lines', lines)
 
 
-def calculate_zero_points(function):
+def calculate_zero_points(function) -> tuple:
     # necessary data
     f = function.get_parameter('f')
     original_X_values = function.get_parameter('original_x_values')
@@ -81,22 +81,25 @@ def calculate_zero_points(function):
             function.set_parameter('zero_points_values', result)
             return True, (w, not_converged_list, zero_derivatives_occured_list)
 
-def calculate_extremes(function):
+def calculate_extremes(function) -> None:
     # necessary data
     f = function.get_parameter('f')
     X_values = function.get_parameter('x_values')
 
     # prepare result list
-    result = []
+    minima, maxima = [], []
 
     for X in X_values:
         for candidate in X[argrelextrema(f(X), np.greater)]:
-            result.append(candidate)
+            maxima.append((candidate, f(candidate)))
         for candidate in X[argrelextrema(f(X), np.less)]:
-            result.append(candidate)
-    function.set_parameter('extremes_values', result)
+            minima.append((candidate, f(candidate)))
+    function.set_parameter('local_minima', minima)
+    function.set_parameter('local_maxima', maxima)
+    function.set_parameter('global_minima', min(minima, key=lambda pair: pair[1]) if len(minima) > 0 else [])
+    function.set_parameter('global_maxima', max(maxima, key=lambda pair: pair[1]) if len(maxima) > 0 else [])
 
-def calculate_inflex_points(function):
+def calculate_inflex_points(function) -> None:
     # necessary data
     derivatives = function.get_parameter('derivatives')
 
