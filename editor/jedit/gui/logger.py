@@ -6,6 +6,21 @@ from datetime import datetime
 # project-level modules
 from ..config import config
 
+
+def compose(theme, kwargs, mini=False):
+    if mini:
+        return f'{theme}: {kwargs}'
+    result = f'\n\takcia: {theme}'
+    for arg, val in kwargs.items():
+        result += '\n\t'
+        if type(val) == list:
+            result += f'{arg}:\n\t  ['
+            result += ',\n\t  '.join(map(str, val)) + ']'
+        else:
+            result += f'{arg}: {val}'
+    return result
+
+
 class Logger:
 
     def __init__(self):
@@ -22,18 +37,22 @@ class Logger:
         """
         if config['editor_settings']['footer_log'] != 'yes':
             return
-        out = f'[{datetime.now().strftime("%d.%m.%Y %H:%M:%S")}] {message}'
+        theme, kwargs = message
+        out = f'[{datetime.now().strftime("%d.%m.%Y %H:%M:%S")}]'
         if main:
             with self.outputs['main']:
-                print(out)
+                message = compose(theme=theme, kwargs=kwargs)
+                print(out + message)
                 self.log_backup.append(out)
         if mini:
             with self.outputs['mini']:
                 clear_output()
+                message = compose(theme=theme, kwargs=kwargs, mini=True)
                 print(message)
         if warnings:
             with self.outputs['warnings']:
-                print(out)
+                message = compose(theme=theme, kwargs=kwargs)
+                print(out + message)
 
     def to_file(self):
         with open(str(datetime.now().strftime("log-%d-%m-%Y-%H-%M-%S.txt")), 'w') as file:

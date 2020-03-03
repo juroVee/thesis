@@ -1,7 +1,7 @@
 from ..config import config
 
-def logger_message(theme: str, **kwargs):
-    return f'\n{theme}: {kwargs}'
+def logger_message(theme, **kwargs):
+    return theme, kwargs
 
 class Observer:
 
@@ -23,54 +23,69 @@ class Observer:
         self.manager = board.get_manager_object()
         self.logger = board.get_logger_object()
         self.gui_manager = board.get_gui_manager_object()
-        self.logger.write(message='Session started', main=True)
+        self.logger.write(logger_message('editor spustený'), main=True)
         self.write_warnings()
         self.configuration = self.Configuration()
+        self.rules = {'vypnuté': False, 'zapnuté': True}
+        self.svk = {True: 'áno', False: 'nie'}
 
-    def _add_zero_points_info(self, function, message, message_mini):
+    def _add_zero_points_info(self, function):
         self.write_warnings()
         visible = function.get_parameter('zero_points_visible')
-        if not visible:
-            self.logger.write(message, main=True, mini=True)
-            return
         zp_values = function.get_parameter('zero_points_values')
         method = function.get_parameter('zero_points_method')
         maxiter = function.get_parameter('zero_points_iterations')
-        message_mini += logger_message('Zero points', visible=visible, found=len(zp_values), user_fprime="Yes" if method == "Newton" else "No", method=method, maxiter=maxiter)
-        message = logger_message('Zero points', values=zp_values)
-        self.logger.write(message_mini, main=True, mini=True)
+        if not visible:
+            self.logger.write(logger_message('nulové body', viditeľné=self.svk[visible],
+                                      derivácia="áno" if method == "Newton" else "nie",
+                                      metóda=method,
+                                      maxiter=maxiter), mini=True, main=True)
+            return
+        message_mini = logger_message('nulové body', viditeľné=self.svk[visible],
+                                      derivácia="áno" if method == "Newton" else "nie",
+                                      metóda=method,
+                                      maxiter=maxiter,
+                                      nájdené=len(zp_values))
+        message = logger_message('nulové body', viditeľné=self.svk[visible],
+                                   derivácia="áno" if method == "Newton" else "nie",
+                                   metóda=method,
+                                   maxiter=maxiter,
+                                   nájdené=zp_values)
+        self.logger.write(message_mini, mini=True)
         self.logger.write(message, main=True)
 
-    def _add_extremes_info(self, function, message, message_mini):
+    def _add_extremes_info(self, function):
         visible = function.get_parameter('extremes_visible')
         if not visible:
-            self.logger.write(message, main=True, mini=True)
+            self.logger.write(logger_message('extrémy', viditeľné=self.svk[visible]), mini=True, main=True)
             return
-        local_minima = function.get_parameter('local_minima')
-        local_maxima = function.get_parameter('local_maxima')
-        global_minima = function.get_parameter('global_minima')[1] if function.get_parameter('global_minima') != [] else []
-        global_maxima = function.get_parameter('global_maxima')[1] if function.get_parameter('global_maxima') != [] else []
-        message_mini += logger_message('Extremes', visible=visible,
-                                       extremes=len(local_minima) + len(local_maxima),
-                                       minima=len(local_minima),
-                                       maxima=len(local_maxima))
-        message = logger_message('Extremes', visible=visible,
-                                 local_minima=[y for x, y in local_minima],
-                                 local_maxima=[y for x, y in local_maxima],
-                                 global_minima=global_minima,
-                                 global_maxima=global_maxima)
-        self.logger.write(message_mini, main=True, mini=True)
+        minX = function.get_parameter('local_minima_xvals')
+        maxX = function.get_parameter('local_maxima_xvals')
+        minY = function.get_parameter('local_minima_yvals')
+        maxY = function.get_parameter('local_maxima_yvals')
+        coords_min = list(zip(minX, minY))
+        coords_max = list(zip(maxX, maxY))
+        message_mini = logger_message('extrémy', viditeľné=self.svk[visible],
+                                       extrémy=len(coords_min) + len(coords_max),
+                                       lokálne_minimá=len(coords_min),
+                                       lokálne_maximá=len(coords_max))
+        message = logger_message('extrémy', viditeľné=self.svk[visible],
+                                 lokálne_minimá=coords_min,
+                                 lokálne_maximá=coords_max)
+        self.logger.write(message_mini, mini=True)
         self.logger.write(message, main=True)
 
-    def _add_inflex_points_info(self, function, message, message_mini):
+    def _add_inflex_points_info(self, function):
         visible = function.get_parameter('inflex_points_visible')
         if not visible:
-            self.logger.write(message, main=True, mini=True)
+            self.logger.write(logger_message('inflexné body', viditeľné=self.svk[visible]), mini=True, main=True)
             return
-        found = function.get_parameter('inflex_points_values')
-        message_mini += logger_message('Inflex points', visible=visible, found=len(found))
-        message = logger_message('Inflex points', visible=visible, found=found)
-        self.logger.write(message_mini, main=True, mini=True)
+        foundX = function.get_parameter('inflex_points_xvals')
+        foundY = function.get_parameter('inflex_points_yvals')
+        coords = list(zip(foundX, foundY))
+        message_mini = logger_message('inflexné body', viditeľné=self.svk[visible], nájdené=len(coords))
+        message = logger_message('inflexné body', viditeľné=self.svk[visible], nájdené=coords)
+        self.logger.write(message_mini, mini=True)
         self.logger.write(message, main=True)
 
     def write_warnings(self):
@@ -84,7 +99,7 @@ class Observer:
                 message = f'{warning_type}:\n\tMethod {message[5:]} at point(s) {not_conv}.'
             else:
                 message = f'{warning_type}: {warning.message}'
-            self.logger.write(message, warnings=True)
+            self.logger.write(logger_message(message), warnings=True)
 
     def _changed_function(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -94,47 +109,47 @@ class Observer:
         self.manager.update_plot(main=True, derivatives=True, zero_points=True)
         self.write_warnings()
         function = self.manager.get_current()
-        message = logger_message('Main function', set=choice)
-        self._add_zero_points_info(function, message, message)
+        message = logger_message('hlavná funkcia', voľba=choice)
+        self._add_zero_points_info(function)
 
     def _changed_grid(self, b) -> None:
         self.manager.set_plot_updated(True)
-        choice = True if b['new'] == 'true' else False
+        visible = self.rules[b['new']]
         function = self.manager.get_current()
-        function.set_parameter('grid', choice)
-        self.configuration.save('grid', choice)
+        function.set_parameter('grid', visible)
+        self.configuration.save('grid', visible)
         self.manager.update_plot()
-        message = logger_message('Grid', visible=choice)
+        message = logger_message('mriežka', viditeľné=self.svk[visible])
         self.logger.write(message, main=True, mini=True)
 
     def _changed_derivative1(self, b) -> None:
         self.manager.set_plot_updated(True)
-        choice = True if b['new'] == 'true' else False
+        visible = self.rules[b['new']]
         function = self.manager.get_current()
-        function.set_parameter('active_derivative1', choice)
-        self.configuration.save('active_derivative1', choice)
+        function.set_parameter('active_derivative1', visible)
+        self.configuration.save('active_derivative1', visible)
         self.manager.update_plot()
-        message = logger_message('1st derivative', visible=choice)
+        message = logger_message('prvá derivácia', viditeľné=self.svk[visible])
         self.logger.write(message, main=True, mini=True)
 
     def _changed_derivative2(self, b) -> None:
         self.manager.set_plot_updated(True)
-        choice = True if b['new'] == 'true' else False
+        visible = self.rules[b['new']]
         function = self.manager.get_current()
-        function.set_parameter('active_derivative2', choice)
-        self.configuration.save('active_derivative2', choice)
+        function.set_parameter('active_derivative2', visible)
+        self.configuration.save('active_derivative2', visible)
         self.manager.update_plot()
-        message = logger_message('2nd derivative', visible=choice)
+        message = logger_message('druhá derivácia', viditeľné=self.svk[visible])
         self.logger.write(message, main=True, mini=True)
 
     def _changed_derivative3(self, b) -> None:
         self.manager.set_plot_updated(True)
-        choice = True if b['new'] == 'true' else False
+        visible = self.rules[b['new']]
         function = self.manager.get_current()
-        function.set_parameter('active_derivative3', choice)
-        self.configuration.save('active_derivative3', choice)
+        function.set_parameter('active_derivative3', visible)
+        self.configuration.save('active_derivative3', visible)
         self.manager.update_plot()
-        message = logger_message('3rd derivative', visible=choice)
+        message = logger_message('tretia derivácia', viditeľné=self.svk[visible])
         self.logger.write(message, main=True, mini=True)
 
     def _changed_color_main(self, b) -> None:
@@ -144,7 +159,7 @@ class Observer:
         function.set_parameter('main_function_color', choice)
         self.configuration.save('main_function_color', choice)
         self.manager.update_plot()
-        message = logger_message('Main function', color=choice)
+        message = logger_message('hlavná funkcia', farba=choice)
         self.logger.write(message, main=True, mini=True)
 
     def _changed_color_derivative1(self, b) -> None:
@@ -154,7 +169,7 @@ class Observer:
         function.set_parameter('derivative_color1', choice)
         self.configuration.save('derivative_color1', choice)
         self.manager.update_plot()
-        message = logger_message('1st derivative', color=choice)
+        message = logger_message('prvá derivácia', farba=choice)
         self.logger.write(message, main=True, mini=True)
 
     def _changed_color_derivative2(self, b) -> None:
@@ -164,7 +179,7 @@ class Observer:
         function.set_parameter('derivative_color2', choice)
         self.configuration.save('derivative_color2', choice)
         self.manager.update_plot()
-        message = logger_message('2nd derivative', color=choice)
+        message = logger_message('druhá derivácia', farba=choice)
         self.logger.write(message, main=True, mini=True)
 
     def _changed_color_derivative3(self, b) -> None:
@@ -174,32 +189,29 @@ class Observer:
         function.set_parameter('derivative_color3', choice)
         self.configuration.save('derivative_color3', choice)
         self.manager.update_plot()
-        message = logger_message('3rd derivative', color=choice)
-        self.logger.write(message, main=True, mini=True)
+        self.logger.write(logger_message('tretia derivácia', farba=choice), main=True, mini=True)
 
     def _changed_refinement(self, b) -> None:
         self.manager.set_plot_updated(True)
-        options = {**{'original' : 1}, **{str(value) + 'x': value for value in config['refinement']['values']}}
+        options = {**{'pôvodné' : 1}, **{str(value) + 'x': value for value in config['refinement']['values']}}
         choice = options[b['new']]
         function = self.manager.get_current()
         function.set_refinement(choice)
         self.configuration.save('refinement', choice)
-        self.logger.write('Recalculating function...', mini=True)
+        self.logger.write(logger_message('Prepočítavanie funkcie...'), mini=True)
         self.manager.update_plot(main=True, derivatives=True, zero_points=True, extremes=True, inflex_points=True)
         n_x_values = sum(map(len, function.get_parameter("x_values")))
-        message = logger_message('Refinement', refinement=b['new'], intervals=n_x_values-1, values=n_x_values)
-        self._add_zero_points_info(function, message, message)
-        self._add_extremes_info(function, message, message)
-        self._add_inflex_points_info(function, message, message)
+        message = logger_message('zjemnenie x-ovej osi', zjemnenie=b['new'], počet_intervalov=n_x_values-1, počet_hodnôt=n_x_values)
+        self.logger.write(message, main=True, mini=True)
 
     def _changed_zero_points(self, b) -> None:
         self.manager.set_plot_updated(True)
-        choice = b['new']
+        choice = self.rules[b['new']]
         function = self.manager.get_current()
         function.set_parameter('zero_points_visible', choice)
         self.configuration.save('zero_points_visible', choice)
         self.manager.update_plot()
-        self._add_zero_points_info(function, '', '')
+        self._add_zero_points_info(function)
 
     def _changed_zero_points_color(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -208,7 +220,7 @@ class Observer:
         function.set_parameter('zero_points_color', choice)
         self.configuration.save('zero_points_color', choice)
         self.manager.update_plot()
-        self.logger.write(logger_message('Zero points', color=choice), main=True, mini=True)
+        self.logger.write(logger_message('nulové body', mini=True, farba=choice), main=True, mini=True)
 
     def _changed_zero_points_iterations(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -217,16 +229,16 @@ class Observer:
         function.set_parameter('zero_points_iterations', choice)
         self.configuration.save('zero_points_iterations', choice)
         self.manager.update_plot(zero_points=True)
-        self._add_zero_points_info(function, '', '')
+        self._add_zero_points_info(function)
 
     def _changed_extremes_points(self, b) -> None:
         self.manager.set_plot_updated(True)
-        choice = b['new']
+        choice = self.rules[b['new']]
         function = self.manager.get_current()
         function.set_parameter('extremes_visible', choice)
         self.configuration.save('extremes_visible', choice)
         self.manager.update_plot()
-        self._add_extremes_info(function, '', '')
+        self._add_extremes_info(function)
 
     def _changed_extremes_color(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -235,16 +247,16 @@ class Observer:
         function.set_parameter('extremes_color', choice)
         self.configuration.save('extremes_color', choice)
         self.manager.update_plot()
-        self.logger.write(logger_message('Extremes', color=choice), main=True, mini=True)
+        self.logger.write(logger_message('extrémy', mini=True, farba=choice), main=True, mini=True)
 
     def _changed_inflex_points(self, b) -> None:
         self.manager.set_plot_updated(True)
-        choice = b['new']
+        choice = self.rules[b['new']]
         function = self.manager.get_current()
         function.set_parameter('inflex_points_visible', choice)
         self.configuration.save('inflex_points_visible', choice)
         self.manager.update_plot()
-        self._add_inflex_points_info(function, '', '')
+        self._add_inflex_points_info(function)
 
     def _changed_inflex_points_color(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -253,7 +265,7 @@ class Observer:
         function.set_parameter('inflex_points_color', choice)
         self.configuration.save('inflex_points_color', choice)
         self.manager.update_plot()
-        self.logger.write(logger_message('Inflex points', color=choice), main=True, mini=True)
+        self.logger.write(logger_message('inflexné body', mini=True, farba=choice), main=True, mini=True)
 
     def start(self) -> None:
 

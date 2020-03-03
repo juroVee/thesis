@@ -14,6 +14,7 @@ class GUIElementManager:
         self.manager = manager
         self.user_defined = manager.has_user_function()
         self.elements = defaultdict(dict)
+        self.rules = {'vypnuté': False, 'zapnuté': True}
         self._init_hboxes()
         self._init_dropdowns()
         self._init_texts()
@@ -41,9 +42,9 @@ class GUIElementManager:
         functions_names = [parameters['name'] for func, parameters in config['default_functions'].items()]
         default_function = config['main_function']['default']
         dropdown = w.Dropdown(
-            options=['user function'], # + functions_names if self.user_defined else functions_names,
-            value='user function' if self.user_defined else config['default_functions'][default_function]['name'],
-            description='Function:',
+            options=['užívateľ'], # + functions_names if self.user_defined else functions_names,
+            value='užívateľ' if self.user_defined else config['default_functions'][default_function]['name'],
+            description='Funkcia:',
             disabled=False,
             layout=w.Layout(width='100%'),
             style={'description_width': config['default_sizes']['menu_element_description']}
@@ -60,9 +61,9 @@ class GUIElementManager:
 
     def _grid_dropdown(self):
         return w.Dropdown(
-            options=['false', 'true'],
-            value='false',
-            description='Grid:',
+            options=['vypnuté', 'zapnuté'],
+            value='vypnuté',
+            description='Mriežka:',
             disabled=False,
             layout=w.Layout(width='auto', height='auto'),
             style={'description_width': config['default_sizes']['menu_element_description']}
@@ -71,9 +72,9 @@ class GUIElementManager:
     def _derivative_hbox(self, n=1):
         default_color = config['derivative']['colors'][n-1]
         dropdown = w.Dropdown(
-            options=['false', 'true'],
-            value='false',
-            description=f'{n}.' + ' derivative:',
+            options=['vypnuté', 'zapnuté'],
+            value='vypnuté',
+            description=f'{n}.' + ' derivácia:',
             disabled=False,
             layout=w.Layout(width='100%'),
             style={'description_width': config['default_sizes']['menu_element_description']}
@@ -86,18 +87,15 @@ class GUIElementManager:
             layout=w.Layout(width='28px')
         )
 
-        def transform(case):
-            return {'false': True, 'true': False}[case]
-
-        directional_link((dropdown, 'value'), (cpicker, 'disabled'), transform)
+        directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: self.rules[case])
 
         return w.HBox(children=[dropdown, cpicker])
 
     def _refinement_dropdown(self):
         return w.Dropdown(
-            options=['original'] + [str(value) + 'x' for value in config['refinement']['values']],
-            value='original',
-            description='Refinement:',
+            options=['pôvodné'] + [str(value) + 'x' for value in config['refinement']['values']],
+            value='pôvodné',
+            description='Zjemnenie:',
             disabled=False,
             layout=w.Layout(width='auto', height='auto'),
             style={'description_width': config['default_sizes']['menu_element_description']}
@@ -106,9 +104,9 @@ class GUIElementManager:
     def _zero_points_hbox_and_dropdown(self):
         default_color = config['zero_points']['color']
         dropdown = w.Dropdown(
-            options=[False, True],
-            value=False,
-            description='Zero points:',
+            options=['vypnuté', 'zapnuté'],
+            value='vypnuté',
+            description='Nulové body:',
             disabled=False,
             layout=w.Layout(width='100%'),
             style={'description_width': config['default_sizes']['menu_element_description']}
@@ -125,22 +123,22 @@ class GUIElementManager:
             min=1,
             max=1000,
             step=1,
-            description='Iterations:',
+            description='Iterácie:',
             disabled=False,
             layout=w.Layout(width='auto', height='auto'),
             style={'description_width': config['default_sizes']['menu_element_description']}
         )
 
-        directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: not case)
+        directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: self.rules[case])
 
-        return w.HBox(children=[dropdown, cpicker]), iter_text
+        return w.HBox(children=[dropdown, cpicker], layout=w.Layout(width='auto', height='auto')), iter_text
 
     def _extremes_hbox_and_dropdown(self):
         default_color = config['extremes']['color']
         dropdown = w.Dropdown(
-            options=[False, True],
-            value=False,
-            description='Extremes:',
+            options=['vypnuté', 'zapnuté'],
+            value='vypnuté',
+            description='Extrémy:',
             disabled=False,
             layout=w.Layout(width='100%'),
             style={'description_width': config['default_sizes']['menu_element_description']}
@@ -153,16 +151,16 @@ class GUIElementManager:
             layout=w.Layout(width='28px')
         )
 
-        directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: not case)
+        directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: self.rules[case])
 
         return w.HBox(children=[dropdown, cpicker])
 
     def _inflex_points_hbox_and_dropdown(self):
         default_color = config['inflex_points']['color']
         dropdown = w.Dropdown(
-            options=[False, True],
-            value=False,
-            description='Inflex points:',
+            options=['vypnuté', 'zapnuté'],
+            value='vypnuté',
+            description='Inflexné body:',
             disabled=False,
             layout=w.Layout(width='100%'),
             style={'description_width': config['default_sizes']['menu_element_description']}
@@ -174,7 +172,6 @@ class GUIElementManager:
             disabled=False,
             layout=w.Layout(width='28px')
         )
+        directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: self.rules[case])
 
-        directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: not case)
-
-        return w.HBox(children=[dropdown, cpicker])
+        return w.Box(children=[dropdown, cpicker])

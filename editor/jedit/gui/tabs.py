@@ -26,7 +26,7 @@ class AnalysisTab(Tab):
         gui_manager = board.get_gui_manager_object()
         gui_elements = gui_manager.get_elements()
         logger = board.get_logger_object()
-        super().__init__(name='Analysis',
+        super().__init__(name='Analýza',
                    main_window=[manager.get_plot_widget()],
                    sidebar=[(0, gui_elements['hbox']['function']),
                             (1, gui_elements['dropdown']['grid']),
@@ -46,7 +46,7 @@ class AnalysisTab(Tab):
         grid = w.GridspecLayout(self.board_grid_rows, self.board_grid_cols, height=self.height)
         grid[:self.main_window_rows, :self.main_window_cols] = w.VBox(children=self.main_window)
         for pos, item in self.sidebar:
-            grid[pos, self.main_window_cols:] = w.VBox(children=[item])
+            grid[pos, self.main_window_cols:] = item
         grid[self.main_window_rows:, :self.board_grid_cols] = w.VBox(children=self.footer)
         return grid
 
@@ -67,7 +67,7 @@ class WarningTab(Tab):
 
     def __init__(self, board=None):
         logger = board.get_logger_object()
-        super().__init__(name='Warnings', main_window=[logger.get_widget(t='warnings')])
+        super().__init__(name='Upozornenia', main_window=[logger.get_widget(t='warnings')])
 
     def get_widget(self) -> w.GridspecLayout:
         grid = w.GridspecLayout(self.board_grid_rows, self.board_grid_cols, height=self.height)

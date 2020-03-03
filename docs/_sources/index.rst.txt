@@ -11,7 +11,7 @@ Základné informácie
 .. sidebar:: Odkazy/Na stiahnutie
 
    | **Aktualizácia odkazov**
-   |    23. február 2020
+   |    2. marec 2020
 
    | **Repozitár práce**
    |    GitHub_
@@ -20,8 +20,8 @@ Základné informácie
    |    :download:`PDF <files/thesis_v1.pdf>`
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/editor_v9.tar.gz>`
-   |    :download:`zip <files/editor_v9.zip>`
+   |    :download:`tar.gz <files/editor_v10.tar.gz>`
+   |    :download:`zip <files/editor_v10.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -40,12 +40,21 @@ Základné informácie
 Log
 ===
 
+24.2.2020 - 1.3.2020
+--------------------
+
+- užívateľské rozhranie preložené do slovenčiny
+- odstránený pojem globálnych extrémov po dohode s vyučujúcim
+- optimalizácia výpočtu extrémov a inflexných bodov
+- vylepšené zobrazovanie údajov v ``Log``
+- nájdená chyba v GUI (nie len vo Firefoxe), ktorá zobrazuje posuvné tlačidlá (scrollbary) pri niektorých interaktívnych prvkoch (riešenie TODO)
+
 17.2.2020 - 23.2.2020
 ---------------------
 
 - skrytie zvyšných interaktívnych prvkov cez ``hide_interactive_toolbars()``
 - predpripravený prístup k učiteľským nastaveniam editora (parameter ``config`` v metóde ``run``)
-- opravená šírka okna pre výpisy logov a upozornení v tabe ``Logs``, resp. ``Warnings``
+- opravená šírka okna pre výpisy logov a upozornení v tabe ``Log``, resp. ``Warnings``
 - pridané výpočty extrémov a inflexných bodov cez ``scipy.signal.argrelextrema``
 - pridaná vizualizácia extrémov a inflexných bodov
 - pridané rozdelenie extrémov na lokálne (globálne) minimá a maximá a ich výpis v logoch

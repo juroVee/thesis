@@ -62,17 +62,19 @@ class Painter:
     def plot_extremes(self):
         if self.function.get_parameter('extremes_visible'):
             markersize = config['extremes']['markersize']
-            local_minima = self.function.get_parameter('local_minima')
-            local_maxima = self.function.get_parameter('local_maxima')
-            for x, y in local_minima + local_maxima:
-                self.ax.plot(x, y, 'o', c=self.function.get_parameter('extremes_color'), markersize=markersize, zorder=4)
+            minX = self.function.get_parameter('local_minima_xvals')
+            maxX = self.function.get_parameter('local_maxima_xvals')
+            minY = self.function.get_parameter('local_minima_yvals')
+            maxY = self.function.get_parameter('local_maxima_yvals')
+            self.ax.plot(minX, minY, 'o', c=self.function.get_parameter('extremes_color'), markersize=markersize, zorder=4)
+            self.ax.plot(maxX, maxY, 'o', c=self.function.get_parameter('extremes_color'), markersize=markersize, zorder=4)
 
     def plot_inflex_points(self):
         if self.function.get_parameter('inflex_points_visible'):
             markersize = config['inflex_points']['markersize']
-            f = self.function.get_parameter('f')
-            for x in self.function.get_parameter('inflex_points_values'):
-                self.ax.plot(x, f(x), 'o', c=self.function.get_parameter('inflex_points_color'), markersize=markersize, zorder=4)
+            X = self.function.get_parameter('inflex_points_xvals')
+            Y = self.function.get_parameter('inflex_points_yvals')
+            self.ax.plot(X, Y, 'o', c=self.function.get_parameter('inflex_points_color'), markersize=markersize, zorder=4)
 
     def plot_title(self):
         self.ax.set_title(self.function.get_parameter('latex'), y=1.06)

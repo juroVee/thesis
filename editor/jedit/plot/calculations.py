@@ -87,32 +87,37 @@ def calculate_extremes(function) -> None:
     X_values = function.get_parameter('x_values')
 
     # prepare result list
-    minima, maxima = [], []
+    local_minima, local_maxima = [], []
 
     for X in X_values:
-        for candidate in X[argrelextrema(f(X), np.greater)]:
-            maxima.append((candidate, f(candidate)))
-        for candidate in X[argrelextrema(f(X), np.less)]:
-            minima.append((candidate, f(candidate)))
-    function.set_parameter('local_minima', minima)
-    function.set_parameter('local_maxima', maxima)
-    function.set_parameter('global_minima', min(minima, key=lambda pair: pair[1]) if len(minima) > 0 else [])
-    function.set_parameter('global_maxima', max(maxima, key=lambda pair: pair[1]) if len(maxima) > 0 else [])
+        fX = f(X)
+        minimaX, maximaX = X[argrelextrema(fX, np.less)], X[argrelextrema(fX, np.greater)]
+        local_minima.append(minimaX)
+        local_maxima.append(maximaX)
+
+    local_minima, local_maxima = np.asarray(local_minima).flatten(), np.asarray(local_maxima).flatten()
+    function.set_parameter('local_minima_xvals', local_minima)
+    function.set_parameter('local_maxima_xvals', local_maxima)
+    function.set_parameter('local_minima_yvals', f(local_minima))
+    function.set_parameter('local_maxima_yvals', f(local_maxima))
 
 def calculate_inflex_points(function) -> None:
     # necessary data
+    f = function.get_parameter('f')
     derivatives = function.get_parameter('derivatives')
 
     # prepare result list
     result = []
 
-    for _, primes in derivatives.items():
+    for primes in derivatives.values():
         X, fprime = primes[1]
-        for candidate in X[argrelextrema(fprime, np.greater)]:
-            result.append(candidate)
-        for candidate in X[argrelextrema(fprime, np.less)]:
-            result.append(candidate)
-    function.set_parameter('inflex_points_values', result)
+        minimaX, maximaX = X[argrelextrema(fprime, np.less)], X[argrelextrema(fprime, np.greater)]
+        result.append(minimaX)
+        result.append(maximaX)
+
+    result = np.asarray(result).flatten()
+    function.set_parameter('inflex_points_xvals', result)
+    function.set_parameter('inflex_points_yvals', f(result))
 
 
 def calculate_derivatives(function) -> None:
