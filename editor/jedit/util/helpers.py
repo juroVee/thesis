@@ -1,6 +1,8 @@
 # external modules
 from IPython.display import display, HTML
 
+def logger_message(theme, **kwargs):
+    return theme, kwargs
 
 def transform_title(title: str) -> str:
     if title == '':
@@ -11,13 +13,13 @@ def transform_title(title: str) -> str:
     return result
 
 def check_parameters(params, logger) -> dict:
-    allowed_params = {'fig', 'ax', 'f', 'X', 'Y', 'primes', 'asymptotes', 'config'}
+    allowed_params = {'fig', 'ax', 'f', 'X', 'Y', 'fprimes', 'asymptotes', 'config'}
     result = {}
     if len(params) == 0:
         return result
     for param in params.keys():
         if param not in allowed_params:
-            logger.write(f'Unrecognized parameter "{param}".\nPlotting default.', mini=True)
+            logger.write(logger_message('Chyba', neznámy_parameter=param, akcia='vykreslenie prednastavenej funkcie'), mini=True)
             return result
     if any(param not in params for param in ['fig', 'ax', 'f', 'X']):
         logger.write('Parameters [fig, ax, f, X] are required to plot your function.\nPlotting default.', mini=True)

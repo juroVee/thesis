@@ -10,7 +10,7 @@ from ..config import config
 def compose(theme, kwargs, mini=False):
     if mini:
         return f'{theme}: {kwargs}'
-    result = f'\n\takcia: {theme}'
+    result = f'\n\tpopis akcie: {theme}'
     for arg, val in kwargs.items():
         result += '\n\t'
         if type(val) == list:
@@ -24,7 +24,9 @@ def compose(theme, kwargs, mini=False):
 class Logger:
 
     def __init__(self):
-        self.outputs = {'main': w.Output(), 'mini': w.Output(), 'warnings': w.Output()}
+        self.outputs = {'main': w.Output(layout=w.Layout(overflow='auto')),
+                        'mini': w.Output(),
+                        'warnings': w.Output(layout=w.Layout(overflow='auto'))}
         self.log_backup = []
 
     def write(self, message, main=False, mini=False, warnings=False):

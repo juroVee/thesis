@@ -52,7 +52,10 @@ def calculate_zero_points(function) -> tuple:
             delta_x = np.diff(X)[0]
 
             # get candidates
-            candidates, converged, zero_der = newton(f, original_X, fprime=fprime, tol=delta_x, maxiter=maxiter, full_output=True)
+            try:
+                candidates, converged, zero_der = newton(f, original_X, fprime=fprime, tol=delta_x, maxiter=maxiter, full_output=True)
+            except RuntimeError as e:
+                return True, (w, [], [])
 
             # save info about points where method didn't converge or zero derivation occured
             not_converged = candidates[converged == False]
@@ -77,11 +80,11 @@ def calculate_zero_points(function) -> tuple:
                 zero_derivatives_occured_list.append(zero_d)
 
 
-            # save values to Function object
-            function.set_parameter('zero_points_values', result)
-            return True, (w, not_converged_list, zero_derivatives_occured_list)
+        # save values to Function object
+        function.set_parameter('zero_points_values', result)
+        return True, (w, not_converged_list, zero_derivatives_occured_list)
 
-def calculate_extremes(function) -> None:
+def calculate_extremes(function) -> tuple:
     # necessary data
     f = function.get_parameter('f')
     X_values = function.get_parameter('x_values')
@@ -89,17 +92,21 @@ def calculate_extremes(function) -> None:
     # prepare result list
     local_minima, local_maxima = [], []
 
-    for X in X_values:
-        fX = f(X)
-        minimaX, maximaX = X[argrelextrema(fX, np.less)], X[argrelextrema(fX, np.greater)]
-        local_minima.append(minimaX)
-        local_maxima.append(maximaX)
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+
+        for X in X_values:
+            fX = f(X)
+            minimaX, maximaX = X[argrelextrema(fX, np.less)], X[argrelextrema(fX, np.greater)]
+            local_minima.append(minimaX)
+            local_maxima.append(maximaX)
 
     local_minima, local_maxima = np.asarray(local_minima).flatten(), np.asarray(local_maxima).flatten()
-    function.set_parameter('local_minima_xvals', local_minima)
-    function.set_parameter('local_maxima_xvals', local_maxima)
-    function.set_parameter('local_minima_yvals', f(local_minima))
-    function.set_parameter('local_maxima_yvals', f(local_maxima))
+    function.set_parameter('local_minima_xvals', local_minima if len(local_minima) > 0 else [])
+    function.set_parameter('local_maxima_xvals', local_maxima if len(local_maxima) > 0 else [])
+    function.set_parameter('local_minima_yvals', f(local_minima) if len(local_minima) > 0 else [])
+    function.set_parameter('local_maxima_yvals', f(local_maxima) if len(local_maxima) > 0 else [])
+    return True, (w, [], [])
 
 def calculate_inflex_points(function) -> None:
     # necessary data
@@ -108,14 +115,15 @@ def calculate_inflex_points(function) -> None:
 
     # prepare result list
     result = []
-
     for primes in derivatives.values():
         X, fprime = primes[1]
         minimaX, maximaX = X[argrelextrema(fprime, np.less)], X[argrelextrema(fprime, np.greater)]
-        result.append(minimaX)
-        result.append(maximaX)
+        for minx in minimaX:
+            result.append(minx)
+        for maxx in maximaX:
+            result.append(maxx)
 
-    result = np.asarray(result).flatten()
+    result = np.asarray(result)
     function.set_parameter('inflex_points_xvals', result)
     function.set_parameter('inflex_points_yvals', f(result))
 

@@ -14,7 +14,8 @@ class GUIElementManager:
         self.manager = manager
         self.user_defined = manager.has_user_function()
         self.elements = defaultdict(dict)
-        self.rules = {'vypnuté': False, 'zapnuté': True}
+        self.rules = {'vypnuté': True, 'zapnuté': False}
+        self.name_length = 12
         self._init_hboxes()
         self._init_dropdowns()
         self._init_texts()
@@ -42,7 +43,7 @@ class GUIElementManager:
         functions_names = [parameters['name'] for func, parameters in config['default_functions'].items()]
         default_function = config['main_function']['default']
         dropdown = w.Dropdown(
-            options=['užívateľ'], # + functions_names if self.user_defined else functions_names,
+            options=['užívateľ'] + functions_names if self.user_defined else functions_names,
             value='užívateľ' if self.user_defined else config['default_functions'][default_function]['name'],
             description='Funkcia:',
             disabled=False,
@@ -56,7 +57,7 @@ class GUIElementManager:
             disabled=False,
             layout=w.Layout(width='28px')
         )
-        return w.HBox(children=[dropdown, cpicker])
+        return w.HBox(children=[dropdown, cpicker], layout=w.Layout(overflow='hidden'))
 
 
     def _grid_dropdown(self):
@@ -65,7 +66,7 @@ class GUIElementManager:
             value='vypnuté',
             description='Mriežka:',
             disabled=False,
-            layout=w.Layout(width='auto', height='auto'),
+            layout=w.Layout(width='auto', overflow='hidden'),
             style={'description_width': config['default_sizes']['menu_element_description']}
         )
 
@@ -89,7 +90,7 @@ class GUIElementManager:
 
         directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: self.rules[case])
 
-        return w.HBox(children=[dropdown, cpicker])
+        return w.HBox(children=[dropdown, cpicker], layout=w.Layout(overflow='hidden'))
 
     def _refinement_dropdown(self):
         return w.Dropdown(
@@ -97,7 +98,7 @@ class GUIElementManager:
             value='pôvodné',
             description='Zjemnenie:',
             disabled=False,
-            layout=w.Layout(width='auto', height='auto'),
+            layout=w.Layout(width='auto', overflow='hidden'),
             style={'description_width': config['default_sizes']['menu_element_description']}
         )
 
@@ -125,13 +126,13 @@ class GUIElementManager:
             step=1,
             description='Iterácie:',
             disabled=False,
-            layout=w.Layout(width='auto', height='auto'),
+            layout=w.Layout(width='auto', overflow='hidden'),
             style={'description_width': config['default_sizes']['menu_element_description']}
         )
 
         directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: self.rules[case])
 
-        return w.HBox(children=[dropdown, cpicker], layout=w.Layout(width='auto', height='auto')), iter_text
+        return w.HBox(children=[dropdown, cpicker], layout=w.Layout(overflow='hidden')), iter_text
 
     def _extremes_hbox_and_dropdown(self):
         default_color = config['extremes']['color']
@@ -153,7 +154,7 @@ class GUIElementManager:
 
         directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: self.rules[case])
 
-        return w.HBox(children=[dropdown, cpicker])
+        return w.HBox(children=[dropdown, cpicker], layout=w.Layout(overflow='hidden'))
 
     def _inflex_points_hbox_and_dropdown(self):
         default_color = config['inflex_points']['color']
@@ -174,4 +175,4 @@ class GUIElementManager:
         )
         directional_link((dropdown, 'value'), (cpicker, 'disabled'), lambda case: self.rules[case])
 
-        return w.Box(children=[dropdown, cpicker])
+        return w.Box(children=[dropdown, cpicker], layout=w.Layout(overflow='hidden'))

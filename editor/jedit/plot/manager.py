@@ -72,7 +72,8 @@ class Manager:
             _, triple = calculate_zero_points(self.get_current())
             self.add_warnings(f'Calculating zero points ({self.get_current().get_parameter("name")}) warning', triple)
         if extremes:
-            calculate_extremes(self.get_current())
+            _, triple = calculate_extremes(self.get_current())
+            self.add_warnings(f'Calculating extremes ({self.get_current().get_parameter("name")}) warning', triple)
         if inflex_points:
             calculate_inflex_points(self.get_current())
         with self.output:

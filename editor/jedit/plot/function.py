@@ -110,7 +110,7 @@ class UserFunction(Function):
     def __init__(self, user_params):
         user_params = self._prepare_user_params(user_params)
         ax, X, f = user_params['ax'], user_params['X'], user_params['f']
-        user_derivatives = user_params.get('primes', None)
+        user_derivatives = user_params.get('fprimes', None)
         asymptotes = user_params.get('asymptotes', None)
         super().__init__(f, X, name='user function',
                          latex=transform_title(ax.get_title()),

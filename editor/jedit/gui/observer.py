@@ -3,6 +3,7 @@ from ..config import config
 def logger_message(theme, **kwargs):
     return theme, kwargs
 
+
 class Observer:
 
     class Configuration:
@@ -28,6 +29,17 @@ class Observer:
         self.configuration = self.Configuration()
         self.rules = {'vypnuté': False, 'zapnuté': True}
         self.svk = {True: 'áno', False: 'nie'}
+
+    def write_warnings(self):
+        warnings = self.manager.get_warnings()
+        while not warnings.empty():
+            warning_type, warning, not_conv, zero_der = warnings.get()
+            self.logger.write(logger_message('upozornenie',
+                                             správa=str(warning.message),
+                                             kategória=str(warning.category),
+                                             súbor=str(warning.filename),
+                                             nekonvergované=not_conv,
+                                             nulová_derivácia=zero_der), warnings=True)
 
     def _add_zero_points_info(self, function):
         self.write_warnings()
@@ -88,29 +100,17 @@ class Observer:
         self.logger.write(message_mini, mini=True)
         self.logger.write(message, main=True)
 
-    def write_warnings(self):
-        warnings = self.manager.get_warnings()
-        while not warnings.empty():
-            warning_type, warning, not_conv, zero_der = warnings.get()
-            message = str(warning.message)
-            if message == 'some derivatives were zero':
-                message = f'{warning_type}:\n\tDerivatives at point(s) {zero_der} were zero.'
-            elif message.startswith('some failed to converge after'):
-                message = f'{warning_type}:\n\tMethod {message[5:]} at point(s) {not_conv}.'
-            else:
-                message = f'{warning_type}: {warning.message}'
-            self.logger.write(logger_message(message), warnings=True)
-
     def _changed_function(self, b) -> None:
         self.manager.set_plot_updated(True)
         choice = b['new']
+        if choice == 'užívateľ':
+            choice = 'user function'
         self.manager.set_current(choice)
         self.manager.apply_configuration(self.configuration.get())
-        self.manager.update_plot(main=True, derivatives=True, zero_points=True)
+        self.manager.update_plot(main=True, derivatives=True, zero_points=True, extremes=True, inflex_points=True)
         self.write_warnings()
-        function = self.manager.get_current()
-        message = logger_message('hlavná funkcia', voľba=choice)
-        self._add_zero_points_info(function)
+        message = logger_message('hlavná funkcia', voľba=b['new'])
+        self.logger.write(message, main=True, mini=True)
 
     def _changed_grid(self, b) -> None:
         self.manager.set_plot_updated(True)

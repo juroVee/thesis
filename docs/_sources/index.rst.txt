@@ -40,6 +40,14 @@ Základné informácie
 Log
 ===
 
+2.3.2020 - 8.3.2020
+-------------------
+
+- opravená CSS chyba v GUI, kde bolo možné "skrolovať" ovládacie prvky (spôsobovalo aj prekrývanie grafických prvkov scrollbarom na niektorých zariadeniach)
+- extrémy, inflexné body sa vypisujú v ``Log`` ako dvojice bodov :math:`(x, y)`
+- znovupridané prednastavené funkcie na výber užívateľovi
+- opravené súvisiace chyby
+
 24.2.2020 - 1.3.2020
 --------------------
 
