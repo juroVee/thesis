@@ -15,28 +15,34 @@ class GUIElementManager:
         self.user_defined = manager.has_user_function()
         self.elements = defaultdict(dict)
         self.rules = {'vypnuté': True, 'zapnuté': False}
-        self.name_length = 12
-        self._init_hboxes()
-        self._init_dropdowns()
-        self._init_texts()
+        self.main_menu = self._init_menu()
 
     def get_elements(self):
         return self.elements
 
-    def _init_hboxes(self):
-        self.elements['hbox']['function'] = self._function_hbox()
-        for n in range(1, 4):
-            self.elements['hbox'][f'derivative{n}'] = self._derivative_hbox(n)
-        self.elements['hbox']['zero_points'] = self._zero_points_hbox_and_dropdown()[0]
-        self.elements['hbox']['extremes'] = self._extremes_hbox_and_dropdown()
-        self.elements['hbox']['inflex_points'] = self._inflex_points_hbox_and_dropdown()
+    def get_main_menu(self):
+        return self.main_menu
 
-    def _init_dropdowns(self):
-        self.elements['dropdown']['grid'] = self._grid_dropdown()
-        self.elements['dropdown']['refinement'] = self._refinement_dropdown()
+    def _init_menu(self):
+        tab_function_grid = w.GridspecLayout(config['default_sizes']['main_window_rows'] - 2, 1)
+        tab_function_grid[0, 0] = self.elements['function']['function'] = self._function_hbox()
+        tab_function_grid[1, 0] = self.elements['function']['grid'] = self._grid_dropdown()
+        tab_function_grid[3, 0] = self.elements['function']['derivative1'] = self._derivative_hbox(1)
+        tab_function_grid[4, 0] = self.elements['function']['derivative2'] = self._derivative_hbox(2)
+        tab_function_grid[5, 0] = self.elements['function']['derivative3'] = self._derivative_hbox(3)
 
-    def _init_texts(self):
-        self.elements['text']['zp_iterations'] = self._zero_points_hbox_and_dropdown()[1]
+        tab_analysis_grid = w.GridspecLayout(config['default_sizes']['main_window_rows'] - 2, 1)
+        tab_analysis_grid[0, 0] = self.elements['analysis']['refinement'] = self._refinement_dropdown()
+        tab_analysis_grid[1, 0] = self.elements['analysis']['iterations'] = self._zero_points_hbox_and_dropdown()[1]
+        tab_analysis_grid[3, 0] = self.elements['analysis']['zero_points'] = self._zero_points_hbox_and_dropdown()[0]
+        tab_analysis_grid[4, 0] = self.elements['analysis']['extremes'] = self._extremes_hbox_and_dropdown()
+        tab_analysis_grid[5, 0] = self.elements['analysis']['inflex_points'] = self._inflex_points_hbox_and_dropdown()
+
+        tab_nest = w.Tab()
+        tab_nest.children = [tab_function_grid, tab_analysis_grid]
+        tab_nest.set_title(0, 'Funkcia')
+        tab_nest.set_title(1, 'Analýza')
+        return tab_nest
 
     def _function_hbox(self):
         default_color = config['main_function']['color']

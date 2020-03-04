@@ -5,15 +5,15 @@ editor_settings:
 default_sizes:
     board_grid_rows: 18
     board_grid_cols: 10
-    main_window_rows: 16
+    main_window_rows: 15
     main_window_cols: 7
     board_grid_height: '580px'
-    menu_element_description: '100px'
+    menu_element_description: '90px'
 
 plot_parameters:
     grid: 'no'
     aspect: 'auto'
-    height: 5.2
+    height: 5
     width: 6.8
 
 main_function:

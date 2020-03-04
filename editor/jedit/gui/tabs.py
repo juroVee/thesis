@@ -24,29 +24,19 @@ class AnalysisTab(Tab):
     def __init__(self, board=None):
         manager = board.get_manager_object()
         gui_manager = board.get_gui_manager_object()
-        gui_elements = gui_manager.get_elements()
         logger = board.get_logger_object()
+        logger_mini_tab = w.Tab(children=[logger.get_widget(t='mini')], layout=w.Layout(height='100%'))
+        logger_mini_tab.set_title(0, 'Status')
         super().__init__(name='Analýza',
                    main_window=[manager.get_plot_widget()],
-                   sidebar=[(0, gui_elements['hbox']['function']),
-                            (1, gui_elements['dropdown']['grid']),
-                            (3, gui_elements['hbox']['derivative1']),
-                            (4, gui_elements['hbox']['derivative2']),
-                            (5, gui_elements['hbox']['derivative3']),
-                            (7, gui_elements['dropdown']['refinement']),
-                            (8, gui_elements['text']['zp_iterations']),
-                            (9, gui_elements['hbox']['zero_points']),
-                            (10, gui_elements['hbox']['extremes']),
-                            (11, gui_elements['hbox']['inflex_points'])
-                            ],
-                    footer=[logger.get_widget(t='mini')]
+                   sidebar=[gui_manager.get_main_menu()],
+                    footer=[logger_mini_tab]
                    )
 
     def get_widget(self) -> w.GridspecLayout:
         grid = w.GridspecLayout(self.board_grid_rows, self.board_grid_cols, height=self.height)
         grid[:self.main_window_rows, :self.main_window_cols] = w.VBox(children=self.main_window)
-        for pos, item in self.sidebar:
-            grid[pos, self.main_window_cols:] = item
+        grid[:self.main_window_rows, self.main_window_cols:] = w.VBox(children=self.sidebar)
         grid[self.main_window_rows:, :self.board_grid_cols] = w.VBox(children=self.footer)
         return grid
 

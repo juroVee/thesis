@@ -47,6 +47,8 @@ Log
 - extrémy, inflexné body sa vypisujú v ``Log`` ako dvojice bodov :math:`(x, y)`
 - znovupridané prednastavené funkcie na výber užívateľovi
 - opravené súvisiace chyby
+- pridané nové menu, rozdelenie ovládacích prvkov podľa kontextu
+- pridaný malý status bar do dolnej časti, ktorý zobrazuje aktuálne kroky užívateľa a podrobné informácie
 
 24.2.2020 - 1.3.2020
 --------------------

@@ -271,36 +271,36 @@ class Observer:
 
         gui_elements = self.gui_manager.get_elements()
 
-        dropdown, color_picker = gui_elements['hbox']['function'].children
+        dropdown, color_picker = gui_elements['function']['function'].children
         dropdown.observe(self._changed_function, 'value')
         color_picker.observe(self._changed_color_main, 'value')
 
-        gui_elements['dropdown']['grid'].observe(self._changed_grid, 'value')
+        gui_elements['function']['grid'].observe(self._changed_grid, 'value')
 
-        dropdown, color_picker = gui_elements['hbox']['derivative1'].children
+        dropdown, color_picker = gui_elements['function']['derivative1'].children
         dropdown.observe(self._changed_derivative1, 'value')
         color_picker.observe(self._changed_color_derivative1, 'value')
 
-        dropdown, color_picker = gui_elements['hbox']['derivative2'].children
+        dropdown, color_picker = gui_elements['function']['derivative2'].children
         dropdown.observe(self._changed_derivative2, 'value')
         color_picker.observe(self._changed_color_derivative2, 'value')
 
-        dropdown, color_picker = gui_elements['hbox']['derivative3'].children
+        dropdown, color_picker = gui_elements['function']['derivative3'].children
         dropdown.observe(self._changed_derivative3, 'value')
         color_picker.observe(self._changed_color_derivative3, 'value')
 
-        gui_elements['dropdown']['refinement'].observe(self._changed_refinement, 'value')
+        gui_elements['analysis']['refinement'].observe(self._changed_refinement, 'value')
 
-        dropdown, color_picker = gui_elements['hbox']['zero_points'].children
+        dropdown, color_picker = gui_elements['analysis']['zero_points'].children
         dropdown.observe(self._changed_zero_points, 'value')
         color_picker.observe(self._changed_zero_points_color, 'value')
 
-        dropdown, color_picker = gui_elements['hbox']['extremes'].children
+        dropdown, color_picker = gui_elements['analysis']['extremes'].children
         dropdown.observe(self._changed_extremes_points, 'value')
         color_picker.observe(self._changed_extremes_color, 'value')
 
-        dropdown, color_picker = gui_elements['hbox']['inflex_points'].children
+        dropdown, color_picker = gui_elements['analysis']['inflex_points'].children
         dropdown.observe(self._changed_inflex_points, 'value')
         color_picker.observe(self._changed_inflex_points_color, 'value')
 
-        gui_elements['text']['zp_iterations'].observe(self._changed_zero_points_iterations, 'value')
+        gui_elements['analysis']['iterations'].observe(self._changed_zero_points_iterations, 'value')
