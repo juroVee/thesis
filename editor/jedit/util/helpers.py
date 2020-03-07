@@ -1,6 +1,7 @@
 # external modules
 from IPython.display import display, HTML
 
+
 def logger_message(theme, **kwargs):
     return theme, kwargs
 

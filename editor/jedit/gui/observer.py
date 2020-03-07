@@ -100,6 +100,21 @@ class Observer:
         self.logger.write(message_mini, mini=True)
         self.logger.write(message, main=True)
 
+    def _add_analysis_info(self, function, op='increasing'):
+        visible = function.get_parameter(f'{op}_visible')
+        desc = {'increasing': 'rastúca',
+                'decreasing': 'klesajúca',
+                'convex': 'konvexná',
+                'concave': 'konkávna'}
+        if not visible:
+            self.logger.write(logger_message(desc[op], viditeľné=self.svk[visible]), mini=True, main=True)
+            return
+        intervals = function.get_parameter(f'{op}_intervals')
+        message_mini = logger_message(desc[op], viditeľné=self.svk[visible], nájdené_intervaly_x=len(intervals))
+        message = logger_message(desc[op], viditeľné=self.svk[visible], intervaly_x=intervals)
+        self.logger.write(message_mini, mini=True)
+        self.logger.write(message, main=True)
+
     def _changed_function(self, b) -> None:
         self.manager.set_plot_updated(True)
         choice = b['new']
@@ -107,14 +122,14 @@ class Observer:
             choice = 'user function'
         self.manager.set_current(choice)
         self.manager.apply_configuration(self.configuration.get())
-        self.manager.update_plot(main=True, derivatives=True, zero_points=True, extremes=True, inflex_points=True)
+        self.manager.update_plot(main_function=True, derivatives=True, zero_points=True, extremes=True, inflex_points=True)
         self.write_warnings()
         message = logger_message('hlavná funkcia', voľba=b['new'])
         self.logger.write(message, main=True, mini=True)
 
     def _changed_grid(self, b) -> None:
         self.manager.set_plot_updated(True)
-        visible = self.rules[b['new']]
+        visible = b['new']
         function = self.manager.get_current()
         function.set_parameter('grid', visible)
         self.configuration.save('grid', visible)
@@ -124,7 +139,7 @@ class Observer:
 
     def _changed_derivative1(self, b) -> None:
         self.manager.set_plot_updated(True)
-        visible = self.rules[b['new']]
+        visible = b['new']
         function = self.manager.get_current()
         function.set_parameter('active_derivative1', visible)
         self.configuration.save('active_derivative1', visible)
@@ -134,7 +149,7 @@ class Observer:
 
     def _changed_derivative2(self, b) -> None:
         self.manager.set_plot_updated(True)
-        visible = self.rules[b['new']]
+        visible = b['new']
         function = self.manager.get_current()
         function.set_parameter('active_derivative2', visible)
         self.configuration.save('active_derivative2', visible)
@@ -144,7 +159,7 @@ class Observer:
 
     def _changed_derivative3(self, b) -> None:
         self.manager.set_plot_updated(True)
-        visible = self.rules[b['new']]
+        visible = b['new']
         function = self.manager.get_current()
         function.set_parameter('active_derivative3', visible)
         self.configuration.save('active_derivative3', visible)
@@ -199,16 +214,19 @@ class Observer:
         function.set_refinement(choice)
         self.configuration.save('refinement', choice)
         self.logger.write(logger_message('Prepočítavanie funkcie...'), mini=True)
-        self.manager.update_plot(main=True, derivatives=True, zero_points=True, extremes=True, inflex_points=True)
+        self.manager.update_plot(main_function=True, derivatives=True, zero_points=True, extremes=True, inflex_points=True, monotonic=True, convex=True)
         n_x_values = sum(map(len, function.get_parameter("x_values")))
         message = logger_message('zjemnenie x-ovej osi', zjemnenie=b['new'], počet_intervalov=n_x_values-1, počet_hodnôt=n_x_values)
         self.logger.write(message, main=True, mini=True)
 
     def _changed_zero_points(self, b) -> None:
         self.manager.set_plot_updated(True)
-        choice = self.rules[b['new']]
+        choice = b['new']
         function = self.manager.get_current()
         function.set_parameter('zero_points_visible', choice)
+        if choice:
+            function.set_parameter('zero_points_zorder', function.get_zorder_sum() + 1)
+            function.update_zorder_sum()
         self.configuration.save('zero_points_visible', choice)
         self.manager.update_plot()
         self._add_zero_points_info(function)
@@ -233,8 +251,11 @@ class Observer:
 
     def _changed_extremes_points(self, b) -> None:
         self.manager.set_plot_updated(True)
-        choice = self.rules[b['new']]
+        choice = b['new']
         function = self.manager.get_current()
+        if choice:
+            function.set_parameter('extremes_zorder', function.get_zorder_sum() + 1)
+            function.update_zorder_sum()
         function.set_parameter('extremes_visible', choice)
         self.configuration.save('extremes_visible', choice)
         self.manager.update_plot()
@@ -251,8 +272,11 @@ class Observer:
 
     def _changed_inflex_points(self, b) -> None:
         self.manager.set_plot_updated(True)
-        choice = self.rules[b['new']]
+        choice = b['new']
         function = self.manager.get_current()
+        if choice:
+            function.set_parameter('inflex_points_zorder', function.get_zorder_sum() + 1)
+            function.update_zorder_sum()
         function.set_parameter('inflex_points_visible', choice)
         self.configuration.save('inflex_points_visible', choice)
         self.manager.update_plot()
@@ -267,15 +291,100 @@ class Observer:
         self.manager.update_plot()
         self.logger.write(logger_message('inflexné body', mini=True, farba=choice), main=True, mini=True)
 
-    def start(self) -> None:
+    def _changed_increasing(self, b) -> None:
+        self.manager.set_plot_updated(True)
+        choice = b['new']
+        function = self.manager.get_current()
+        if choice:
+            function.set_parameter('increasing_zorder', function.get_zorder_sum() + 1)
+            function.update_zorder_sum()
+        function.set_parameter('increasing_visible', choice)
+        self.configuration.save('increasing_visible', choice)
+        self.manager.update_plot()
+        self._add_analysis_info(function, op='increasing')
 
+    def _changed_increasing_color(self, b) -> None:
+        self.manager.set_plot_updated(True)
+        choice = b['new']
+        function = self.manager.get_current()
+        function.set_parameter('increasing_color', choice)
+        self.configuration.save('increasing_color', choice)
+        self.manager.update_plot()
+        self.logger.write(logger_message('rastúca', mini=True, farba=choice), main=True, mini=True)
+
+    def _changed_decreasing(self, b) -> None:
+        self.manager.set_plot_updated(True)
+        choice = b['new']
+        function = self.manager.get_current()
+        if choice:
+            function.set_parameter('decreasing_zorder', function.get_zorder_sum() + 1)
+            function.update_zorder_sum()
+        function.set_parameter('decreasing_visible', choice)
+        self.configuration.save('decreasing_visible', choice)
+        self.manager.update_plot()
+        self._add_analysis_info(function, op='decreasing')
+
+    def _changed_decreasing_color(self, b) -> None:
+        self.manager.set_plot_updated(True)
+        choice = b['new']
+        function = self.manager.get_current()
+        function.set_parameter('decreasing_color', choice)
+        self.configuration.save('decreasing_color', choice)
+        self.manager.update_plot()
+        self.logger.write(logger_message('klesajúca', mini=True, farba=choice), main=True, mini=True)
+
+    def _changed_convex(self, b) -> None:
+        self.manager.set_plot_updated(True)
+        choice = b['new']
+        function = self.manager.get_current()
+        if choice:
+            function.set_parameter('convex_zorder', function.get_zorder_sum() + 1)
+            function.update_zorder_sum()
+        function.set_parameter('convex_visible', choice)
+        self.configuration.save('convex_visible', choice)
+        self.manager.update_plot()
+        self._add_analysis_info(function, op='convex')
+
+    def _changed_convex_color(self, b) -> None:
+        self.manager.set_plot_updated(True)
+        choice = b['new']
+        function = self.manager.get_current()
+        function.set_parameter('convex_color', choice)
+        self.configuration.save('convex_color', choice)
+        self.manager.update_plot()
+        self.logger.write(logger_message('konvexná', mini=True, farba=choice), main=True, mini=True)
+
+    def _changed_concave(self, b) -> None:
+        self.manager.set_plot_updated(True)
+        choice = b['new']
+        function = self.manager.get_current()
+        if choice:
+            function.set_parameter('concave_zorder', function.get_zorder_sum() + 1)
+            function.update_zorder_sum()
+        function.set_parameter('concave_visible', choice)
+        self.configuration.save('concave_visible', choice)
+        self.manager.update_plot()
+        self._add_analysis_info(function, op='concave')
+
+    def _changed_concave_color(self, b) -> None:
+        self.manager.set_plot_updated(True)
+        choice = b['new']
+        function = self.manager.get_current()
+        function.set_parameter('concave_color', choice)
+        self.configuration.save('concave_color', choice)
+        self.manager.update_plot()
+        self.logger.write(logger_message('konkávna', mini=True, farba=choice), main=True, mini=True)
+
+    def start(self) -> None:
+        #TODO vylepsit
         gui_elements = self.gui_manager.get_elements()
 
-        dropdown, color_picker = gui_elements['function']['function'].children
+        _, dropdown, color_picker = gui_elements['function']['function'].children
         dropdown.observe(self._changed_function, 'value')
         color_picker.observe(self._changed_color_main, 'value')
 
-        gui_elements['function']['grid'].observe(self._changed_grid, 'value')
+        button = gui_elements['function']['grid'].children[0]
+        button.observe(self._changed_grid, 'value')
 
         dropdown, color_picker = gui_elements['function']['derivative1'].children
         dropdown.observe(self._changed_derivative1, 'value')
@@ -289,7 +398,8 @@ class Observer:
         dropdown.observe(self._changed_derivative3, 'value')
         color_picker.observe(self._changed_color_derivative3, 'value')
 
-        gui_elements['analysis']['refinement'].observe(self._changed_refinement, 'value')
+        _, dropdown = gui_elements['analysis']['refinement'].children
+        dropdown.observe(self._changed_refinement, 'value')
 
         dropdown, color_picker = gui_elements['analysis']['zero_points'].children
         dropdown.observe(self._changed_zero_points, 'value')
@@ -303,4 +413,21 @@ class Observer:
         dropdown.observe(self._changed_inflex_points, 'value')
         color_picker.observe(self._changed_inflex_points_color, 'value')
 
-        gui_elements['analysis']['iterations'].observe(self._changed_zero_points_iterations, 'value')
+        dropdown, color_picker = gui_elements['analysis']['increasing'].children
+        dropdown.observe(self._changed_increasing, 'value')
+        color_picker.observe(self._changed_increasing_color, 'value')
+
+        dropdown, color_picker = gui_elements['analysis']['decreasing'].children
+        dropdown.observe(self._changed_decreasing, 'value')
+        color_picker.observe(self._changed_decreasing_color, 'value')
+
+        dropdown, color_picker = gui_elements['analysis']['convex'].children
+        dropdown.observe(self._changed_convex, 'value')
+        color_picker.observe(self._changed_convex_color, 'value')
+
+        dropdown, color_picker = gui_elements['analysis']['concave'].children
+        dropdown.observe(self._changed_concave, 'value')
+        color_picker.observe(self._changed_concave_color, 'value')
+
+        _, dropdown = gui_elements['analysis']['iterations'].children
+        dropdown.observe(self._changed_zero_points_iterations, 'value')

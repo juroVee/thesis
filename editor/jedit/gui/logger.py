@@ -14,8 +14,8 @@ def compose(theme, kwargs, mini=False):
     for arg, val in kwargs.items():
         result += '\n\t'
         if type(val) == list:
-            result += f'{arg}:\n\t  ['
-            result += ',\n\t  '.join(map(str, val)) + ']'
+            result += f'{arg}: [\n\t   '
+            result += ',\n\t   '.join(map(str, val)) + '\n\t]'
         else:
             result += f'{arg}: {val}'
     return result

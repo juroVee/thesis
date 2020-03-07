@@ -6,7 +6,7 @@ from queue import Queue
 
 # project-level modules
 from ..config import config
-from .calculations import calculate_main_function, calculate_derivatives, calculate_zero_points, calculate_extremes, calculate_inflex_points
+from .calculations import Calculator
 from .function import Function, DefaultFunction, UserFunction
 
 class Manager:
@@ -63,19 +63,15 @@ class Manager:
     def get_warnings(self):
         return self.warnings
 
-    def update_plot(self, main=False, derivatives=False, zero_points=False, extremes=False, inflex_points=False) -> None:
-        if main:
-            calculate_main_function(self.get_current())
-        if derivatives:
-            calculate_derivatives(self.get_current())
-        if zero_points:
-            _, triple = calculate_zero_points(self.get_current())
-            self.add_warnings(f'Calculating zero points ({self.get_current().get_parameter("name")}) warning', triple)
-        if extremes:
-            _, triple = calculate_extremes(self.get_current())
-            self.add_warnings(f'Calculating extremes ({self.get_current().get_parameter("name")}) warning', triple)
-        if inflex_points:
-            calculate_inflex_points(self.get_current())
+    def update_plot(self, **kwargs) -> None:
+        calculator = Calculator(self.get_current())
+        for arg, value in kwargs.items():
+            if value:
+                if arg in ('zero_points', 'extremes'):
+                    _, triple = getattr(calculator, arg)()
+                    self.add_warnings('Warning', triple)
+                else:
+                    getattr(calculator, arg)()
         with self.output:
             clear_output()
             if self.plot_updated:

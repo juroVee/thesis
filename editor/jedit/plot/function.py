@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.lines import Line2D
+from IPython.display import display
 
 # project-level modules
 from ..config import config
@@ -16,12 +17,13 @@ class Function:
 
     def __init__(self, f, X, name, latex, user_derivatives=None, asymptotes=None):
         self.parameters = {}
+        self.zorder_sum = 4
         self._init_function_details(X, f, name, latex, user_derivatives, asymptotes)
         self._init_plot_parameters()
         self._init_derivatives()
         self._init_zero_points()
-        self._init_extremes()
-        self._init_inflex_points()
+        for op in 'extremes', 'inflex_points', 'increasing', 'decreasing', 'convex', 'concave':
+            self._init_analysis(op)
         self._init_refinement()
 
     def _init_function_details(self, X, f, name, latex_representation, user_derivatives, asymptotes):
@@ -53,24 +55,17 @@ class Function:
         self.set_parameter('zero_points_color', config['zero_points']['color'])
         self.set_parameter('zero_points_iterations', config['zero_points']['iterations'])
         
-    def _init_extremes(self):
-        self.set_parameter('extremes_visible', False)
-        self.set_parameter('extremes_color', config['extremes']['color'])
-        
-    def _init_inflex_points(self):
-        self.set_parameter('inflex_points_visible', False)
-        self.set_parameter('inflex_points_color', config['inflex_points']['color'])
+    def _init_analysis(self, op='extremes'):
+        self.set_parameter(f'{op}_visible', False)
+        self.set_parameter(f'{op}_color', config[op]['color'])
 
     def _init_refinement(self):
         self.set_parameter('refinement', 1)
 
     def plot(self) -> None:
-        # # DEBUG ONLY -> DELETE
-        # for xval in self.get_parameter('x_values'):
-        #     print(f'(DEBUG) Refinement: {self.get_parameter("refinement")} Intervals: {len(xval)-1} Values: {len(xval)}')
 
+        #TODO : REMOVE
         width, height = config['plot_parameters']['width'], config['plot_parameters']['height']
-
         fig, ax = plt.subplots()
         fig.set_size_inches(width, height)
 
@@ -81,6 +76,10 @@ class Function:
         painter.plot_zero_points()
         painter.plot_extremes()
         painter.plot_inflex_points()
+        painter.plot_analysis('increasing')
+        painter.plot_analysis('decreasing')
+        painter.plot_analysis('convex')
+        painter.plot_analysis('concave')
         painter.plot_title()
 
         fig.show()
@@ -90,6 +89,12 @@ class Function:
 
     def get_parameter(self, parameter):
         return self.parameters.get(parameter, None)
+
+    def update_zorder_sum(self):
+        self.zorder_sum += 1
+
+    def get_zorder_sum(self):
+        return self.zorder_sum
 
     def set_refinement(self, value=1) -> None:
         self.set_parameter('refinement', value)

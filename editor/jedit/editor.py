@@ -6,7 +6,8 @@ from .config import config
 
 # external modules
 from matplotlib import get_backend
-from IPython.display import display
+import matplotlib.pyplot as plt
+from IPython.display import display, clear_output
 
 
 class Editor:
@@ -27,8 +28,18 @@ class Editor:
         observer = self.board.get_observer_object()
         display(self.board.get_widget())
 
-        with manager.output:
-            manager.update_plot(main=True, derivatives=True, zero_points=True, extremes=True, inflex_points=True)
+        # width, height = config['plot_parameters']['width'], config['plot_parameters']['height']
+        # fig, ax = plt.subplots()
+        # fig.set_size_inches(width, height)
+
+        manager.update_plot(main_function=True,
+                                    derivatives=True,
+                                    zero_points=True,
+                                    extremes=True,
+                                    inflex_points=True,
+                                    monotonic=True,
+                                    convex=True
+                                    )
         observer.write_warnings()
 
 # run instance after importing editor
