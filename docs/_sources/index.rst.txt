@@ -11,7 +11,7 @@ Základné informácie
 .. sidebar:: Odkazy/Na stiahnutie
 
    | **Aktualizácia odkazov**
-   |    2. marec 2020
+   |    8. marec 2020
 
    | **Repozitár práce**
    |    GitHub_
@@ -20,8 +20,8 @@ Základné informácie
    |    :download:`PDF <files/thesis_v1.pdf>`
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/editor_v11.tar.gz>`
-   |    :download:`zip <files/editor_v11.zip>`
+   |    :download:`tar.gz <files/editor_v12.tar.gz>`
+   |    :download:`zip <files/editor_v12.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -47,13 +47,13 @@ Log
 -------------------
 
 - opravená CSS chyba v GUI, kde bolo možné "skrolovať" ovládacie prvky (spôsobovalo aj prekrývanie grafických prvkov scrollbarom na niektorých zariadeniach)
-- extrémy, inflexné body sa vypisujú v ``Log`` ako dvojice bodov :math:`(x, y)`
+- extrémy, inflexné body sa vypisujú v ``Log`` ako funkčné hodnoty v bodoch :math:`x`
 - znovupridané prednastavené funkcie na výber užívateľovi
-- opravené súvisiace chyby
 - pridané nové menu, rozdelenie ovládacích prvkov podľa kontextu, nová grafika (tlačidlá namiesto dropdownov)
 - pridaný malý status bar do dolnej časti, ktorý zobrazuje aktuálne kroky užívateľa a podrobné informácie
 - pridané funkcionality na zobrazenie monotónnosti, konvexnosti a konkávnosti
-- pridaná logika ``zorder``, posledne zvolené časti grafu sa zobrazujú vždy navrchu
+- pridaná logika ``zorder``, posledne zvolené časti grafu sa zobrazujú vždy "najbližšie" k užívateľovi
+- pri zjemňovaní x-ovej osi a zapnutej analýze (tlačidiel) sa do logu znova vypíšu skúmané údaje
 
 24.2.2020 - 1.3.2020
 --------------------

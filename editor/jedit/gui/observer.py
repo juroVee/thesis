@@ -41,17 +41,18 @@ class Observer:
                                              nekonvergované=not_conv,
                                              nulová_derivácia=zero_der), warnings=True)
 
-    def _add_zero_points_info(self, function):
+    def _add_zero_points_info(self, function, refinement_support=False):
         self.write_warnings()
         visible = function.get_parameter('zero_points_visible')
         zp_values = function.get_parameter('zero_points_values')
         method = function.get_parameter('zero_points_method')
         maxiter = function.get_parameter('zero_points_iterations')
         if not visible:
-            self.logger.write(logger_message('nulové body', viditeľné=self.svk[visible],
-                                      derivácia="áno" if method == "Newton" else "nie",
-                                      metóda=method,
-                                      maxiter=maxiter), mini=True, main=True)
+            if not refinement_support:
+                self.logger.write(logger_message('nulové body', viditeľné=self.svk[visible],
+                                          derivácia="áno" if method == "Newton" else "nie",
+                                          metóda=method,
+                                          maxiter=maxiter), mini=True, main=True)
             return
         message_mini = logger_message('nulové body', viditeľné=self.svk[visible],
                                       derivácia="áno" if method == "Newton" else "nie",
@@ -63,56 +64,56 @@ class Observer:
                                    metóda=method,
                                    maxiter=maxiter,
                                    nájdené=zp_values)
-        self.logger.write(message_mini, mini=True)
+        if not refinement_support:
+            self.logger.write(message_mini, mini=True)
         self.logger.write(message, main=True)
 
-    def _add_extremes_info(self, function):
+    def _add_extremes_info(self, function, refinement_support=False):
         visible = function.get_parameter('extremes_visible')
         if not visible:
-            self.logger.write(logger_message('extrémy', viditeľné=self.svk[visible]), mini=True, main=True)
+            if not refinement_support:
+                self.logger.write(logger_message('extrémy', viditeľné=self.svk[visible]), mini=True, main=True)
             return
-        minX = function.get_parameter('local_minima_xvals')
-        maxX = function.get_parameter('local_maxima_xvals')
-        minY = function.get_parameter('local_minima_yvals')
-        maxY = function.get_parameter('local_maxima_yvals')
-        coords_min = list(zip(minX, minY))
-        coords_max = list(zip(maxX, maxY))
+        minX = list(function.get_parameter('local_minima_xvals'))
+        maxX = list(function.get_parameter('local_maxima_xvals'))
         message_mini = logger_message('extrémy', viditeľné=self.svk[visible],
-                                       extrémy=len(coords_min) + len(coords_max),
-                                       lokálne_minimá=len(coords_min),
-                                       lokálne_maximá=len(coords_max))
+                                       ostré_lokálne_minimá=len(minX),
+                                       ostré_lokálne_maximá=len(maxX))
         message = logger_message('extrémy', viditeľné=self.svk[visible],
-                                 lokálne_minimá=coords_min,
-                                 lokálne_maximá=coords_max)
-        self.logger.write(message_mini, mini=True)
+                                 ostré_lokálne_minimá_v_bodoch=minX,
+                                 ostré_lokálne_maximá_v_bodoch=maxX)
+        if not refinement_support:
+            self.logger.write(message_mini, mini=True)
         self.logger.write(message, main=True)
 
-    def _add_inflex_points_info(self, function):
+    def _add_inflex_points_info(self, function, refinement_support=False):
         visible = function.get_parameter('inflex_points_visible')
         if not visible:
-            self.logger.write(logger_message('inflexné body', viditeľné=self.svk[visible]), mini=True, main=True)
+            if not refinement_support:
+                self.logger.write(logger_message('inflexné body', viditeľné=self.svk[visible]), mini=True, main=True)
             return
-        foundX = function.get_parameter('inflex_points_xvals')
-        foundY = function.get_parameter('inflex_points_yvals')
-        coords = list(zip(foundX, foundY))
-        message_mini = logger_message('inflexné body', viditeľné=self.svk[visible], nájdené=len(coords))
-        message = logger_message('inflexné body', viditeľné=self.svk[visible], nájdené=coords)
-        self.logger.write(message_mini, mini=True)
+        foundX = list(function.get_parameter('inflex_points_xvals'))
+        message_mini = logger_message('inflexné body', viditeľné=self.svk[visible], nájdené=len(foundX))
+        message = logger_message('inflexné body', viditeľné=self.svk[visible], v_bodoch=foundX)
+        if not refinement_support:
+            self.logger.write(message_mini, mini=True)
         self.logger.write(message, main=True)
 
-    def _add_analysis_info(self, function, op='increasing'):
+    def _add_analysis_info(self, function, op='increasing', refinement_support=False):
         visible = function.get_parameter(f'{op}_visible')
         desc = {'increasing': 'rastúca',
                 'decreasing': 'klesajúca',
                 'convex': 'konvexná',
                 'concave': 'konkávna'}
         if not visible:
-            self.logger.write(logger_message(desc[op], viditeľné=self.svk[visible]), mini=True, main=True)
+            if not refinement_support:
+                self.logger.write(logger_message(desc[op], viditeľné=self.svk[visible]), mini=True, main=True)
             return
         intervals = function.get_parameter(f'{op}_intervals')
         message_mini = logger_message(desc[op], viditeľné=self.svk[visible], nájdené_intervaly_x=len(intervals))
         message = logger_message(desc[op], viditeľné=self.svk[visible], intervaly_x=intervals)
-        self.logger.write(message_mini, mini=True)
+        if not refinement_support:
+            self.logger.write(message_mini, mini=True)
         self.logger.write(message, main=True)
 
     def _changed_function(self, b) -> None:
@@ -218,6 +219,10 @@ class Observer:
         n_x_values = sum(map(len, function.get_parameter("x_values")))
         message = logger_message('zjemnenie x-ovej osi', zjemnenie=b['new'], počet_intervalov=n_x_values-1, počet_hodnôt=n_x_values)
         self.logger.write(message, main=True, mini=True)
+        self._add_zero_points_info(function, refinement_support=True)
+        self._add_extremes_info(function, refinement_support=True)
+        self._add_inflex_points_info(function, refinement_support=True)
+        self._add_analysis_info(function, refinement_support=True)
 
     def _changed_zero_points(self, b) -> None:
         self.manager.set_plot_updated(True)
