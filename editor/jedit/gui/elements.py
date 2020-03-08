@@ -26,10 +26,11 @@ class GUIElementManager:
     def _init_menu(self):
         tab_function_grid = w.GridspecLayout(config['default_sizes']['main_window_rows'] - 4, 1)
         tab_function_grid[0, 0] = self.elements['function']['function'] = self.get_function_hbox()
-        tab_function_grid[1, 0] = self.elements['function']['grid'] = self.get_grid_dropdown()
-        tab_function_grid[3, 0] = self.elements['function']['derivative1'] = self.get_derivative_hbox(1)
-        tab_function_grid[4, 0] = self.elements['function']['derivative2'] = self.get_derivative_hbox(2)
-        tab_function_grid[5, 0] = self.elements['function']['derivative3'] = self.get_derivative_hbox(3)
+        tab_function_grid[2, 0] = self.elements['function']['grid'] = self.get_grid_dropdown()
+        tab_function_grid[3, 0] = self.elements['function']['aspect'] = self.get_button_aspect()
+        tab_function_grid[5, 0] = self.elements['function']['derivative1'] = self.get_derivative_hbox(1)
+        tab_function_grid[6, 0] = self.elements['function']['derivative2'] = self.get_derivative_hbox(2)
+        tab_function_grid[7, 0] = self.elements['function']['derivative3'] = self.get_derivative_hbox(3)
 
         tab_analysis_grid = w.GridspecLayout(config['default_sizes']['main_window_rows'] - 4, 1)
         tab_analysis_grid[0, 0] = self.elements['analysis']['zero_points'] = self.get_analysis_hbox(op='zero_points')
@@ -87,6 +88,26 @@ class GUIElementManager:
             layout=w.Layout(width='100%', border='1px solid darkgrey')
         )
         return w.HBox(children=[grid_button], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
+
+    def get_button_aspect(self):
+        current_function = self.manager.get_current()
+        default = current_function.get_parameter('aspect')
+        button = w.ToggleButton(
+            value=False,
+            description='Aspekt',
+            disabled=True,
+            button_style='',  # 'success', 'info', 'warning', 'danger' or ''
+            tooltip='Description',
+            layout=w.Layout(width='90%', border='1px solid darkgrey')
+        )
+        dropdown = w.Dropdown(
+            options=['automatický', 'vyrovnaný'] if default == 'auto' else ['vyrovnaný', 'automatický'],
+            value='automatický' if default == 'auto' else 'vyrovnaný',
+            description='',
+            disabled=False,
+            layout=w.Layout(width='100%', overflow='hidden')
+        )
+        return w.HBox(children=[button, dropdown], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
 
     def get_derivative_hbox(self, n=1):
         default_color = config['derivative']['colors'][n-1]

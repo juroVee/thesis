@@ -138,6 +138,19 @@ class Observer:
         message = logger_message('mriežka', viditeľné=self.svk[visible])
         self.logger.write(message, main=True, mini=True)
 
+    def _changed_aspect(self, b) -> None:
+        self.manager.set_plot_updated(True)
+        value = b['new']
+        function = self.manager.get_current()
+        if value == 'automatický':
+            function.set_parameter('aspect', 'auto')
+        else:
+            function.set_parameter('aspect', 'equal')
+        self.configuration.save('aspect', value)
+        self.manager.update_plot()
+        message = logger_message('aspekt', hodnota=value)
+        self.logger.write(message, main=True, mini=True)
+
     def _changed_derivative1(self, b) -> None:
         self.manager.set_plot_updated(True)
         visible = b['new']
@@ -214,7 +227,7 @@ class Observer:
         function = self.manager.get_current()
         function.set_refinement(choice)
         self.configuration.save('refinement', choice)
-        self.logger.write(logger_message('Prepočítavanie funkcie...'), mini=True)
+        self.logger.write(logger_message('Prepočítavanie funkcie...'), mini=True, status=True)
         self.manager.update_plot(main_function=True, derivatives=True, zero_points=True, extremes=True, inflex_points=True, monotonic=True, convex=True)
         n_x_values = sum(map(len, function.get_parameter("x_values")))
         message = logger_message('zjemnenie x-ovej osi', zjemnenie=b['new'], počet_intervalov=n_x_values-1, počet_hodnôt=n_x_values)
@@ -390,6 +403,9 @@ class Observer:
 
         button = gui_elements['function']['grid'].children[0]
         button.observe(self._changed_grid, 'value')
+
+        _, dropdown = gui_elements['function']['aspect'].children
+        dropdown.observe(self._changed_aspect, 'value')
 
         dropdown, color_picker = gui_elements['function']['derivative1'].children
         dropdown.observe(self._changed_derivative1, 'value')
