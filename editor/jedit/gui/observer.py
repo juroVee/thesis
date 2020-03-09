@@ -77,9 +77,9 @@ class Observer:
         minX = list(function.get_parameter('local_minima_xvals'))
         maxX = list(function.get_parameter('local_maxima_xvals'))
         message_mini = logger_message('extrémy', viditeľné=self.svk[visible],
-                                       ostré_lokálne_minimá=len(minX),
-                                       ostré_lokálne_maximá=len(maxX))
+                                       ostré_lokálne_extrémy=len(minX) + len(maxX))
         message = logger_message('extrémy', viditeľné=self.svk[visible],
+                                 ostré_lokálne_extrémy_v_bodoch=sorted(minX + maxX),
                                  ostré_lokálne_minimá_v_bodoch=minX,
                                  ostré_lokálne_maximá_v_bodoch=maxX)
         if not refinement_support:
@@ -227,7 +227,7 @@ class Observer:
         function = self.manager.get_current()
         function.set_refinement(choice)
         self.configuration.save('refinement', choice)
-        self.logger.write(logger_message('Prepočítavanie funkcie...'), timer=True)
+        self.logger.write('Prepočítavanie funkcie...', timer=True)
         self.manager.update_plot(main_function=True, derivatives=True, zero_points=True, extremes=True, inflex_points=True, monotonic=True, convex=True)
         n_x_values = sum(map(len, function.get_parameter("x_values")))
         message = logger_message('zjemnenie x-ovej osi', zjemnenie=b['new'], počet_intervalov=n_x_values-1, počet_hodnôt=n_x_values)

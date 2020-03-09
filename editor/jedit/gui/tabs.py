@@ -26,7 +26,7 @@ class AnalysisTab(Tab):
         gui_manager = board.get_gui_manager_object()
         logger = board.get_logger_object()
         logger_mini_tab = w.Tab(children=[logger.get_widget(t='mini')], layout=w.Layout(height='100%'))
-        logger_mini_tab.set_title(0, 'Status')
+        logger_mini_tab.set_title(0, 'Posledná zmena')
         super().__init__(name='Analýza',
                    main_window=[manager.get_plot_widget()],
                    sidebar=[gui_manager.get_main_menu()],
@@ -45,7 +45,7 @@ class LogTab(Tab):
 
     def __init__(self, board=None):
         logger = board.get_logger_object()
-        super().__init__(name='Log', main_window=[logger.get_widget(t='main')])
+        super().__init__(name='Výstupy', main_window=[logger.get_widget(t='main')])
 
     def get_widget(self) -> w.GridspecLayout:
         grid = w.GridspecLayout(self.board_grid_rows, self.board_grid_cols, height=self.height)

@@ -20,8 +20,8 @@ Základné informácie
    |    :download:`PDF <files/thesis_v1.pdf>`
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/editor_v12_1.tar.gz>`
-   |    :download:`zip <files/editor_v12_1.zip>`
+   |    :download:`tar.gz <files/editor_v12_2.tar.gz>`
+   |    :download:`zip <files/editor_v12_2.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií

@@ -35,8 +35,14 @@ class Logger:
         :param main: printed to Log tab
         :param mini: printed to mini log under the plot
         :param warnings: printed to Warnings tab
+        :param timer: print if action is still being processed
         :return: None
         """
+        if timer:
+            with self.outputs['mini']:
+                clear_output()
+                print(message)
+            return
         if config['editor_settings']['footer_log'] != 'yes':
             return
         theme, kwargs = message
@@ -55,10 +61,6 @@ class Logger:
             with self.outputs['warnings']:
                 message = compose(theme=theme, kwargs=kwargs)
                 print(out + message)
-        if timer:
-            with self.outputs['mini']:
-                clear_output()
-                print(message)
 
     def to_file(self):
         with open(str(datetime.now().strftime("log-%d-%m-%Y-%H-%M-%S.txt")), 'w') as file:
