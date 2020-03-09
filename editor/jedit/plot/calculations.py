@@ -185,12 +185,13 @@ class Calculator:
                         cond = (X > x1) & (X < x2)
                     interval = X[cond]
                     fprime2_interval = fprime2[cond]
-                    if fprime2_interval[len(fprime2_interval) // 2] > 0:
-                        result1.append(interval)
-                        result1_intervals.append((x1, x2))
-                    else:
-                        result2.append(interval)
-                        result2_intervals.append((x1, x2))
+                    if len(fprime2_interval) > 0:
+                        if fprime2_interval[len(fprime2_interval) // 2] > 0:
+                            result1.append(interval)
+                            result1_intervals.append((x1, x2))
+                        else:
+                            result2.append(interval)
+                            result2_intervals.append((x1, x2))
     
         self.function.set_parameter(f'convex_xvals', result1)
         self.function.set_parameter(f'convex_intervals', result1_intervals)

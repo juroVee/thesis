@@ -1,15 +1,12 @@
 # external modules
-import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.lines import Line2D
-from IPython.display import display
 
 # project-level modules
 from ..config import config
 from ..util import transform_title
 
 # package-level modules
-from .maux import init_subplot, smart_ticklabel
 from .painter import Painter
 
 
@@ -62,12 +59,8 @@ class Function:
     def _init_refinement(self):
         self.set_parameter('refinement', 1)
 
-    def plot(self) -> None:
-
-        #TODO : REMOVE
-        width, height = config['plot_parameters']['width'], config['plot_parameters']['height']
-        fig, ax = plt.subplots()
-        fig.set_size_inches(width, height)
+    def plot(self, ax):
+        ax.clear()
 
         painter = Painter(self, ax)
         painter.plot_main_function()
@@ -81,8 +74,6 @@ class Function:
         painter.plot_analysis('convex')
         painter.plot_analysis('concave')
         painter.plot_title()
-
-        fig.show()
 
     def set_parameter(self, name, value):
         self.parameters[name] = value

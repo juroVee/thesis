@@ -43,10 +43,10 @@ fig, ax = plt.subplots()
 
 ### Spustenie editora po nakreslení grafu:
 
-Samotný editor sa spúšťa metódou ```run()```, ktorá vyžaduje tzv. keyworded argumenty ```**params```.
+Samotný editor sa spúšťa zavolaním funkcie ```editor()```, ktorá vyžaduje tzv. keyworded argumenty ```**params```.
 
 ```
-editor.run(fig=fig, ax=ax, f=f, X=[X1, ..., Xn], fprimes=[p1, ..., pn], asymptotes=[a1, ..., an]) 
+editor(fig=fig, ax=ax, f=f, X=[X1, ..., Xn], fprimes=[p1, ..., pn], asymptotes=[a1, ..., an]) 
 ```
 kde ```fig, ax, X``` sú povinné argumenty a ```fprimes, asymptotes``` nepovinné a znamenajú užívateľom definované funkcie derivácií (zadané poradie zároveň definuje ich stupeň), resp. užívateľom zadané asymptoty (taktiež ich funkcie).
 
@@ -54,5 +54,5 @@ Hodnoty pre kľúče ```X, fprimes, asymptotes``` treba zadávať v zoznamoch (l
 
 Editor je možné spustiť aj v tzv. ```default``` móde s vopred definovanými funkciami, a to bez parametrov:
 ```
-editor.run() 
+editor()
 ```

@@ -7,10 +7,8 @@ from datetime import datetime
 from ..config import config
 
 
-def compose(theme, kwargs, mini=False, status=False):
+def compose(theme, kwargs, mini=False):
     if mini:
-        if status:
-            return f'{theme}'
         return f'{theme}: {kwargs}'
     result = f'\n\tpopis akcie: {theme}'
     for arg, val in kwargs.items():
@@ -31,13 +29,12 @@ class Logger:
                         'warnings': w.Output(layout=w.Layout(overflow='auto'))}
         self.log_backup = []
 
-    def write(self, message, main=False, mini=False, warnings=False, status=False):
+    def write(self, message, main=False, mini=False, warnings=False, timer=False):
         """
         :param message: Message to be printed to log (better be 50 characters per line)
         :param main: printed to Log tab
         :param mini: printed to mini log under the plot
         :param warnings: printed to Warnings tab
-        :param status: one-liners in minitab describing actions
         :return: None
         """
         if config['editor_settings']['footer_log'] != 'yes':
@@ -52,12 +49,16 @@ class Logger:
         if mini:
             with self.outputs['mini']:
                 clear_output()
-                message = compose(theme=theme, kwargs=kwargs, mini=True, status=status)
+                message = compose(theme=theme, kwargs=kwargs, mini=True)
                 print(message)
         if warnings:
             with self.outputs['warnings']:
                 message = compose(theme=theme, kwargs=kwargs)
                 print(out + message)
+        if timer:
+            with self.outputs['mini']:
+                clear_output()
+                print(message)
 
     def to_file(self):
         with open(str(datetime.now().strftime("log-%d-%m-%Y-%H-%M-%S.txt")), 'w') as file:

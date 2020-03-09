@@ -227,7 +227,7 @@ class Observer:
         function = self.manager.get_current()
         function.set_refinement(choice)
         self.configuration.save('refinement', choice)
-        self.logger.write(logger_message('Prepočítavanie funkcie...'), mini=True, status=True)
+        self.logger.write(logger_message('Prepočítavanie funkcie...'), timer=True)
         self.manager.update_plot(main_function=True, derivatives=True, zero_points=True, extremes=True, inflex_points=True, monotonic=True, convex=True)
         n_x_values = sum(map(len, function.get_parameter("x_values")))
         message = logger_message('zjemnenie x-ovej osi', zjemnenie=b['new'], počet_intervalov=n_x_values-1, počet_hodnôt=n_x_values)
@@ -256,7 +256,7 @@ class Observer:
         function.set_parameter('zero_points_color', choice)
         self.configuration.save('zero_points_color', choice)
         self.manager.update_plot()
-        self.logger.write(logger_message('nulové body', mini=True, farba=choice), main=True, mini=True)
+        self.logger.write(logger_message('nulové body', farba=choice), main=True, mini=True)
 
     def _changed_zero_points_iterations(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -286,7 +286,7 @@ class Observer:
         function.set_parameter('extremes_color', choice)
         self.configuration.save('extremes_color', choice)
         self.manager.update_plot()
-        self.logger.write(logger_message('extrémy', mini=True, farba=choice), main=True, mini=True)
+        self.logger.write(logger_message('extrémy', farba=choice), main=True, mini=True)
 
     def _changed_inflex_points(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -307,7 +307,7 @@ class Observer:
         function.set_parameter('inflex_points_color', choice)
         self.configuration.save('inflex_points_color', choice)
         self.manager.update_plot()
-        self.logger.write(logger_message('inflexné body', mini=True, farba=choice), main=True, mini=True)
+        self.logger.write(logger_message('inflexné body', farba=choice), main=True, mini=True)
 
     def _changed_increasing(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -328,7 +328,7 @@ class Observer:
         function.set_parameter('increasing_color', choice)
         self.configuration.save('increasing_color', choice)
         self.manager.update_plot()
-        self.logger.write(logger_message('rastúca', mini=True, farba=choice), main=True, mini=True)
+        self.logger.write(logger_message('rastúca', farba=choice), main=True, mini=True)
 
     def _changed_decreasing(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -349,7 +349,7 @@ class Observer:
         function.set_parameter('decreasing_color', choice)
         self.configuration.save('decreasing_color', choice)
         self.manager.update_plot()
-        self.logger.write(logger_message('klesajúca', mini=True, farba=choice), main=True, mini=True)
+        self.logger.write(logger_message('klesajúca', farba=choice), main=True, mini=True)
 
     def _changed_convex(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -370,7 +370,7 @@ class Observer:
         function.set_parameter('convex_color', choice)
         self.configuration.save('convex_color', choice)
         self.manager.update_plot()
-        self.logger.write(logger_message('konvexná', mini=True, farba=choice), main=True, mini=True)
+        self.logger.write(logger_message('konvexná', farba=choice), main=True, mini=True)
 
     def _changed_concave(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -391,7 +391,7 @@ class Observer:
         function.set_parameter('concave_color', choice)
         self.configuration.save('concave_color', choice)
         self.manager.update_plot()
-        self.logger.write(logger_message('konkávna', mini=True, farba=choice), main=True, mini=True)
+        self.logger.write(logger_message('konkávna', farba=choice), main=True, mini=True)
 
     def start(self) -> None:
         #TODO vylepsit

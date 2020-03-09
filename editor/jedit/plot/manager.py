@@ -1,7 +1,7 @@
 # external modules
 import matplotlib.pyplot as plt
 import ipywidgets as w
-from IPython.display import clear_output
+from IPython.display import clear_output, display
 from queue import Queue
 
 # project-level modules
@@ -11,22 +11,36 @@ from .function import Function, DefaultFunction, UserFunction
 
 class Manager:
 
-    output = w.Output()
-
-    def __init__(self, user_params):
-        self.plot_updated = False
-        self.functions = {}
-        self.warnings = Queue()
-        self.names_mapping = {params['name']: key for key, params in config['default_functions'].items()}
-        if bool(user_params):
-            self.current_function = self.functions['user function'] = UserFunction(user_params)
-        else:
-            default_function = config['main_function']['default']
-            parameters = config['default_functions'][default_function]
-            self.current_function = self.functions[parameters['name']] = DefaultFunction(parameters['name'], parameters)
+    def __init__(self, user_parameters):
+        self._init_plot()
+        self._init_structures()
+        self.current_function = self._init_current_function(user_parameters)
 
     def __getitem__(self, function_name: str):
         return self.functions[function_name]
+
+    def _init_plot(self):
+        self.output = w.Output()
+        plt.ioff()
+        width, height = config['plot_parameters']['width'], config['plot_parameters']['height']
+        self.fig, self.ax = plt.subplots()
+        self.fig.set_size_inches(width, height)
+        self.plot_updated = False
+
+    def _init_structures(self):
+        self.functions = {}
+        self.warnings = Queue()
+        self.names_mapping = {params['name']: key for key, params in config['default_functions'].items()}
+
+    def _init_current_function(self, user_parameters) -> Function:
+        if bool(user_parameters):
+            current = self.functions['user function'] = UserFunction(user_parameters)
+            return current
+        else:
+            default_function = config['main_function']['default']
+            parameters = config['default_functions'][default_function]
+            current = self.functions[parameters['name']] = DefaultFunction(parameters['name'], parameters)
+            return current
 
     def apply_configuration(self, configuration):
         for parameter, value in configuration.items():
@@ -64,19 +78,25 @@ class Manager:
         return self.warnings
 
     def update_plot(self, **kwargs) -> None:
-        calculator = Calculator(self.get_current())
-        for arg, value in kwargs.items():
-            if value:
-                if arg in ('zero_points', 'extremes'):
-                    _, triple = getattr(calculator, arg)()
-                    self.add_warnings('Warning', triple)
-                else:
-                    getattr(calculator, arg)()
+        if len(kwargs) > 0:
+            calculator = Calculator(self.get_current())
+            for arg, value in kwargs.items():
+                if value:
+                    if arg in ('zero_points', 'extremes'):
+                        _, triple = getattr(calculator, arg)()
+                        self.add_warnings('Warning', triple)
+                    else:
+                        getattr(calculator, arg)()
+
+          # important!
+        if self.plot_updated:
+            plt.close('all')
+
+        current_function = self.get_current()
+        current_function.plot(self.ax)
         with self.output:
-            clear_output()
-            if self.plot_updated:
-                plt.close('all') # very important, possible memory exceeding
-            self.get_current().plot()
+            clear_output(wait=True)
+            display(self.ax.figure)
 
     def get_plot_widget(self):
         return self.output

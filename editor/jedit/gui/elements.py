@@ -62,7 +62,7 @@ class GUIElementManager:
             layout=w.Layout(width='90%', border='1px solid darkgrey')
         )
         dropdown = w.Dropdown(
-            options=['užívateľ'], # + functions_names if self.user_defined else functions_names,
+            options=['užívateľ'] + functions_names if self.user_defined else functions_names,
             value='užívateľ' if self.user_defined else config['default_functions'][default_function]['name'],
             description='',
             disabled=False,
@@ -101,7 +101,7 @@ class GUIElementManager:
             layout=w.Layout(width='90%', border='1px solid darkgrey')
         )
         dropdown = w.Dropdown(
-            options=['automatický', 'vyrovnaný'] if default == 'auto' else ['vyrovnaný', 'automatický'],
+            options=['automatický', 'vyrovnaný'],
             value='automatický' if default == 'auto' else 'vyrovnaný',
             description='',
             disabled=False,

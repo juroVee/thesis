@@ -6,8 +6,7 @@ from .config import config
 
 # external modules
 from matplotlib import get_backend
-import matplotlib.pyplot as plt
-from IPython.display import display, clear_output
+from IPython.display import display
 
 
 class Editor:
@@ -16,7 +15,7 @@ class Editor:
         self.board = None
         self.logger = Logger()
 
-    def run(self, **params):
+    def run_instance(self, **params):
         if not config['editor_settings']['figure_header'] == 'yes':
             hide_interactive_toolbars()
         if 'inline' in get_backend():
@@ -27,22 +26,10 @@ class Editor:
         manager = self.board.get_manager_object()
         observer = self.board.get_observer_object()
         display(self.board.get_widget())
-
-        # width, height = config['plot_parameters']['width'], config['plot_parameters']['height']
-        # fig, ax = plt.subplots()
-        # fig.set_size_inches(width, height)
-
-        manager.update_plot(main_function=True,
-                                    derivatives=True,
-                                    zero_points=True,
-                                    extremes=True,
-                                    inflex_points=True,
-                                    monotonic=True,
-                                    convex=True
-                                    )
+        manager.update_plot(main_function=True, derivatives=True, zero_points=True,
+                    extremes=True, inflex_points=True, monotonic=True, convex=True)
         observer.write_warnings()
 
-# run instance after importing editor
-editor = Editor()
-
-
+def editor(**params):
+    new = Editor()
+    new.run_instance(**params)
