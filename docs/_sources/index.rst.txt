@@ -11,7 +11,7 @@ Základné informácie
 .. sidebar:: Odkazy/Na stiahnutie
 
    | **Aktualizácia odkazov**
-   |    9. marec 2020
+   |    11. marec 2020
 
    | **Repozitár práce**
    |    GitHub_
@@ -20,8 +20,8 @@ Základné informácie
    |    :download:`PDF <files/thesis_v1.pdf>`
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/editor_v12_2.tar.gz>`
-   |    :download:`zip <files/editor_v12_2.zip>`
+   |    :download:`tar.gz <files/editor_v12_3.tar.gz>`
+   |    :download:`zip <files/editor_v12_3.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -46,6 +46,7 @@ Log
 - opravený bug, ktorý neumožnil korektne spúšťať viac editorov v jednom notebooku
 - opravené menšie bugy vo výpisoch
 - editor sa odteraz spúšťa priamo ako ``editor(fig=fig, ax=ax, f=f, X=[X1, ..., Xn], fprimes=[p1, ..., pn], asymptotes=[a1, ..., an])``
+- z menu odstránený výber funkcie a aspektu
 
 2.3.2020 - 8.3.2020
 -------------------

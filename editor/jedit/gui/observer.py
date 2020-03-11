@@ -116,18 +116,6 @@ class Observer:
             self.logger.write(message_mini, mini=True)
         self.logger.write(message, main=True)
 
-    def _changed_function(self, b) -> None:
-        self.manager.set_plot_updated(True)
-        choice = b['new']
-        if choice == 'užívateľ':
-            choice = 'user function'
-        self.manager.set_current(choice)
-        self.manager.apply_configuration(self.configuration.get())
-        self.manager.update_plot(main_function=True, derivatives=True, zero_points=True, extremes=True, inflex_points=True)
-        self.write_warnings()
-        message = logger_message('hlavná funkcia', voľba=b['new'])
-        self.logger.write(message, main=True, mini=True)
-
     def _changed_grid(self, b) -> None:
         self.manager.set_plot_updated(True)
         visible = b['new']
@@ -136,19 +124,6 @@ class Observer:
         self.configuration.save('grid', visible)
         self.manager.update_plot()
         message = logger_message('mriežka', viditeľné=self.svk[visible])
-        self.logger.write(message, main=True, mini=True)
-
-    def _changed_aspect(self, b) -> None:
-        self.manager.set_plot_updated(True)
-        value = b['new']
-        function = self.manager.get_current()
-        if value == 'automatický':
-            function.set_parameter('aspect', 'auto')
-        else:
-            function.set_parameter('aspect', 'equal')
-        self.configuration.save('aspect', value)
-        self.manager.update_plot()
-        message = logger_message('aspekt', hodnota=value)
         self.logger.write(message, main=True, mini=True)
 
     def _changed_derivative1(self, b) -> None:
@@ -397,15 +372,8 @@ class Observer:
         #TODO vylepsit
         gui_elements = self.gui_manager.get_elements()
 
-        _, dropdown, color_picker = gui_elements['function']['function'].children
-        dropdown.observe(self._changed_function, 'value')
-        color_picker.observe(self._changed_color_main, 'value')
-
         button = gui_elements['function']['grid'].children[0]
         button.observe(self._changed_grid, 'value')
-
-        _, dropdown = gui_elements['function']['aspect'].children
-        dropdown.observe(self._changed_aspect, 'value')
 
         dropdown, color_picker = gui_elements['function']['derivative1'].children
         dropdown.observe(self._changed_derivative1, 'value')
