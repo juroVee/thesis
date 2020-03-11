@@ -87,7 +87,6 @@ class Manager:
                         self.add_warnings('Warning', triple)
                     else:
                         getattr(calculator, arg)()
-
           # important!
         if self.plot_updated:
             plt.close('all')
@@ -97,6 +96,7 @@ class Manager:
         with self.output:
             clear_output(wait=True)
             display(self.ax.figure)
+        plt.ion()
 
     def get_plot_widget(self):
         return self.output
