@@ -1,5 +1,6 @@
 # external modules
 from IPython.display import display, HTML
+import numpy as np
 
 
 def logger_message(theme, **kwargs):
@@ -37,6 +38,16 @@ def check_parameters(params, logger) -> dict:
                 logger.write('Optional parameters must be in list. E.g. X=[X, ...].\nPlotting default.', mini=True)
                 return result
     return params
+
+def flatten(dataset, params=None, full=False):
+    if params is not None:
+        result = []
+        for param in params:
+            result.append(np.sort(np.asarray([dct[param] for dct in dataset.values()]).flatten()))
+        if full:
+            result.append(np.sort(np.concatenate(result)))
+        return result
+    return np.asarray([arr for arr in dataset.values()]).flatten()
 
 def hide_interactive_toolbars():
     html = '''

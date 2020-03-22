@@ -57,27 +57,32 @@ class Painter:
         if self.function.get_parameter('zero_points_visible'):
             markersize = config['zero_points']['markersize']
             zorder = self.function.get_parameter('zero_points_zorder')
-            for x in self.function.get_parameter('zero_points_values'):
-                self.ax.plot(x, 0, 'o', c=self.function.get_parameter('zero_points_color'), markersize=markersize, zorder=zorder)
+            dataset = self.function.get_parameter('zero_points_dataset')
+            f = self.function.get_parameter('f')
+            for xvals in dataset.values():
+                self.ax.plot(xvals, f(xvals), 'o', c=self.function.get_parameter('zero_points_color'),
+                             markersize=markersize, zorder=zorder)
 
     def plot_extremes(self):
         if self.function.get_parameter('extremes_visible'):
             markersize = config['extremes']['markersize']
-            minX = self.function.get_parameter('local_minima_xvals')
-            maxX = self.function.get_parameter('local_maxima_xvals')
-            minY = self.function.get_parameter('local_minima_yvals')
-            maxY = self.function.get_parameter('local_maxima_yvals')
             zorder = self.function.get_parameter('extremes_zorder')
-            self.ax.plot(minX, minY, 'o', c=self.function.get_parameter('extremes_color'), markersize=markersize, zorder=zorder)
-            self.ax.plot(maxX, maxY, 'o', c=self.function.get_parameter('extremes_color'), markersize=markersize, zorder=zorder)
+            f = self.function.get_parameter('f')
+            dataset = self.function.get_parameter('extremes_dataset')
+            for extremes in dataset.values():
+                minX = extremes['minima']
+                maxX = extremes['maxima']
+                self.ax.plot(minX, f(minX), 'o', c=self.function.get_parameter('extremes_color'), markersize=markersize, zorder=zorder)
+                self.ax.plot(maxX, f(maxX), 'o', c=self.function.get_parameter('extremes_color'), markersize=markersize, zorder=zorder)
 
     def plot_inflex_points(self):
         if self.function.get_parameter('inflex_points_visible'):
             markersize = config['inflex_points']['markersize']
-            X = self.function.get_parameter('inflex_points_xvals')
-            Y = self.function.get_parameter('inflex_points_yvals')
             zorder = self.function.get_parameter('inflex_points_zorder')
-            self.ax.plot(X, Y, 'o', c=self.function.get_parameter('inflex_points_color'), markersize=markersize, zorder=zorder)
+            f = self.function.get_parameter('f')
+            dataset = self.function.get_parameter('inflex_points_dataset')
+            for inflex_points in dataset.values():
+                self.ax.plot(inflex_points, f(inflex_points), 'o', c=self.function.get_parameter('inflex_points_color'), markersize=markersize, zorder=zorder)
 
     def plot_analysis(self, op):
         if self.function.get_parameter(f'{op}_visible'):
@@ -86,8 +91,11 @@ class Painter:
             color = self.function.get_parameter(f'{op}_color')
             f = self.function.get_parameter('f')
             zorder = self.function.get_parameter(f'{op}_zorder')
-            for X in self.function.get_parameter(f'{op}_xvals'):
-                self.ax.plot(X, f(X), color=color, linestyle=linestyle, linewidth=linewidth, zorder=zorder)
+            dataset = self.function.get_parameter(f'{op}_dataset')
+            #TODO zefektivnit
+            for dct in dataset.values():
+                for x in dct['values']:
+                    self.ax.plot(x, f(x), color=color, linestyle=linestyle, linewidth=linewidth, zorder=zorder)
 
     def plot_title(self):
         self.ax.set_title(self.function.get_parameter('latex'), y=1.06)

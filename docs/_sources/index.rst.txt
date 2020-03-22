@@ -11,7 +11,7 @@ Základné informácie
 .. sidebar:: Odkazy/Na stiahnutie
 
    | **Aktualizácia odkazov**
-   |    11. marec 2020
+   |    22. marec 2020
 
    | **Repozitár práce**
    |    GitHub_
@@ -20,8 +20,8 @@ Základné informácie
    |    :download:`PDF <files/thesis_v1.pdf>`
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/editor_v12_4.tar.gz>`
-   |    :download:`zip <files/editor_v12_4.zip>`
+   |    :download:`tar.gz <files/editor_v13.tar.gz>`
+   |    :download:`zip <files/editor_v13.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -39,6 +39,12 @@ Základné informácie
 
 Log
 ===
+
+16.3.2020 - 22.3.2020
+---------------------
+
+- opravené chyby, ktoré spôsobovali ``ValueError`` pri funkciách s viacerými intervalmi :math:`X`
+
 
 9.3.2020 - 15.3.2020
 --------------------

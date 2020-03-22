@@ -2,6 +2,7 @@
 import ipywidgets as w
 from IPython.display import clear_output
 from datetime import datetime
+import numpy as np
 
 # project-level modules
 from ..config import config
@@ -13,9 +14,12 @@ def compose(theme, kwargs, mini=False):
     result = f'\n\tpopis akcie: {theme}'
     for arg, val in kwargs.items():
         result += '\n\t'
-        if type(val) == list:
-            result += f'{arg}: [\n\t   '
-            result += ',\n\t   '.join(map(str, val)) + '\n\t]'
+        if type(val) == list or type(val) == np.ndarray:
+            if len(val) > 0:
+                result += f'{arg}: [\n\t   '
+                result += ',\n\t   '.join(map(str, val)) + '\n\t]'
+            else:
+                result += f'{arg}: []'
         else:
             result += f'{arg}: {val}'
     return result

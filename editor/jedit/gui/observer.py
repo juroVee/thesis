@@ -1,4 +1,7 @@
+import numpy as np
+
 from ..config import config
+from ..util import flatten
 
 def logger_message(theme, **kwargs):
     return theme, kwargs
@@ -44,7 +47,7 @@ class Observer:
     def _add_zero_points_info(self, function, refinement_support=False):
         self.write_warnings()
         visible = function.get_parameter('zero_points_visible')
-        zp_values = function.get_parameter('zero_points_values')
+        dataset = function.get_parameter('zero_points_dataset')
         method = function.get_parameter('zero_points_method')
         maxiter = function.get_parameter('zero_points_iterations')
         if not visible:
@@ -54,6 +57,7 @@ class Observer:
                                           metóda=method,
                                           maxiter=maxiter), mini=True, main=True)
             return
+        zp_values = flatten(dataset)
         message_mini = logger_message('nulové body', viditeľné=self.svk[visible],
                                       derivácia="áno" if method == "Newton" else "nie",
                                       metóda=method,
@@ -74,12 +78,14 @@ class Observer:
             if not refinement_support:
                 self.logger.write(logger_message('extrémy', viditeľné=self.svk[visible]), mini=True, main=True)
             return
-        minX = list(function.get_parameter('local_minima_xvals'))
-        maxX = list(function.get_parameter('local_maxima_xvals'))
+        dataset = function.get_parameter('extremes_dataset')
+        minX = np.asarray(np.concatenate([extremes['minima'] for extremes in dataset.values()])).flatten()
+        maxX = np.asarray(np.concatenate([extremes['maxima'] for extremes in dataset.values()])).flatten()
+        full = np.sort(np.concatenate([minX, maxX]))
         message_mini = logger_message('extrémy', viditeľné=self.svk[visible],
-                                       ostré_lokálne_extrémy=len(minX) + len(maxX))
+                                       ostré_lokálne_extrémy=len(full))
         message = logger_message('extrémy', viditeľné=self.svk[visible],
-                                 ostré_lokálne_extrémy_v_bodoch=sorted(minX + maxX),
+                                 ostré_lokálne_extrémy_v_bodoch=full,
                                  ostré_lokálne_minimá_v_bodoch=minX,
                                  ostré_lokálne_maximá_v_bodoch=maxX)
         if not refinement_support:
@@ -92,9 +98,10 @@ class Observer:
             if not refinement_support:
                 self.logger.write(logger_message('inflexné body', viditeľné=self.svk[visible]), mini=True, main=True)
             return
-        foundX = list(function.get_parameter('inflex_points_xvals'))
-        message_mini = logger_message('inflexné body', viditeľné=self.svk[visible], nájdené=len(foundX))
-        message = logger_message('inflexné body', viditeľné=self.svk[visible], v_bodoch=foundX)
+        dataset = function.get_parameter('inflex_points_dataset')
+        full = np.sort(np.asarray(np.concatenate(list(dataset.values()))).flatten())
+        message_mini = logger_message('inflexné body', viditeľné=self.svk[visible], nájdené=len(full))
+        message = logger_message('inflexné body', viditeľné=self.svk[visible], v_bodoch=full)
         if not refinement_support:
             self.logger.write(message_mini, mini=True)
         self.logger.write(message, main=True)
@@ -109,9 +116,13 @@ class Observer:
             if not refinement_support:
                 self.logger.write(logger_message(desc[op], viditeľné=self.svk[visible]), mini=True, main=True)
             return
-        intervals = function.get_parameter(f'{op}_intervals')
-        message_mini = logger_message(desc[op], viditeľné=self.svk[visible], nájdené_intervaly_x=len(intervals))
-        message = logger_message(desc[op], viditeľné=self.svk[visible], intervaly_x=intervals)
+        dataset = function.get_parameter(f'{op}_dataset')
+        pairs = []
+        for dct in dataset.values():
+            for pair in dct['intervals']:
+                pairs.append(pair)
+        message_mini = logger_message(desc[op], viditeľné=self.svk[visible], nájdené_intervaly_x=len(pairs))
+        message = logger_message(desc[op], viditeľné=self.svk[visible], intervaly_x=pairs)
         if not refinement_support:
             self.logger.write(message_mini, mini=True)
         self.logger.write(message, main=True)
