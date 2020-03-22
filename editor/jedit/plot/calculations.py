@@ -142,6 +142,16 @@ class Calculator:
                     else:
                         result2.append(interval)
                         result2_intervals.append((x1, x2))
+            elif len(full) == 2:
+                x1, x2 = full
+                interval = X[(X >= x1) & (X <= x2)]
+                if f(x1) > f(x2):
+                    result1.append(interval)
+                    result1_intervals.append((x1, x2))
+                else:
+                    result2.append(interval)
+                    result2_intervals.append((x1, x2))
+
             result_inc[key]['values'] = result2
             result_dec[key]['values'] = result1
             result_inc[key]['intervals'] = result2_intervals
