@@ -24,12 +24,6 @@ class GUIElementManager:
         return self.main_menu
 
     def _init_menu(self):
-        tab_function_grid = w.GridspecLayout(config['default_sizes']['main_window_rows'] - 4, 1)
-        tab_function_grid[0, 0] = self.elements['function']['grid'] = self.get_grid_dropdown()
-        tab_function_grid[2, 0] = self.elements['function']['derivative1'] = self.get_derivative_hbox(1)
-        tab_function_grid[3, 0] = self.elements['function']['derivative2'] = self.get_derivative_hbox(2)
-        tab_function_grid[4, 0] = self.elements['function']['derivative3'] = self.get_derivative_hbox(3)
-
         tab_analysis_grid = w.GridspecLayout(config['default_sizes']['main_window_rows'] - 4, 1)
         tab_analysis_grid[0, 0] = self.elements['analysis']['zero_points'] = self.get_analysis_hbox(op='zero_points')
         tab_analysis_grid[1, 0] = self.elements['analysis']['extremes'] = self.get_analysis_hbox(op='extremes')
@@ -41,18 +35,44 @@ class GUIElementManager:
         tab_analysis_grid[9, 0] = self.elements['analysis']['refinement'] = self.get_refinement_dropdown()
         tab_analysis_grid[10, 0] = self.elements['analysis']['iterations'] = self.get_iterations_textfield()
 
+        tab_function_grid = w.GridspecLayout(config['default_sizes']['main_window_rows'] - 4, 1)
+        tab_function_grid[0, 0] = self.elements['function']['main_function'] = self.get_function_hbox()
+        tab_function_grid[2, 0] = self.elements['function']['derivative1'] = self.get_derivative_hbox(1)
+        tab_function_grid[3, 0] = self.elements['function']['derivative2'] = self.get_derivative_hbox(2)
+        tab_function_grid[4, 0] = self.elements['function']['derivative3'] = self.get_derivative_hbox(3)
+        tab_function_grid[6, 0] = self.elements['function']['grid'] = self.get_grid_dropdown()
+
         tab_nest = w.Tab()
         tab_nest.children = [tab_analysis_grid, tab_function_grid]
         tab_nest.set_title(0, 'Analýza')
         tab_nest.set_title(1, 'Možnosti')
         return tab_nest
 
+    def get_function_hbox(self):
+        default_color = config['main_function']['color']
+        button = w.ToggleButton(
+            value=False,
+            description='Funkcia',
+            disabled=True,
+            button_style='',
+            tooltip='Description',
+            layout=w.Layout(width='90%', border='1px solid darkgrey')
+        )
+        cpicker = w.ColorPicker(
+            concise=True,
+            description='',
+            value=default_color,
+            disabled=False,
+            layout=w.Layout(width='28px')
+        )
+        return w.HBox(children=[button, cpicker], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
+
     def get_grid_dropdown(self):
         grid_button = w.ToggleButton(
             value=False,
             description=f'Mriežka',
             disabled=False,
-            button_style='', # 'success', 'info', 'warning', 'danger' or ''
+            button_style='',
             tooltip='Description',
             layout=w.Layout(width='100%', border='1px solid darkgrey')
         )

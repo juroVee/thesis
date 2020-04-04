@@ -36,13 +36,11 @@ class Observer:
     def write_warnings(self):
         warnings = self.manager.get_warnings()
         while not warnings.empty():
-            warning_type, warning, not_conv, zero_der = warnings.get()
+            warning = warnings.get()
             self.logger.write(logger_message('upozornenie',
                                              správa=str(warning.message),
                                              kategória=str(warning.category),
-                                             súbor=str(warning.filename),
-                                             nekonvergované=not_conv,
-                                             nulová_derivácia=zero_der), warnings=True)
+                                             súbor=str(warning.filename)), warnings=True)
 
     def _add_zero_points_info(self, function, refinement_support=False):
         self.write_warnings()
@@ -380,8 +378,10 @@ class Observer:
         self.logger.write(logger_message('konkávna', farba=choice), main=True, mini=True)
 
     def start(self) -> None:
-        #TODO vylepsit
         gui_elements = self.gui_manager.get_elements()
+
+        _, color_picker = gui_elements['function']['main_function'].children
+        color_picker.observe(self._changed_color_main, 'value')
 
         button = gui_elements['function']['grid'].children[0]
         button.observe(self._changed_grid, 'value')

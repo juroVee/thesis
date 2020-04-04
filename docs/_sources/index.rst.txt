@@ -40,6 +40,20 @@ Základné informácie
 Log
 ===
 
+30.3.2020 - 5.4.2020
+--------------------
+
+- vrátená možnosť zmeny farby hlavnej funkcie (v tabe ``Možnosti``)
+- zmenené názvy parametrov pri spúšťaní editora na ``editor(figure=fig, axes=ax, function=f, intervals=[X1, ..., Xn], primes=[p1, ..., pn], asymptotes=[a1, ..., an])``
+- doplnenie výpočtu (a zobrazenia) intervalov konvexnosti/konkávnosti aj v prípade nenájdených inflexných bodov
+
+
+23.3.2020 - 29.3.2020
+---------------------
+
+- vytvorený dotazník pre získanie spätnej väzby študentov laboratórií predmetu
+- zefektívnené a zprehľadnené výpočty intervalov monotónnosti a konvexnosti
+
 16.3.2020 - 22.3.2020
 ---------------------
 

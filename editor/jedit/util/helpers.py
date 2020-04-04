@@ -15,7 +15,7 @@ def transform_title(title: str) -> str:
     return result
 
 def check_parameters(params, logger) -> dict:
-    allowed_params = {'fig', 'ax', 'f', 'X', 'Y', 'fprimes', 'asymptotes', 'config'}
+    allowed_params = {'figure', 'axes', 'function', 'intervals', 'primes', 'asymptotes', 'config'}
     result = {}
     if len(params) == 0:
         return result
@@ -23,11 +23,11 @@ def check_parameters(params, logger) -> dict:
         if param not in allowed_params:
             logger.write(logger_message('Chyba', neznámy_parameter=param, akcia='vykreslenie prednastavenej funkcie'), mini=True)
             return result
-    if any(param not in params for param in ['fig', 'ax', 'f', 'X']):
-        logger.write('Parameters [fig, ax, f, X] are required to plot your function.\nPlotting default.', mini=True)
+    if any(param not in params for param in ['figure', 'axes', 'function', 'intervals']):
+        logger.write('Parameters "figure", "axes", "function" and "intervals" are required to plot your function.\nPlotting default.', mini=True)
         return result
     else:
-        others = { k : params[k] for k in set(params) - {'fig', 'ax', 'f'} }
+        others = { k : params[k] for k in set(params) - {'figure', 'axes', 'function'} }
         for param, value in others.items():
             if param == 'X':
                 for i, X in enumerate(value):
@@ -35,7 +35,7 @@ def check_parameters(params, logger) -> dict:
                         logger.write(f'Cannot plot X at position {i}, need at least 2 values.\nPlotting default.', mini=True)
                         return result
             if type(value) != list:
-                logger.write('Optional parameters must be in list. E.g. X=[X, ...].\nPlotting default.', mini=True)
+                logger.write('Optional parameters must be in list. E.g. intervals=[X1, ...].\nPlotting default.', mini=True)
                 return result
     return params
 

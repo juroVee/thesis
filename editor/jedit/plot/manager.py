@@ -30,15 +30,13 @@ class Manager:
     def _init_structures(self):
         self.functions = {}
         self.warnings = Queue()
-        self.names_mapping = {params['name']: key for key, params in config['default_functions'].items()}
 
     def _init_current_function(self, user_parameters) -> Function:
         if bool(user_parameters):
             current = self.functions['user function'] = UserFunction(user_parameters)
             return current
         else:
-            default_function = config['main_function']['default']
-            parameters = config['default_functions'][default_function]
+            parameters = config['main_function']['default']
             current = self.functions[parameters['name']] = DefaultFunction(parameters['name'], parameters)
             return current
 
@@ -59,7 +57,7 @@ class Manager:
         if name in self.functions:
             self.current_function = self.functions[name]
         else:
-            parameters = config['default_functions'][self.names_mapping[name]]
+            parameters = config['main_function']['default']
             self.current_function = self.functions[parameters['name']] = DefaultFunction(parameters['name'], parameters)
 
     def set_plot_updated(self, value):
@@ -68,11 +66,11 @@ class Manager:
     def has_user_function(self) -> bool:
         return 'user function' in self.functions.keys()
 
-    def add_warnings(self, message, triple):
-        warnings, not_conv, zero_der = triple
-        if len(warnings) > 0:
-            for warning in warnings:
-                self.warnings.put((message, warning, not_conv, zero_der))
+    def add_warnings(self, warnings):
+        if warnings is not None:
+            if len(warnings) > 0:
+                for warning in warnings:
+                    self.warnings.put(warning)
 
     def get_warnings(self):
         return self.warnings
@@ -82,12 +80,9 @@ class Manager:
             calculator = Calculator(self.get_current())
             for arg, value in kwargs.items():
                 if value:
-                    if arg in ('zero_points', 'extremes'):
-                        _, triple = getattr(calculator, arg)()
-                        self.add_warnings('Warning', triple)
-                    else:
-                        getattr(calculator, arg)()
-          # important!
+                    warnings = getattr(calculator, arg)()
+                    self.add_warnings(warnings)
+        # important!
         if self.plot_updated:
             plt.close('all')
 

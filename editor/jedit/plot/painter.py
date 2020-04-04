@@ -9,6 +9,17 @@ class Painter:
     def __init__(self, function, axes):
         self.function, self.ax = function, axes
 
+    def plot_all(self):
+        self.plot_main_function()
+        self.plot_asymptotes()
+        self.plot_derivative()
+        self.plot_zero_points()
+        self.plot_extremes()
+        self.plot_inflex_points()
+        for op in 'increasing', 'decreasing', 'convex', 'concave':
+            self.plot_intervals(op)
+        self.plot_title()
+
     def plot_main_function(self):
         for line in self.function.get_parameter('lines'):
             X, Y = line.get_xdata(), line.get_ydata()
@@ -84,7 +95,7 @@ class Painter:
             for inflex_points in dataset.values():
                 self.ax.plot(inflex_points, f(inflex_points), 'o', c=self.function.get_parameter('inflex_points_color'), markersize=markersize, zorder=zorder)
 
-    def plot_analysis(self, op):
+    def plot_intervals(self, op):
         if self.function.get_parameter(f'{op}_visible'):
             linestyle = config[op]['linestyle']
             linewidth = config[op]['linewidth']

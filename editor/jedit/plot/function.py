@@ -61,19 +61,8 @@ class Function:
 
     def plot(self, ax):
         ax.clear()
-
         painter = Painter(self, ax)
-        painter.plot_main_function()
-        painter.plot_asymptotes()
-        painter.plot_derivative()
-        painter.plot_zero_points()
-        painter.plot_extremes()
-        painter.plot_inflex_points()
-        painter.plot_analysis('increasing')
-        painter.plot_analysis('decreasing')
-        painter.plot_analysis('convex')
-        painter.plot_analysis('concave')
-        painter.plot_title()
+        painter.plot_all()
 
     def set_parameter(self, name, value):
         self.parameters[name] = value
@@ -105,8 +94,8 @@ class UserFunction(Function):
 
     def __init__(self, user_params):
         user_params = self._prepare_user_params(user_params)
-        ax, X, f = user_params['ax'], user_params['X'], user_params['f']
-        user_derivatives = user_params.get('fprimes', None)
+        ax, X, f = user_params['axes'], user_params['intervals'], user_params['function']
+        user_derivatives = user_params.get('primes', None)
         asymptotes = user_params.get('asymptotes', None)
         super().__init__(f, X, name='user function',
                          latex=transform_title(ax.get_title()),
@@ -115,12 +104,12 @@ class UserFunction(Function):
         self._init_params(ax, asymptotes)
 
     def _prepare_user_params(self, user_params):
-        ax = user_params['ax']
+        ax = user_params['axes']
         if user_params.get('X', None) is None:
             lines = [line.get_xdata() for line in ax.get_lines() if line.get_xdata() != []]
             if 'asymptotes' in user_params:
-                user_lines_number = len(user_params['X'])
-                user_params['X'] = lines[:user_lines_number]
+                user_lines_number = len(user_params['intervals'])
+                user_params['intervals'] = lines[:user_lines_number]
         return user_params
 
     def _init_params(self, ax, asymptotes=None):

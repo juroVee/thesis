@@ -18,9 +18,15 @@ plot_parameters:
 
 main_function:
     linestyle: 'solid'
-    linewidth: 2
+    linewidth: 1.8
     color: '#1f77b4'
-    default: linear
+    default:
+        name: 'x^2'
+        formula: 'lambda x: np.power(x, 2)'
+        derivatives: # order matters...
+            - 'lambda x: 2*x'
+        linspace: 'np.linspace(-10, 10, 101)'
+        latex: 'r"$f(x) = x^2$"'
 
 derivative:
     linestyle: 'solid'
@@ -82,59 +88,3 @@ refinement:
         - 10000
         - 100000
         - 1000000
-
-default_functions:
-    linear:
-        name: 'x'
-        formula: 'lambda x: x'
-        derivatives: # order matters...
-            - 'np.vectorize(lambda x: 1)'
-        linspace: 'np.linspace(-10, 10, 101)'
-        latex: 'r"$f(x) = x$"'
-    quadratic:
-        name: 'x^2'
-        formula: 'lambda x: np.power(x, 2)'
-        derivatives: # order matters...
-            - 'lambda x: 2*x'
-        linspace: 'np.linspace(-10, 10, 101)'
-        latex: 'r"$f(x) = x^2$"'
-    cubic:
-        name: 'x^3'
-        formula: 'lambda x: np.power(x, 3)'
-        derivatives: # order matters...
-            - 'lambda x: 3 * (x ** 2)'
-        linspace: 'np.linspace(-10, 10, 101)'
-        latex: 'r"$f(x) = x^3$"'
-    sqrt:
-        name: 'sqrt x'
-        formula: 'lambda x: np.sqrt(x)'
-        linspace: 'np.linspace(0.1, 20, 101)'
-        latex: 'r"$f(x) = \sqrt{x}$"'
-    e:
-        name: 'e^x'
-        formula: 'lambda x: np.exp(x)'
-        linspace: 'np.linspace(-10, 10, 101)'
-        latex: 'r"$f(x) = e^x$"'
-    log:
-        name: 'log x'
-        formula: 'lambda x: np.log(x)'
-        linspace: 'np.linspace(0.1, 10.1, 101)'
-        latex: 'r"$f(x) = \log\ x$"'
-    sin:
-        name: 'sin x'
-        formula: 'lambda x: np.sin(x)'
-        derivatives: # order matters...
-            - 'lambda x: np.cos(x)'
-        linspace: 'np.linspace(-4 * np.pi, 4 * np.pi, 12 * 10 + 1)'
-        latex: 'r"$f(x) = \sin\ x$"'
-        xticks_data:
-            xticks: '[n * np.pi / 2 for n in range(-8, 8 + 1)]'
-            xticklabels: '[smart_ticklabel(n, r"\pi", 2) for n in range(-8, 8 + 1)]'
-    cos:
-        name: 'cos x'
-        formula: 'lambda x: np.cos(x)'
-        linspace: 'np.linspace(-4 * np.pi, 4 * np.pi, 12 * 10 + 1)'
-        latex: 'r"$f(x) = \cos\ x$"'
-        xticks_data:
-            xticks: '[n * np.pi / 2 for n in range(-8, 8 + 1)]'
-            xticklabels: '[smart_ticklabel(n, r"\pi", 2) for n in range(-8, 8 + 1)]'
