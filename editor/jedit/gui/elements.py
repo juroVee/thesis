@@ -41,6 +41,8 @@ class GUIElementManager:
         tab_function_grid[3, 0] = self.elements['function']['derivative2'] = self.get_derivative_hbox(2)
         tab_function_grid[4, 0] = self.elements['function']['derivative3'] = self.get_derivative_hbox(3)
         tab_function_grid[6, 0] = self.elements['function']['grid'] = self.get_grid_dropdown()
+        tab_function_grid[8, 0] = self.elements['logger']['order'] = self.get_logger_order()
+        tab_function_grid[9, 0] = self.elements['logger']['save'] = self.get_logger_save()
 
         tab_nest = w.Tab()
         tab_nest.children = [tab_analysis_grid, tab_function_grid]
@@ -77,6 +79,28 @@ class GUIElementManager:
             layout=w.Layout(width='100%', border='1px solid darkgrey')
         )
         return w.HBox(children=[grid_button], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
+
+    def get_logger_order(self):
+        button = w.ToggleButton(
+            value=False,
+            description=f'Výpisy od najstaršieho',
+            disabled=False,
+            button_style='',
+            tooltip='Description',
+            layout=w.Layout(width='100%', border='1px solid darkgrey')
+        )
+        return w.HBox(children=[button], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
+
+    def get_logger_save(self):
+        button = w.Button(
+            value=False,
+            description=f'Uložiť výpisy do súboru',
+            disabled=False,
+            button_style='',
+            tooltip='Description',
+            layout=w.Layout(width='100%', border='1px solid darkgrey')
+        )
+        return w.HBox(children=[button], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
 
     def get_derivative_hbox(self, n=1):
         default_color = config['derivative']['colors'][n-1]

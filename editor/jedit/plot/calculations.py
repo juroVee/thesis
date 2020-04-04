@@ -9,7 +9,6 @@ from collections import defaultdict
 
 # project-level modules
 from ..config import config
-from ..util import flatten
 
 class Calculator:
     
@@ -89,7 +88,7 @@ class Calculator:
             return w
     
     def convex(self):
-        dataset = flatten(self.function.get_parameter('inflex_points_dataset'))
+        dataset = self.function.get_parameter('inflex_points_dataset')
         primes = self.function.get_parameter('derivatives')
         result_convex, result_concave = defaultdict(lambda: defaultdict(list)), defaultdict(lambda: defaultdict(list))
         with warnings.catch_warnings(record=True) as w:
@@ -97,7 +96,7 @@ class Calculator:
             for i, X in enumerate(self.x_values):
                 key = f'X{i}'
                 _, fprime2 = primes[key][2]
-                full = np.sort(np.concatenate([X[:1], dataset, X[-1:]]))
+                full = np.sort(np.concatenate([X[:1], np.concatenate(list(dataset.values())), X[-1:]]))
                 pairs = [(full[i], full[i + 1]) for i in range(len(full) - 1)]
                 for j, (x1, x2) in enumerate(pairs):
                     interval = X[(X >= x1) & (X <= x2)]

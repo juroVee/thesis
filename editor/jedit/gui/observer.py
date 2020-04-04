@@ -1,7 +1,6 @@
 import numpy as np
 
 from ..config import config
-from ..util import flatten
 
 def logger_message(theme, **kwargs):
     return theme, kwargs
@@ -55,7 +54,7 @@ class Observer:
                                           metóda=method,
                                           maxiter=maxiter), mini=True, main=True)
             return
-        zp_values = flatten(dataset)
+        zp_values = np.concatenate(list(dataset.values()))
         message_mini = logger_message('nulové body', viditeľné=self.svk[visible],
                                       derivácia="áno" if method == "Newton" else "nie",
                                       metóda=method,
@@ -134,6 +133,16 @@ class Observer:
         self.manager.update_plot()
         message = logger_message('mriežka', viditeľné=self.svk[visible])
         self.logger.write(message, main=True, mini=True)
+
+    def _changed_logger_order(self, b) -> None:
+        message = logger_message('výpisy', poradie='od_najstaršieho' if b['new'] else 'od_najnovšieho')
+        self.logger.set_order_oldest(b['new'])
+        self.logger.write(message, main=True, mini=True)
+
+    def _changed_logger_save(self, b) -> None:
+        file_name = self.logger.to_file()
+        message = logger_message('výpisy', stav='uložené', súbor=file_name)
+        self.logger.write(message, mini=True)
 
     def _changed_derivative1(self, b) -> None:
         self.manager.set_plot_updated(True)
@@ -385,6 +394,12 @@ class Observer:
 
         button = gui_elements['function']['grid'].children[0]
         button.observe(self._changed_grid, 'value')
+
+        button = gui_elements['logger']['order'].children[0]
+        button.observe(self._changed_logger_order, 'value')
+
+        button = gui_elements['logger']['save'].children[0]
+        button.on_click(self._changed_logger_save)
 
         dropdown, color_picker = gui_elements['function']['derivative1'].children
         dropdown.observe(self._changed_derivative1, 'value')

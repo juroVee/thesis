@@ -39,16 +39,6 @@ def check_parameters(params, logger) -> dict:
                 return result
     return params
 
-def flatten(dataset, params=None, full=False):
-    if params is not None:
-        result = []
-        for param in params:
-            result.append(np.sort(np.asarray([dct[param] for dct in dataset.values()]).flatten()))
-        if full:
-            result.append(np.sort(np.concatenate(result)))
-        return result
-    return np.asarray([arr for arr in dataset.values()]).flatten()
-
 def hide_interactive_toolbars():
     html = '''
             <style>

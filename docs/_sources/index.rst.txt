@@ -11,7 +11,7 @@ Základné informácie
 .. sidebar:: Odkazy/Na stiahnutie
 
    | **Aktualizácia odkazov**
-   |    22. marec 2020
+   |    4. apríl 2020
 
    | **Repozitár práce**
    |    GitHub_
@@ -20,8 +20,8 @@ Základné informácie
    |    :download:`PDF <files/thesis_v1.pdf>`
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/editor_v13_1.tar.gz>`
-   |    :download:`zip <files/editor_v13_1.zip>`
+   |    :download:`tar.gz <files/editor_v14.tar.gz>`
+   |    :download:`zip <files/editor_v14.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -44,8 +44,11 @@ Log
 --------------------
 
 - vrátená možnosť zmeny farby hlavnej funkcie (v tabe ``Možnosti``)
-- zmenené názvy parametrov pri spúšťaní editora na ``editor(figure=fig, axes=ax, function=f, intervals=[X1, ..., Xn], primes=[p1, ..., pn], asymptotes=[a1, ..., an])``
+- zmenené názvy parametrov pri spúšťaní editora na ``editor(figure=fig, axes=ax, function=f, intervals=[X1, ..., Xn], ...)``
 - doplnenie výpočtu (a zobrazenia) intervalov konvexnosti/konkávnosti aj v prípade nenájdených inflexných bodov
+- opravená chyba, kedy sa pri výpise nulových bodov zobrazoval zoznam nulových bodov pre každý interval
+- výpisy vo ``Výpisy`` sa defaultne vypisujú od najnovšieho po najstaršie, pridané tlačidlo v ``Možnosti`` pre opačné poradie
+- pridané tlačidlo pre uloženie výpisov do súboru
 
 
 23.3.2020 - 29.3.2020
