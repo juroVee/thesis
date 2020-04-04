@@ -46,7 +46,7 @@ fig, ax = plt.subplots()
 Samotný editor sa spúšťa zavolaním funkcie ```editor()```, ktorá vyžaduje tzv. keyworded argumenty ```**params```.
 
 ```
-``editor(figure=fig, axes=ax, function=f, intervals=[X1, ..., Xn], primes=[p1, ..., pn], asymptotes=[a1, ..., an])``
+editor(figure=fig, axes=ax, function=f, intervals=[X1, ..., Xn], primes=[p1, ..., pn], asymptotes=[a1, ..., an])
 ```
 kde ```figure, axes, intervals``` sú povinné argumenty a ```primes, asymptotes``` nepovinné a znamenajú užívateľom definované funkcie derivácií (zadané poradie zároveň definuje ich stupeň), resp. užívateľom zadané asymptoty (taktiež ich funkcie).
 
