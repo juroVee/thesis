@@ -61,7 +61,7 @@ class Dropdown:
         toggle = w.ToggleButton(
             value=False,
             description=self.description,
-            disabled=self.disabled,
+            disabled=True,
             button_style='',  # 'success', 'info', 'warning', 'danger' or ''
             tooltip='Description',
             layout=w.Layout(width='90%', border='1px solid darkgrey')
@@ -70,7 +70,7 @@ class Dropdown:
             options=self.values,
             value=self.default_value,
             description='',
-            disabled=False,
+            disabled=self.disabled,
             layout=w.Layout(width='100%', overflow='hidden')
         )
         return w.HBox(children=[toggle, dropdown], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
@@ -90,7 +90,7 @@ class Text:
         toggle = w.ToggleButton(
             value=False,
             description=self.description,
-            disabled=self.disabled,
+            disabled=True,
             button_style='',
             tooltip='Description',
             layout=w.Layout(width='90%', border='1px solid darkgrey')
@@ -101,7 +101,7 @@ class Text:
             max=self.max,
             step=self.step,
             description='',
-            disabled=False,
+            disabled=self.disabled,
             layout=w.Layout(width='100%', overflow='hidden')
         )
         return w.HBox(children=[toggle, textfield], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))

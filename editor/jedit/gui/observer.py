@@ -134,8 +134,8 @@ class Observer:
         self.logger.write(message, main=True, mini=True)
 
     def _changed_logger_order(self, b) -> None:
-        message = logger_message('výpisy', poradie='od_najstaršieho' if b['new'] else 'od_najnovšieho')
-        self.logger.set_order_oldest(b['new'])
+        message = logger_message('výpisy', poradie=b['new'])
+        self.logger.set_order_oldest(True if b['new'] == 'od najstaršieho' else False)
         self.logger.write(message, main=True, mini=True)
 
     def _changed_logger_save(self, b) -> None:
@@ -250,7 +250,7 @@ class Observer:
         self.function_manager.update_plot()
         self.logger.write(logger_message('nulové body', farba=choice), main=True, mini=True)
 
-    def _changed_zero_points_iterations(self, b) -> None:
+    def _changed_iterations(self, b) -> None:
         self.function_manager.set_plot_updated(True)
         choice = b['new']
         function = self.function_manager.get_current()
@@ -388,23 +388,29 @@ class Observer:
     def start(self) -> None:
         gui_elements = self.menu_manager.get_elements()
 
-        for hbox in gui_elements['hbox']:
-            dropdown, color_picker = gui_elements['hbox'][hbox].children
-            if hasattr(self, f'_changed_{hbox}'):
-                dropdown.observe(getattr(self, f'_changed_{hbox}'), 'value')
-            if hasattr(self, f'_changed_color_{hbox}'):
-                color_picker.observe(getattr(self, f'_changed_color_{hbox}'), 'value')
+        for element in gui_elements['hbox']:
+            dropdown, color_picker = gui_elements['hbox'][element].children
+            if hasattr(self, f'_changed_{element}'):
+                dropdown.observe(getattr(self, f'_changed_{element}'), 'value')
+            if hasattr(self, f'_changed_color_{element}'):
+                color_picker.observe(getattr(self, f'_changed_color_{element}'), 'value')
 
-        for toggle in gui_elements['toggle']:
-            button = gui_elements['toggle'][toggle].children[0]
-            if hasattr(self, f'_changed_{toggle}'):
-                button.observe(getattr(self, f'_changed_{toggle}'), 'value')
+        for element in gui_elements['toggle']:
+            button = gui_elements['toggle'][element].children[0]
+            if hasattr(self, f'_changed_{element}'):
+                button.observe(getattr(self, f'_changed_{element}'), 'value')
 
-        _, dropdown = gui_elements['dropdown']['refinement'].children
-        dropdown.observe(self._changed_refinement, 'value')
+        for element in gui_elements['dropdown']:
+            _, dropdown = gui_elements['dropdown'][element].children
+            if hasattr(self, f'_changed_{element}'):
+                dropdown.observe(getattr(self, f'_changed_{element}'), 'value')
 
-        _, dropdown = gui_elements['text']['iterations'].children
-        dropdown.observe(self._changed_zero_points_iterations, 'value')
+        for element in gui_elements['text']:
+            _, text = gui_elements['text'][element].children
+            if hasattr(self, f'_changed_{element}'):
+                text.observe(getattr(self, f'_changed_{element}'), 'value')
 
-        button = gui_elements['button']['logger_save'].children[0]
-        button.on_click(self._changed_logger_save)
+        for element in gui_elements['button']:
+            button = gui_elements['button'][element].children[0]
+            if hasattr(self, f'_changed_{element}'):
+                button.on_click(getattr(self, f'_changed_{element}'))

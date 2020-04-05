@@ -30,11 +30,11 @@ class Calculator:
         result = defaultdict()
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
-            for i, X in enumerate(self.x_values):
+            for i, (original_X, X) in enumerate(zip(self.original_x_values, self.x_values)):
                 key = f'X{i}'
                 delta_x = np.diff(X)[0]
                 try:
-                    candidates, converged, zero_der = newton(self.f, X, fprime=fprime, tol=delta_x, maxiter=self.maxiter, full_output=True)
+                    candidates, converged, zero_der = newton(self.f, original_X, fprime=fprime, tol=delta_x, maxiter=self.maxiter, full_output=True)
                 except RuntimeError:
                     break
                 candidates = candidates[(candidates >= np.amin(X)) & (candidates <= np.amax(X))]

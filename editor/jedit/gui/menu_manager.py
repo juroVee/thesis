@@ -55,12 +55,12 @@ class MenuManager:
                                                                link=True).get()
 
         a_grid[9, 0] = self.elements['dropdown']['refinement'] = Dropdown(description='Zjemnenie',
-                                                                          disabled=True,
+                                                                          disabled=False,
                                                                           values=['pôvodné'] + [str(value) + 'x' for value in config['refinement']['values']],
                                                                           default_value='pôvodné').get()
 
         a_grid[10, 0] = self.elements['text']['iterations'] = Text(description='Iterácie',
-                                                                   disabled=True,
+                                                                   disabled=False,
                                                                    minval=1,
                                                                    maxval=1000,
                                                                    step=1,
@@ -88,8 +88,10 @@ class MenuManager:
         f_grid[6, 0] = self.elements['toggle']['grid'] = Toggle(description='Mriežka',
                                                                 disabled=False).get()
 
-        f_grid[8, 0] = self.elements['toggle']['logger_order'] = Toggle(description='Výpisy od najstaršieho',
-                                                                        disabled=False).get()
+        f_grid[8, 0] = self.elements['dropdown']['logger_order'] = Dropdown(description='Poradie výpisov',
+                                                                          disabled=False,
+                                                                          values=['od najnovšieho', 'od najstaršieho'],
+                                                                          default_value='od najnovšieho').get()
 
         f_grid[9, 0] = self.elements['button']['logger_save'] = Button(description='Uložiť výpisy do súboru',
                                                                        disabled=False).get()
