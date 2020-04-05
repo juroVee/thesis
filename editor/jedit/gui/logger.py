@@ -1,11 +1,8 @@
-# external modules
 import os
 import ipywidgets as w
 from IPython.display import clear_output
 from datetime import datetime
 import numpy as np
-
-# project-level modules
 from ..config import config
 
 
@@ -77,8 +74,6 @@ class Logger:
                 clear_output()
                 print(message)
             return
-        if config['editor_settings']['footer_log'] != 'yes':
-            return
         theme, kwargs = message
         out = f'[{datetime.now().strftime("%d.%m.%Y %H:%M:%S")}]'
         if main:
@@ -87,7 +82,7 @@ class Logger:
                 message = compose(theme=theme, kwargs=kwargs)
                 self.log_stack.push(out + message)
                 self.log_stack.reveal()
-        if mini:
+        if mini and config['editor_settings']['footer_log'] == 'yes':
             with self.outputs['mini']:
                 clear_output()
                 message = compose(theme=theme, kwargs=kwargs, mini=True)

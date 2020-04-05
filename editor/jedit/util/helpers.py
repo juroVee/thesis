@@ -1,6 +1,5 @@
 # external modules
 from IPython.display import display, HTML
-import numpy as np
 
 
 def logger_message(theme, **kwargs):

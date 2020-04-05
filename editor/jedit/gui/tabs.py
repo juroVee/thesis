@@ -1,7 +1,4 @@
-# external modules
 import ipywidgets as w
-
-# project-level modules
 from ..config import config
 
 
@@ -22,15 +19,15 @@ class Tab:
 class AnalysisTab(Tab):
 
     def __init__(self, board=None):
-        manager = board.get_manager_object()
-        gui_manager = board.get_gui_manager_object()
-        logger = board.get_logger_object()
+        function_manager = board.get_object('function_manager')
+        menu_manager = board.get_object('menu_manager')
+        logger = board.get_object('logger')
         logger_mini_tab = w.Tab(children=[logger.get_widget(t='mini')], layout=w.Layout(height='100%'))
         logger_mini_tab.set_title(0, 'Posledná zmena')
         super().__init__(name='Analýza',
-                   main_window=[manager.get_plot_widget()],
-                   sidebar=[gui_manager.get_main_menu()],
-                    footer=[logger_mini_tab]
+                   main_window=[function_manager.get_plot_widget()],
+                   sidebar=[menu_manager.get_main_menu()],
+                    footer=[logger_mini_tab] if config['editor_settings']['footer_log'] == 'yes' else []
                    )
 
     def get_widget(self) -> w.GridspecLayout:
@@ -44,7 +41,7 @@ class AnalysisTab(Tab):
 class LogTab(Tab):
 
     def __init__(self, board=None):
-        logger = board.get_logger_object()
+        logger = board.get_object('logger')
         super().__init__(name='Výstupy', main_window=[logger.get_widget(t='main')])
 
     def get_widget(self) -> w.GridspecLayout:
@@ -56,7 +53,7 @@ class LogTab(Tab):
 class WarningTab(Tab):
 
     def __init__(self, board=None):
-        logger = board.get_logger_object()
+        logger = board.get_object('logger')
         super().__init__(name='Upozornenia', main_window=[logger.get_widget(t='warnings')])
 
     def get_widget(self) -> w.GridspecLayout:

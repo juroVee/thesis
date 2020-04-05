@@ -1,12 +1,7 @@
-# external modules
 import numpy as np
 from matplotlib.lines import Line2D
-
-# project-level modules
 from ..config import config
 from ..util import transform_title
-
-# package-level modules
 from .painter import Painter
 
 

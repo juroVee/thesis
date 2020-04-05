@@ -1,15 +1,12 @@
-# external modules
 import matplotlib.pyplot as plt
 import ipywidgets as w
 from IPython.display import clear_output, display
 from queue import Queue
-
-# project-level modules
 from ..config import config
 from .calculations import Calculator
 from .function import Function, DefaultFunction, UserFunction
 
-class Manager:
+class FunctionManager:
 
     def __init__(self, user_parameters):
         self._init_plot()

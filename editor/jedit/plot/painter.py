@@ -1,7 +1,4 @@
-# project-level modules
 from ..config import config
-
-# package-level modules
 from .maux import init_subplot, smart_ticklabel
 
 class Painter:
@@ -103,10 +100,9 @@ class Painter:
             f = self.function.get_parameter('f')
             zorder = self.function.get_parameter(f'{op}_zorder')
             dataset = self.function.get_parameter(f'{op}_dataset')
-            #TODO zefektivnit
             for dct in dataset.values():
-                for x in dct['values']:
-                    self.ax.plot(x, f(x), color=color, linestyle=linestyle, linewidth=linewidth, zorder=zorder)
+                for interval in dct['values']:
+                    self.ax.plot(interval, f(interval), color=color, linestyle=linestyle, linewidth=linewidth, zorder=zorder)
 
     def plot_title(self):
         self.ax.set_title(self.function.get_parameter('latex'), y=1.06)

@@ -49,6 +49,7 @@ Log
 - opravená chyba, kedy sa pri výpise nulových bodov zobrazoval zoznam nulových bodov pre každý interval
 - výpisy vo ``Výpisy`` sa defaultne vypisujú od najnovšieho po najstaršie, pridané tlačidlo v ``Možnosti`` pre opačné poradie
 - pridané tlačidlo pre uloženie výpisov do súboru
+- refaktorizácia a upratanie kódu v rámci možností
 
 
 23.3.2020 - 29.3.2020

@@ -1,13 +1,8 @@
-# external modules
 import ipywidgets as w
-
-# project-level modules
-from ..plot import Manager
-
-# package-level modules
+from ..plot import FunctionManager
 from .tabs import AnalysisTab, LogTab, WarningTab
 from .observer import Observer
-from .elements import GUIElementManager
+from .menu_manager import MenuManager
 
 
 class Board:
@@ -17,15 +12,15 @@ class Board:
             self.user_config = user_params['config']
         self.logger = logger
         self._init_manager(user_params)
-        self._init_gui_elements_manager()
+        self._init_menu_manager()
         self._init_tabs()
         self._init_observer()
 
     def _init_manager(self, user_params: dict) -> None:
-        self.manager = Manager(user_params)
+        self.function_manager = FunctionManager(user_params)
 
-    def _init_gui_elements_manager(self) -> None:
-        self.gui_manager = GUIElementManager(self.manager)
+    def _init_menu_manager(self) -> None:
+        self.menu_manager = MenuManager()
 
     def _init_tabs(self):
         tabs = [AnalysisTab(board=self),
@@ -39,17 +34,9 @@ class Board:
         self.observer = Observer(self)
         self.observer.start()
 
-    def get_manager_object(self):
-        return self.manager
-
-    def get_logger_object(self):
-        return self.logger
-
-    def get_gui_manager_object(self):
-        return self.gui_manager
-
-    def get_observer_object(self):
-        return self.observer
+    def get_object(self, object_name):
+        if hasattr(self, object_name):
+            return getattr(self, object_name)
 
     def get_widget(self) -> w.VBox:
         return w.VBox(children=[self.tab_parent])

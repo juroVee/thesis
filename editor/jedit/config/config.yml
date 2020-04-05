@@ -1,5 +1,5 @@
 editor_settings:
-    figure_header: 'no'
+    interactive_elements: 'no'
     footer_log: 'yes'
 
 default_sizes:
@@ -35,8 +35,6 @@ derivative:
     colors: # number of colors must match 'max_derivative'
         - '#ff8647'
         - '#39ff33'
-        - '#7b6cef'
-        - '#7b6cef'
         - '#7b6cef'
 
 asymptote:

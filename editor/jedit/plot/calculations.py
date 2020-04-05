@@ -1,4 +1,3 @@
-# external modules
 from scipy.misc import derivative
 from scipy.optimize import newton
 from scipy.signal import argrelextrema
@@ -6,8 +5,6 @@ import numpy as np
 from matplotlib.lines import Line2D
 import warnings
 from collections import defaultdict
-
-# project-level modules
 from ..config import config
 
 class Calculator:
@@ -43,8 +40,8 @@ class Calculator:
                 candidates = candidates[(candidates >= np.amin(X)) & (candidates <= np.amax(X))]
                 candidates = np.unique(np.around(candidates, r))
                 result[key] = candidates[np.isclose(self.f(candidates), 0)]
-            self.function.set_parameter('zero_points_dataset', result)
-            return w
+        self.function.set_parameter('zero_points_dataset', result)
+        return w
     
     def extremes(self) -> tuple:
         result = defaultdict(dict)
@@ -55,8 +52,8 @@ class Calculator:
                 fX = self.f(X)
                 result[key]['minima'] = X[argrelextrema(fX, np.less)]
                 result[key]['maxima'] = X[argrelextrema(fX, np.greater)]
-            self.function.set_parameter('extremes_dataset', result)
-            return w
+        self.function.set_parameter('extremes_dataset', result)
+        return w
     
     def inflex_points(self) -> None:
         result = defaultdict()
@@ -66,8 +63,8 @@ class Calculator:
                 key = f'X{i}'
                 _, fprime = self.primes[key][1]
                 result[key] = np.concatenate([X[argrelextrema(fprime, np.less)], X[argrelextrema(fprime, np.greater)]])
-            self.function.set_parameter('inflex_points_dataset', result)
-            return w
+        self.function.set_parameter('inflex_points_dataset', result)
+        return w
     
     def monotonic(self):
         dataset = self.function.get_parameter('extremes_dataset')
@@ -83,9 +80,9 @@ class Calculator:
                     dest = result_dec[key] if self.f(x1) > self.f(x2) else result_inc[key]
                     dest['values'].append(interval)
                     dest['intervals'].append((x1, x2))
-            self.function.set_parameter('increasing_dataset', result_inc)
-            self.function.set_parameter('decreasing_dataset', result_dec)
-            return w
+        self.function.set_parameter('increasing_dataset', result_inc)
+        self.function.set_parameter('decreasing_dataset', result_dec)
+        return w
     
     def convex(self):
         dataset = self.function.get_parameter('inflex_points_dataset')
@@ -105,9 +102,9 @@ class Calculator:
                     dest = result_convex[key] if mid_value > 0 else result_concave[key]
                     dest['values'].append(interval)
                     dest['intervals'].append((x1, x2))
-            self.function.set_parameter('convex_dataset', result_convex)
-            self.function.set_parameter('concave_dataset', result_concave)
-            return w
+        self.function.set_parameter('convex_dataset', result_convex)
+        self.function.set_parameter('concave_dataset', result_concave)
+        return w
     
     def derivatives(self) -> None:
         derivatives = defaultdict(dict)
@@ -121,6 +118,6 @@ class Calculator:
                     else:
                         order = n + 1 if n % 2 == 0 else n + 2
                         derivatives[f'X{i}'][n] = (X, derivative(self.f, X, dx=0.001, n=n, order=order))
-            self.function.set_parameter('derivatives', derivatives)
-            self.primes = derivatives
-            return w
+        self.function.set_parameter('derivatives', derivatives)
+        self.primes = derivatives
+        return w

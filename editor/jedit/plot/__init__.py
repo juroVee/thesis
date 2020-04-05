@@ -1,4 +1,4 @@
 from .function import Function
-from .manager import Manager
+from .function_manager import FunctionManager
 from .painter import Painter
 from .calculations import Calculator
