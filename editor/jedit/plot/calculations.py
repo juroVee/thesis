@@ -67,41 +67,39 @@ class Calculator:
         return w
     
     def monotonic(self):
-        dataset = self.function.get_parameter('extremes_dataset')
+        primes = self.function.get_parameter('derivatives')
         result_inc, result_dec = defaultdict(lambda: defaultdict(list)), defaultdict(lambda: defaultdict(list))
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
             for i, X in enumerate(self.x_values):
                 key = f'X{i}'
-                full = np.sort(np.concatenate([X[:1], dataset[key]['minima'], dataset[key]['maxima'], X[-1:]]))
-                pairs = [(full[i], full[i + 1]) for i in range(len(full) - 1)]
-                for j, (x1, x2) in enumerate(pairs):
-                    interval = X[(X >= x1) & (X <= x2)]
-                    dest = result_dec[key] if self.f(x1) > self.f(x2) else result_inc[key]
-                    dest['values'].append(interval)
-                    dest['intervals'].append((x1, x2))
+                stacked = np.dstack(primes[key][1])[0]
+                for interval in np.split(stacked, np.where(np.diff(stacked[:, 1] < 0))[0] + 1):
+                    if np.all(interval[:, 1] > 0):
+                        dest = result_inc[key]
+                    elif np.all(interval[:, 1] < 0):
+                        dest = result_dec[key]
+                    dest['values'].append(interval[:, 0])
+                    dest['intervals'].append((interval[:, 0][0], interval[:, 0][-1]))
         self.function.set_parameter('increasing_dataset', result_inc)
         self.function.set_parameter('decreasing_dataset', result_dec)
         return w
     
     def convex(self):
-        dataset = self.function.get_parameter('inflex_points_dataset')
         primes = self.function.get_parameter('derivatives')
         result_convex, result_concave = defaultdict(lambda: defaultdict(list)), defaultdict(lambda: defaultdict(list))
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
             for i, X in enumerate(self.x_values):
                 key = f'X{i}'
-                _, fprime2 = primes[key][2]
-                full = np.sort(np.concatenate([X[:1], np.concatenate(list(dataset.values())), X[-1:]]))
-                pairs = [(full[i], full[i + 1]) for i in range(len(full) - 1)]
-                for j, (x1, x2) in enumerate(pairs):
-                    interval = X[(X >= x1) & (X <= x2)]
-                    fprime2_interval = fprime2[(X >= x1) & (X <= x2)]
-                    mid_value = fprime2_interval[len(fprime2_interval) // 2]
-                    dest = result_convex[key] if mid_value > 0 else result_concave[key]
-                    dest['values'].append(interval)
-                    dest['intervals'].append((x1, x2))
+                stacked = np.dstack(primes[key][2])[0]
+                for interval in np.split(stacked, np.where(np.diff(stacked[:, 1] < 0))[0] + 1):
+                    if np.all(interval[:, 1] > 0):
+                        dest = result_convex[key]
+                    elif np.all(interval[:, 1] < 0):
+                        dest = result_concave[key]
+                    dest['values'].append(interval[:, 0])
+                    dest['intervals'].append((interval[:, 0][0], interval[:, 0][-1]))
         self.function.set_parameter('convex_dataset', result_convex)
         self.function.set_parameter('concave_dataset', result_concave)
         return w

@@ -11,7 +11,7 @@ Základné informácie
 .. sidebar:: Odkazy/Na stiahnutie
 
    | **Aktualizácia odkazov**
-   |    4. apríl 2020
+   |    6. apríl 2020
 
    | **Repozitár práce**
    |    GitHub_
@@ -20,8 +20,8 @@ Základné informácie
    |    :download:`PDF <files/thesis_v1.pdf>`
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/editor_v14.tar.gz>`
-   |    :download:`zip <files/editor_v14.zip>`
+   |    :download:`tar.gz <files/editor_v14_1.tar.gz>`
+   |    :download:`zip <files/editor_v14_1.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -39,6 +39,11 @@ Základné informácie
 
 Log
 ===
+
+6.4.2020 - 12.4.2020
+--------------------
+
+- vylepšený/optimalizovaný algoritmus výpočtu intervalov monotónnosti, konvexnosti a konkávnosti a s tým súvisiaca oprava chyby, ktorá spôsobovala ``IndexError``
 
 30.3.2020 - 5.4.2020
 --------------------
