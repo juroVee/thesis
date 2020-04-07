@@ -1,10 +1,13 @@
-import matplotlib.pyplot as plt
-import ipywidgets as w
-from IPython.display import clear_output, display
 from queue import Queue
-from ..config import config
-from .calculations import Calculator
+
+import ipywidgets as w
+import matplotlib.pyplot as plt
+from IPython.display import clear_output, display
+
 from .function import Function, DefaultFunction, UserFunction
+from ..computing import ComputationsHandler
+from ...config import config
+
 
 class FunctionManager:
 
@@ -22,7 +25,6 @@ class FunctionManager:
         width, height = config['plot_parameters']['width'], config['plot_parameters']['height']
         self.fig, self.ax = plt.subplots()
         self.fig.set_size_inches(width, height)
-        self.plot_updated = False
 
     def _init_structures(self):
         self.functions = {}
@@ -57,9 +59,6 @@ class FunctionManager:
             parameters = config['main_function']['default']
             self.current_function = self.functions[parameters['name']] = DefaultFunction(parameters['name'], parameters)
 
-    def set_plot_updated(self, value):
-        self.plot_updated = value
-
     def has_user_function(self) -> bool:
         return 'user function' in self.functions.keys()
 
@@ -74,14 +73,13 @@ class FunctionManager:
 
     def update_plot(self, **kwargs) -> None:
         if len(kwargs) > 0:
-            calculator = Calculator(self.get_current())
+            calculator = ComputationsHandler(function=self.get_current())
             for arg, value in kwargs.items():
                 if value:
                     warnings = getattr(calculator, arg)()
                     self.add_warnings(warnings)
         # important!
-        if self.plot_updated:
-            plt.close('all')
+        plt.close('all')
 
         current_function = self.get_current()
         current_function.plot(self.ax)

@@ -1,8 +1,7 @@
 import ipywidgets as w
-from ..plot import FunctionManager
+from ..analysis import FunctionManager
 from .tabs import AnalysisTab, LogTab, WarningTab
-from .observer import Observer
-from .menu_manager import MenuManager
+from .menu import MainMenu, Observer
 
 
 class Board:
@@ -11,26 +10,14 @@ class Board:
         if 'config' in user_params:
             self.user_config = user_params['config']
         self.logger = logger
-        self._init_manager(user_params)
-        self._init_menu_manager()
-        self._init_tabs()
-        self._init_observer()
-
-    def _init_manager(self, user_params: dict) -> None:
         self.function_manager = FunctionManager(user_params)
-
-    def _init_menu_manager(self) -> None:
-        self.menu_manager = MenuManager()
-
-    def _init_tabs(self):
+        self.main_menu = MainMenu()
         tabs = [AnalysisTab(board=self),
                 LogTab(board=self),
                 WarningTab(board=self)]
         self.tab_parent = w.Tab(children=[tab.get_widget() for tab in tabs])
         for i, tab in enumerate(tabs):
             self.tab_parent.set_title(i, tab.name)
-
-    def _init_observer(self):
         self.observer = Observer(self)
         self.observer.start()
 

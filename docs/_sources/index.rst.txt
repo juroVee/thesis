@@ -1,7 +1,5 @@
 .. Bachelor Thesis documentation master file, created by
    sphinx-quickstart on Tue Oct 15 16:49:20 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
 
 Základné informácie
 ===================
@@ -11,7 +9,7 @@ Základné informácie
 .. sidebar:: Odkazy/Na stiahnutie
 
    | **Aktualizácia odkazov**
-   |    6. apríl 2020
+   |    7. apríl 2020
 
    | **Repozitár práce**
    |    GitHub_
@@ -20,8 +18,8 @@ Základné informácie
    |    :download:`PDF <files/thesis_v1.pdf>`
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/editor_v14_1.tar.gz>`
-   |    :download:`zip <files/editor_v14_1.zip>`
+   |    :download:`tar.gz <files/editor_v14_2.tar.gz>`
+   |    :download:`zip <files/editor_v14_2.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -44,6 +42,8 @@ Log
 --------------------
 
 - vylepšený/optimalizovaný algoritmus výpočtu intervalov monotónnosti, konvexnosti a konkávnosti a s tým súvisiaca oprava chyby, ktorá spôsobovala ``IndexError``
+- refaktorizácia kódu
+
 
 30.3.2020 - 5.4.2020
 --------------------

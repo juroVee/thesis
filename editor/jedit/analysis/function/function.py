@@ -1,8 +1,9 @@
 import numpy as np
 from matplotlib.lines import Line2D
-from ..config import config
-from ..util import transform_title
-from .painter import Painter
+
+from .util import transform_title
+from ..plotting import Plotter
+from ...config import config
 
 
 class Function:
@@ -46,7 +47,7 @@ class Function:
             self.set_parameter('zero_points_method', 'Secant')
         self.set_parameter('zero_points_color', config['zero_points']['color'])
         self.set_parameter('zero_points_iterations', config['zero_points']['iterations'])
-        
+
     def _init_analysis(self, op='extremes'):
         self.set_parameter(f'{op}_visible', False)
         self.set_parameter(f'{op}_color', config[op]['color'])
@@ -56,8 +57,7 @@ class Function:
 
     def plot(self, ax):
         ax.clear()
-        painter = Painter(self, ax)
-        painter.plot_all()
+        Plotter(self, ax).plot_all()
 
     def set_parameter(self, name, value):
         self.parameters[name] = value

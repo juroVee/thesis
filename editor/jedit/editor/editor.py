@@ -1,9 +1,10 @@
-from matplotlib import get_backend
 from IPython.display import display
-from .gui import Board
-from .gui import Logger
-from .util import NotSupportedException, hide_interactive_toolbars, check_parameters
-from .config import config
+from matplotlib import get_backend
+
+from .exceptions import NotSupportedException
+from .util import hide_interactive_toolbars, check_parameters
+from ..config import config
+from ..gui import Board, Logger
 
 
 class Editor:
@@ -24,9 +25,5 @@ class Editor:
         observer = self.board.get_object('observer')
         display(self.board.get_widget())
         function_manager.update_plot(main_function=True, derivatives=True, zero_points=True,
-                    extremes=True, inflex_points=True, monotonic=True, convex=True)
+                                     extremes=True, inflex_points=True, monotonic=True, convex=True)
         observer.write_warnings()
-
-def editor(**params):
-    new = Editor()
-    new.run_instance(**params)

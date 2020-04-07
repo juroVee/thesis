@@ -1,5 +1,6 @@
 import yaml
 
+
 class Config:
 
     def __init__(self):
@@ -8,6 +9,7 @@ class Config:
 
     def get_data(self):
         return self.data
+
 
 # create instance alongside editor
 config = Config().get_data()

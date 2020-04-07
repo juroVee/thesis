@@ -1,21 +1,11 @@
-from ..config import config
-from .maux import init_subplot, smart_ticklabel
+from .util import init_subplot
+from ...config import config
 
-class Painter:
+
+class Plotter:
 
     def __init__(self, function, axes):
         self.function, self.ax = function, axes
-
-    def plot_all(self):
-        self.plot_main_function()
-        self.plot_asymptotes()
-        self.plot_derivative()
-        self.plot_zero_points()
-        self.plot_extremes()
-        self.plot_inflex_points()
-        for op in 'increasing', 'decreasing', 'convex', 'concave':
-            self.plot_intervals(op)
-        self.plot_title()
 
     def plot_main_function(self):
         for line in self.function.get_parameter('lines'):
@@ -80,8 +70,10 @@ class Painter:
             for extremes in dataset.values():
                 minX = extremes['minima']
                 maxX = extremes['maxima']
-                self.ax.plot(minX, f(minX), 'o', c=self.function.get_parameter('extremes_color'), markersize=markersize, zorder=zorder)
-                self.ax.plot(maxX, f(maxX), 'o', c=self.function.get_parameter('extremes_color'), markersize=markersize, zorder=zorder)
+                self.ax.plot(minX, f(minX), 'o', c=self.function.get_parameter('extremes_color'), markersize=markersize,
+                             zorder=zorder)
+                self.ax.plot(maxX, f(maxX), 'o', c=self.function.get_parameter('extremes_color'), markersize=markersize,
+                             zorder=zorder)
 
     def plot_inflex_points(self):
         if self.function.get_parameter('inflex_points_visible'):
@@ -90,7 +82,8 @@ class Painter:
             f = self.function.get_parameter('f')
             dataset = self.function.get_parameter('inflex_points_dataset')
             for inflex_points in dataset.values():
-                self.ax.plot(inflex_points, f(inflex_points), 'o', c=self.function.get_parameter('inflex_points_color'), markersize=markersize, zorder=zorder)
+                self.ax.plot(inflex_points, f(inflex_points), 'o', c=self.function.get_parameter('inflex_points_color'),
+                             markersize=markersize, zorder=zorder)
 
     def plot_intervals(self, op):
         if self.function.get_parameter(f'{op}_visible'):
@@ -102,7 +95,19 @@ class Painter:
             dataset = self.function.get_parameter(f'{op}_dataset')
             for dct in dataset.values():
                 for interval in dct['values']:
-                    self.ax.plot(interval, f(interval), color=color, linestyle=linestyle, linewidth=linewidth, zorder=zorder)
+                    self.ax.plot(interval, f(interval), color=color, linestyle=linestyle, linewidth=linewidth,
+                                 zorder=zorder)
 
     def plot_title(self):
         self.ax.set_title(self.function.get_parameter('latex'), y=1.06)
+
+    def plot_all(self):
+        self.plot_main_function()
+        self.plot_asymptotes()
+        self.plot_derivative()
+        self.plot_zero_points()
+        self.plot_extremes()
+        self.plot_inflex_points()
+        for op in 'increasing', 'decreasing', 'convex', 'concave':
+            self.plot_intervals(op)
+        self.plot_title()
