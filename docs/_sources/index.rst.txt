@@ -19,8 +19,8 @@ Základné informácie
    |    :download:`LaTeX (tar.gz) <files/docs/Bachelor_Thesis_LATEXv1_1.tar.gz>`
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/sw/editor_v14_2.tar.gz>`
-   |    :download:`zip <files/sw/editor_v14_2.zip>`
+   |    :download:`tar.gz <files/sw/editor_v14_3.tar.gz>`
+   |    :download:`zip <files/sw/editor_v14_3.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
