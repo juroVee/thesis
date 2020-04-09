@@ -7,6 +7,9 @@ from ...config import config
 
 
 class Function:
+    """
+    Class that serves as a container for all the useful information about particular user function
+    """
 
     def __init__(self, f, X, name, latex, user_derivatives=None, asymptotes=None):
         self.parameters = {}
@@ -17,7 +20,7 @@ class Function:
         self._init_zero_points()
         for op in 'extremes', 'inflex_points', 'increasing', 'decreasing', 'convex', 'concave':
             self._init_analysis(op)
-        self._init_refinement()
+        self._init_refinements()
 
     def _init_function_details(self, X, f, name, latex_representation, user_derivatives, asymptotes):
         self.set_parameter('x_values', X)
@@ -52,34 +55,64 @@ class Function:
         self.set_parameter(f'{op}_visible', False)
         self.set_parameter(f'{op}_color', config[op]['color'])
 
-    def _init_refinement(self):
-        self.set_parameter('refinement', 1)
+    def _init_refinements(self):
+        self.set_parameter('refinement_x', 1)
+        self.set_parameter('refinement_y', 1)
 
-    def plot(self, ax):
+    def plot(self, ax) -> None:
+        """
+        Plots all the information about function if user selected as visible
+        :param ax: matplotlib Axes object
+        :return:
+        """
         ax.clear()
         Plotter(self, ax).plot_all()
 
-    def set_parameter(self, name, value):
+    def set_parameter(self, name, value) -> None:
+        """
+        Sets or changes function's parameter
+        :param name: Name of the parameter
+        :param value: Value of the parameter
+        :return:
+        """
         self.parameters[name] = value
 
     def get_parameter(self, parameter):
+        """
+        Gets parameter
+        :param parameter: Parameter's name
+        :return:
+        """
         return self.parameters.get(parameter, None)
 
-    def update_zorder_sum(self):
+    def update_zorder_sum(self) -> None:
+        """
+        Increases plot objects count
+        :return:
+        """
         self.zorder_sum += 1
 
-    def get_zorder_sum(self):
+    def get_zorder_sum(self) -> int:
+        """
+        Gets plot objects count
+        :return:
+        """
         return self.zorder_sum
 
-    def set_refinement(self, value=1) -> None:
+    def set_refinement_x(self, value=1) -> None:
+        """
+
+        :param value: Integer, value
+        :return:
+        """
         self.set_parameter('refinement', value)
         if value == 0:
             self.set_parameter('x_values', self.get_parameter('original_x_values'))
             return
         new_x_values = []
-        for xval in self.get_parameter('original_x_values'):
-            minima, maxima = min(xval), max(xval)
-            intervals = len(xval) - 1
+        for X in self.get_parameter('original_x_values'):
+            minima, maxima = min(X), max(X)
+            intervals = len(X) - 1
             new_intervals = intervals * self.get_parameter('refinement')
             new_x_values.append(np.linspace(minima, maxima, new_intervals + 1))
         self.set_parameter('x_values', new_x_values)

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from IPython.display import clear_output, display
 
 from .function import Function, DefaultFunction, UserFunction
-from ..computing import ComputationsHandler
+from .computations import ComputationsHandler
 from ...config import config
 
 
@@ -15,6 +15,7 @@ class FunctionManager:
         self._init_plot()
         self._init_structures()
         self.current_function = self._init_current_function(user_parameters)
+        self.updates = 0
 
     def __getitem__(self, function_name: str):
         return self.functions[function_name]
@@ -42,7 +43,7 @@ class FunctionManager:
     def apply_configuration(self, configuration):
         for parameter, value in configuration.items():
             if parameter == 'refinement':
-                self.current_function.set_refinement(value)
+                self.current_function.set_refinement_x(value)
             else:
                 self.current_function.set_parameter(parameter, value)
 
@@ -79,10 +80,12 @@ class FunctionManager:
                     warnings = getattr(calculator, arg)()
                     self.add_warnings(warnings)
         # important!
-        plt.close('all')
+        if self.updates > 0:
+            plt.close('all')
 
         current_function = self.get_current()
         current_function.plot(self.ax)
+        self.updates += 1
         with self.output:
             clear_output(wait=True)
             display(self.ax.figure)

@@ -16,7 +16,7 @@ class HBox:
             description=self.description,
             disabled=self.disabled,
             button_style='',
-            tooltip='Description',
+            tooltip=self.description,
             layout=w.Layout(width='90%', border='1px solid darkgrey')
         )
         cpicker = w.ColorPicker(
@@ -43,7 +43,7 @@ class Toggle:
             description=self.description,
             disabled=self.disabled,
             button_style='',
-            tooltip='Description',
+            tooltip=self.description,
             layout=w.Layout(width='100%', border='1px solid darkgrey')
         )
         return w.HBox(children=[toggle], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
@@ -63,7 +63,7 @@ class Dropdown:
             description=self.description,
             disabled=True,
             button_style='',  # 'success', 'info', 'warning', 'danger' or ''
-            tooltip='Description',
+            tooltip=self.description,
             layout=w.Layout(width='90%', border='1px solid darkgrey')
         )
         dropdown = w.Dropdown(
@@ -92,7 +92,7 @@ class Text:
             description=self.description,
             disabled=True,
             button_style='',
-            tooltip='Description',
+            tooltip=self.description,
             layout=w.Layout(width='90%', border='1px solid darkgrey')
         )
         textfield = w.BoundedIntText(
@@ -119,7 +119,7 @@ class Button:
             description=self.description,
             disabled=self.disabled,
             button_style='',
-            tooltip='Description',
+            tooltip=self.description,
             layout=w.Layout(width='100%', border='1px solid darkgrey')
         )
         return w.HBox(children=[button], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))

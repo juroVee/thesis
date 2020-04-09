@@ -37,8 +37,8 @@ class ComputationsHandler:
                 key = f'X{i}'
                 delta_x = np.diff(X)[0]
                 try:
-                    candidates, converged, zero_der = newton(self.f, original_X, fprime=fprime, tol=delta_x,
-                                                             maxiter=self.maxiter, full_output=True)
+                    candidates = newton(self.f, original_X, fprime=fprime, tol=delta_x,
+                                                             maxiter=self.maxiter)
                 except RuntimeError:
                     break
                 candidates = candidates[(candidates >= np.amin(X)) & (candidates <= np.amax(X))]

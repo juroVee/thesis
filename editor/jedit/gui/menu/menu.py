@@ -50,15 +50,15 @@ class MainMenu:
                                                                color=config['concave']['color'],
                                                                link=True).get()
 
-        a_grid[9, 0] = self.elements['dropdown']['refinement'] = Dropdown(description='Zjemnenie',
-                                                                          disabled=False,
-                                                                          values=['pôvodné'] + [str(value) + 'x' for
-                                                                                                value in
-                                                                                                config['refinement'][
-                                                                                                    'values']],
-                                                                          default_value='pôvodné').get()
+        a_grid[9, 0] = self.elements['dropdown']['refinement_x'] = Dropdown(description='Zjemnenie x',
+                                                                            disabled=False,
+                                                                            values=list(map(lambda
+                                                                                                n: n + 'x' if n != 'pôvodné' else n,
+                                                                                            config['refinement_x'][
+                                                                                                'values'])),
+                                                                            default_value='pôvodné').get()
 
-        a_grid[10, 0] = self.elements['text']['iterations'] = Text(description='Iterácie',
+        a_grid[10, 0] = self.elements['text']['iterations'] = Text(description='Iterácie Newton',
                                                                    disabled=False,
                                                                    minval=1,
                                                                    maxval=1000,
