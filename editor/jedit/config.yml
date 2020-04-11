@@ -46,7 +46,7 @@ zero_points:
   markersize: 6
   color: '#000000'
   iterations: 50
-  round: 10
+  round: 8
 
 extremes:
   markersize: 6

@@ -297,6 +297,18 @@ class Observer:
         self._add_inflex_points_info(function, refinement_support=True)
         self._add_analysis_info(function, refinement_support=True)
 
+    def _changed_refinement_y(self, b) -> None:
+        options = {value + 'x': int(value) for value in config['refinement_y']['values'] if value != 'pôvodné'}
+        options['pôvodné'] = 1
+        choice = options[b['new']]
+        function = self.function_manager.get_current()
+        function.set_parameter('refinement_y', choice)
+        self.logger.write('Prepočítavanie funkcie...', timer=True)
+        self.function_manager.update_plot(zero_points=True)
+        message = logger_message('zjemnenie y-ovej osi', zjemnenie=b['new'])
+        self.logger.write(message, main=True, mini=True)
+        self._add_zero_points_info(function, refinement_support=True)
+
     def _changed_zero_points(self, event) -> None:
         """
         Event handler that turns plotting zero points on or off

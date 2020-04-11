@@ -13,7 +13,7 @@ class MainMenu:
         self.main_menu = self._init_menu()
 
     def _init_menu(self):
-        a_grid = w.GridspecLayout(config['default_sizes']['main_window_rows'] - 4, 1)
+        a_grid = w.GridspecLayout(config['default_sizes']['main_window_rows'] - 3, 1)
 
         a_grid[0, 0] = self.elements['hbox']['zero_points'] = HBox(description='Nulové body',
                                                                    disabled=False,
@@ -58,7 +58,15 @@ class MainMenu:
                                                                                                 'values'])),
                                                                             default_value='pôvodné').get()
 
-        a_grid[10, 0] = self.elements['text']['iterations'] = Text(description='Iterácie Newton',
+        a_grid[10, 0] = self.elements['dropdown']['refinement_y'] = Dropdown(description='Zjemnenie y',
+                                                                            disabled=False,
+                                                                            values=list(map(lambda
+                                                                                                n: n + 'x' if n != 'pôvodné' else n,
+                                                                                            config['refinement_y'][
+                                                                                                'values'])),
+                                                                            default_value='pôvodné').get()
+
+        a_grid[11, 0] = self.elements['text']['iterations'] = Text(description='Iterácie Newton',
                                                                    disabled=False,
                                                                    minval=1,
                                                                    maxval=1000,

@@ -44,8 +44,10 @@ class Function:
 
     def _init_zero_points(self):
         self.set_parameter('zero_points_visible', False)
-        if len(self.get_parameter('user_derivatives')) > 0:
+        if len(self.get_parameter('user_derivatives')) == 1:
             self.set_parameter('zero_points_method', 'Newton')
+        elif len(self.get_parameter('user_derivatives')) == 2:
+            self.set_parameter('zero_points_method', 'Halley')
         else:
             self.set_parameter('zero_points_method', 'Secant')
         self.set_parameter('zero_points_color', config['zero_points']['color'])

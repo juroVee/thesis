@@ -20,6 +20,7 @@ class ComputationsHandler:
         self.user_primes = function.get_parameter('user_derivatives')
         self.primes = function.get_parameter('derivatives')
         self.maxiter = function.get_parameter('zero_points_iterations')
+        self.refinement_y = function.get_parameter('refinement_y')
 
     def main_function(self) -> None:
         Y_values = [self.f(Xi) for Xi in self.x_values]
@@ -28,7 +29,8 @@ class ComputationsHandler:
         self.function.set_parameter('lines', lines)
 
     def zero_points(self) -> tuple:
-        fprime = self.user_primes[0] if len(self.user_primes) > 0 else None
+        fp = self.user_primes[0] if len(self.user_primes) > 0 else None
+        fp2 = self.user_primes[1] if len(self.user_primes) > 1 else None
         r = config['zero_points']['round']
         result = defaultdict()
         with warnings.catch_warnings(record=True) as w:
@@ -36,14 +38,15 @@ class ComputationsHandler:
             for i, (original_X, X) in enumerate(zip(self.original_x_values, self.x_values)):
                 key = f'X{i}'
                 delta_x = np.diff(X)[0]
+                ref = abs(self.refinement_y)
+                delta_y = delta_x * ref if self.refinement_y >= 0 else delta_x / ref
                 try:
-                    candidates = newton(self.f, original_X, fprime=fprime, tol=delta_x,
-                                                             maxiter=self.maxiter)
+                    candidates = newton(self.f, original_X, fprime=fp, fprime2=fp2, tol=delta_x, maxiter=self.maxiter)
                 except RuntimeError:
                     break
                 candidates = candidates[(candidates >= np.amin(X)) & (candidates <= np.amax(X))]
                 candidates = np.unique(np.around(candidates, r))
-                result[key] = candidates[np.isclose(self.f(candidates), 0)]
+                result[key] = candidates[np.isclose(self.f(candidates), 0, atol=delta_y)]
         self.function.set_parameter('zero_points_dataset', result)
         return w
 
@@ -75,16 +78,14 @@ class ComputationsHandler:
         result_inc, result_dec = defaultdict(lambda: defaultdict(list)), defaultdict(lambda: defaultdict(list))
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
-            for i, X in enumerate(self.x_values):
+            for i, _ in enumerate(self.x_values):
                 key = f'X{i}'
                 stacked = np.dstack(primes[key][1])[0]
                 for interval in np.split(stacked, np.where(np.diff(stacked[:, 1] < 0))[0] + 1):
-                    if np.all(interval[:, 1] >= 0):
-                        dest = result_inc[key]
-                    else:
-                        dest = result_dec[key]
-                    dest['values'].append(interval[:, 0])
-                    dest['intervals'].append((interval[:, 0][0], interval[:, 0][-1]))
+                    X, primes = interval[:, 0], interval[:, 1]
+                    dest = result_inc[key] if np.all(primes >= 0) else result_dec[key]
+                    dest['values'].append(X)
+                    dest['intervals'].append((X[0], X[-1]))
         self.function.set_parameter('increasing_dataset', result_inc)
         self.function.set_parameter('decreasing_dataset', result_dec)
         return w
@@ -94,16 +95,14 @@ class ComputationsHandler:
         result_convex, result_concave = defaultdict(lambda: defaultdict(list)), defaultdict(lambda: defaultdict(list))
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
-            for i, X in enumerate(self.x_values):
+            for i, _ in enumerate(self.x_values):
                 key = f'X{i}'
                 stacked = np.dstack(primes[key][2])[0]
                 for interval in np.split(stacked, np.where(np.diff(stacked[:, 1] < 0))[0] + 1):
-                    if np.all(interval[:, 1] >= 0):
-                        dest = result_convex[key]
-                    else:
-                        dest = result_concave[key]
-                    dest['values'].append(interval[:, 0])
-                    dest['intervals'].append((interval[:, 0][0], interval[:, 0][-1]))
+                    X, primes = interval[:, 0], interval[:, 1]
+                    dest = result_convex[key] if np.all(primes >= 0) else result_concave[key]
+                    dest['values'].append(X)
+                    dest['intervals'].append((X[0], X[-1]))
         self.function.set_parameter('convex_dataset', result_convex)
         self.function.set_parameter('concave_dataset', result_concave)
         return w
