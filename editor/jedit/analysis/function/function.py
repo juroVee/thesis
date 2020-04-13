@@ -18,48 +18,48 @@ class Function:
         self._init_plot_parameters()
         self._init_derivatives()
         self._init_zero_points()
-        for op in 'extremes', 'inflex_points', 'increasing', 'decreasing', 'convex', 'concave':
+        for op in 'extremes', 'inflex_points', 'increasing', 'decreasing', 'concave_up', 'concave_down':
             self._init_analysis(op)
         self._init_refinements()
 
     def _init_function_details(self, X, f, name, latex_representation, user_derivatives, asymptotes):
-        self.set_parameter('x_values', X)
-        self.set_parameter('original_x_values', X)
-        self.set_parameter('f', f)
-        self.set_parameter('name', name)
-        self.set_parameter('latex', latex_representation)
-        self.set_parameter('user_derivatives', [] if user_derivatives is None else user_derivatives)
-        self.set_parameter('asymptotes', [] if asymptotes is None else asymptotes)
-        self.set_parameter('lines_count', len(list(X)))
+        self.set('x_values', X)
+        self.set('original_x_values', X)
+        self.set('f', f)
+        self.set('name', name)
+        self.set('latex', latex_representation)
+        self.set('user_derivatives', user_derivatives)
+        self.set('asymptotes', asymptotes)
+        self.set('lines_count', len(list(X)))
 
     def _init_plot_parameters(self):
-        self.set_parameter('grid', True if config['plot_parameters']['grid'] == 'yes' else False)
-        self.set_parameter('main_function_color', config['main_function']['color'])
-        for n in range(1, config['derivative']['max_derivative'] + 1):
-            self.set_parameter('derivative_color' + str(n), config['derivative']['colors'][n - 1])
+        self.set('grid', True if config['plot_parameters']['grid'] == 'yes' else False)
+        self.set('main_function_color', config['main_function']['color'])
+        for n in range(1, config['derivative']['user_max'] + 1):
+            self.set('derivative_color' + str(n), config['derivative']['colors'][n - 1])
 
     def _init_derivatives(self):
-        for n in range(1, config['derivative']['max_derivative'] + 1):
-            self.set_parameter('active_derivative' + str(n), False)
+        for n in range(1, config['derivative']['user_max'] + 1):
+            self.set('active_derivative' + str(n), False)
 
     def _init_zero_points(self):
-        self.set_parameter('zero_points_visible', False)
-        if len(self.get_parameter('user_derivatives')) == 1:
-            self.set_parameter('zero_points_method', 'Newton')
-        elif len(self.get_parameter('user_derivatives')) == 2:
-            self.set_parameter('zero_points_method', 'Halley')
+        self.set('zero_points_visible', False)
+        if len(self.get('user_derivatives')) == 1:
+            self.set('zero_points_method', 'Newton')
+        elif len(self.get('user_derivatives')) == 2:
+            self.set('zero_points_method', 'Halley')
         else:
-            self.set_parameter('zero_points_method', 'Secant')
-        self.set_parameter('zero_points_color', config['zero_points']['color'])
-        self.set_parameter('zero_points_iterations', config['zero_points']['iterations'])
+            self.set('zero_points_method', 'Secant')
+        self.set('zero_points_color', config['zero_points']['color'])
+        self.set('zero_points_iterations', config['zero_points']['iterations'])
 
     def _init_analysis(self, op='extremes'):
-        self.set_parameter(f'{op}_visible', False)
-        self.set_parameter(f'{op}_color', config[op]['color'])
+        self.set(f'{op}_visible', False)
+        self.set(f'{op}_color', config[op]['color'])
 
     def _init_refinements(self):
-        self.set_parameter('refinement_x', 1)
-        self.set_parameter('refinement_y', 1)
+        self.set('refinement_x', 1)
+        self.set('refinement_y', 1)
 
     def plot(self, ax) -> None:
         """
@@ -70,7 +70,7 @@ class Function:
         ax.clear()
         Plotter(self, ax).plot_all()
 
-    def set_parameter(self, name, value) -> None:
+    def set(self, name, value) -> None:
         """
         Sets or changes function's parameter
         :param name: Name of the parameter
@@ -79,7 +79,7 @@ class Function:
         """
         self.parameters[name] = value
 
-    def get_parameter(self, parameter):
+    def get(self, parameter):
         """
         Gets parameter
         :param parameter: Parameter's name
@@ -107,17 +107,17 @@ class Function:
         :param value: Integer, value
         :return:
         """
-        self.set_parameter('refinement', value)
+        self.set('refinement', value)
         if value == 0:
-            self.set_parameter('x_values', self.get_parameter('original_x_values'))
+            self.set('x_values', self.get('original_x_values'))
             return
         new_x_values = []
-        for X in self.get_parameter('original_x_values'):
+        for X in self.get('original_x_values'):
             minima, maxima = min(X), max(X)
             intervals = len(X) - 1
-            new_intervals = intervals * self.get_parameter('refinement')
+            new_intervals = intervals * self.get('refinement')
             new_x_values.append(np.linspace(minima, maxima, new_intervals + 1))
-        self.set_parameter('x_values', new_x_values)
+        self.set('x_values', new_x_values)
 
 
 class UserFunction(Function):
@@ -125,8 +125,8 @@ class UserFunction(Function):
     def __init__(self, user_params):
         user_params = self._prepare_user_params(user_params)
         ax, X, f = user_params['axes'], user_params['intervals'], user_params['function']
-        user_derivatives = user_params.get('primes', None)
-        asymptotes = user_params.get('asymptotes', None)
+        user_derivatives = {i+1 : user_params.get('primes', [])[i] for i in range(len(user_params.get('primes', [])))}
+        asymptotes = user_params.get('asymptotes', [])
         super().__init__(f, X, name='user function',
                          latex=transform_title(ax.get_title()),
                          user_derivatives=user_derivatives,
@@ -146,19 +146,19 @@ class UserFunction(Function):
         for param in ['title', 'aspect', 'xticks', 'yticks', 'xlim', 'ylim']:
             if hasattr(ax, f'get_{param}'):
                 method = getattr(ax, f'get_{param}')
-                self.set_parameter(param, method())
+                self.set(param, method())
         if ax.get_xticklabels()[0].get_text() != '':
-            self.set_parameter('xticklabels', ax.get_xticklabels())
+            self.set('xticklabels', ax.get_xticklabels())
         if ax.get_yticklabels()[0].get_text() != '':
-            self.set_parameter('yticklabels', ax.get_yticklabels())
+            self.set('yticklabels', ax.get_yticklabels())
         lines = [line for line in ax.get_lines() if line.get_xdata() != [] and line.get_ydata() != []]
         if asymptotes is not None:
-            user_lines_number = len(self.get_parameter('x_values'))
-            self.set_parameter('lines', lines[:user_lines_number])
-            self.set_parameter('asymptotes', lines[user_lines_number:])
+            user_lines_number = len(self.get('x_values'))
+            self.set('lines', lines[:user_lines_number])
+            self.set('asymptotes', lines[user_lines_number:])
             return
-        self.set_parameter('lines', lines)
-        self.set_parameter('asymptotes', [])
+        self.set('lines', lines)
+        self.set('asymptotes', [])
 
 
 class DefaultFunction(Function):
@@ -169,9 +169,9 @@ class DefaultFunction(Function):
         latex = eval(config_data['latex'])
         derivatives = [eval(derivative) for derivative in config_data.get('derivatives', [])]
         super().__init__(function, [X], name, latex, user_derivatives=derivatives, asymptotes=None)
-        self.set_parameter('lines', [Line2D(X, function(X))])
-        self.set_parameter('title', latex)
-        self.set_parameter('aspect', 'equal' if config['plot_parameters']['aspect'] == 'equal' else 'auto')
+        self.set('lines', [Line2D(X, function(X))])
+        self.set('title', latex)
+        self.set('aspect', 'equal' if config['plot_parameters']['aspect'] == 'equal' else 'auto')
         if 'xticks_data' in config_data:
-            self.set_parameter('xticks', eval(config_data['xticks_data']['xticks']))
-            self.set_parameter('xticklabels', eval(config_data['xticks_data']['xticklabels']))
+            self.set('xticks', eval(config_data['xticks_data']['xticks']))
+            self.set('xticklabels', eval(config_data['xticks_data']['xticklabels']))

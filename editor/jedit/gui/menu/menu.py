@@ -10,9 +10,13 @@ class MainMenu:
 
     def __init__(self):
         self.elements = defaultdict(dict)
-        self.main_menu = self._init_menu()
+        self._init_menu()
 
     def _init_menu(self):
+        """
+        Vytvorí a vráti mriežkové štruktúry pre uloženie ovládacích prvkov, ktoré sú prístupné v objekte Tab.
+        :return: Hlavné menu v podobe Tab objektu
+        """
         a_grid = w.GridspecLayout(config['default_sizes']['main_window_rows'] - 3, 1)
 
         a_grid[0, 0] = self.elements['hbox']['zero_points'] = HBox(description='Nulové body',
@@ -40,14 +44,14 @@ class MainMenu:
                                                                   color=config['decreasing']['color'],
                                                                   link=True).get()
 
-        a_grid[6, 0] = self.elements['hbox']['convex'] = HBox(description='Konvexná',
+        a_grid[6, 0] = self.elements['hbox']['concave_up'] = HBox(description='Konvexná',
                                                               disabled=False,
-                                                              color=config['convex']['color'],
+                                                              color=config['concave_up']['color'],
                                                               link=True).get()
 
-        a_grid[7, 0] = self.elements['hbox']['concave'] = HBox(description='Konkávna',
+        a_grid[7, 0] = self.elements['hbox']['concave_down'] = HBox(description='Konkávna',
                                                                disabled=False,
-                                                               color=config['concave']['color'],
+                                                               color=config['concave_down']['color'],
                                                                link=True).get()
 
         a_grid[9, 0] = self.elements['dropdown']['refinement_x'] = Dropdown(description='Zjemnenie x',
@@ -108,10 +112,16 @@ class MainMenu:
         tab_nest.children = [a_grid, f_grid]
         tab_nest.set_title(0, 'Analýza')
         tab_nest.set_title(1, 'Možnosti')
-        return tab_nest
+        self.main_menu = tab_nest
 
     def get_elements(self) -> defaultdict:
+        """
+        :return: Slovník všetkých prvkov menu pre rýchly prístup.
+        """
         return self.elements
 
     def get_widget(self) -> w.Tab:
+        """
+        :return: Hlavné menu v podobe Tab objektu
+        """
         return self.main_menu

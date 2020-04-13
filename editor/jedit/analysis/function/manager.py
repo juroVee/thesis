@@ -14,7 +14,7 @@ class FunctionManager:
     def __init__(self, user_parameters):
         self._init_plot()
         self._init_structures()
-        self.current_function = self._init_current_function(user_parameters)
+        self._init_current_function(user_parameters)
         self.updates = 0
 
     def __getitem__(self, function_name: str):
@@ -31,21 +31,13 @@ class FunctionManager:
         self.functions = {}
         self.warnings = Queue()
 
-    def _init_current_function(self, user_parameters) -> Function:
+    def _init_current_function(self, user_parameters) -> None:
         if bool(user_parameters):
             current = self.functions['user function'] = UserFunction(user_parameters)
-            return current
         else:
             parameters = config['main_function']['default']
             current = self.functions[parameters['name']] = DefaultFunction(parameters['name'], parameters)
-            return current
-
-    def apply_configuration(self, configuration):
-        for parameter, value in configuration.items():
-            if parameter == 'refinement':
-                self.current_function.set_refinement_x(value)
-            else:
-                self.current_function.set_parameter(parameter, value)
+        self.current_function = current
 
     def get_all(self) -> dict.values:
         return self.functions.values()
@@ -59,9 +51,6 @@ class FunctionManager:
         else:
             parameters = config['main_function']['default']
             self.current_function = self.functions[parameters['name']] = DefaultFunction(parameters['name'], parameters)
-
-    def has_user_function(self) -> bool:
-        return 'user function' in self.functions.keys()
 
     def add_warnings(self, warnings):
         if warnings is not None:

@@ -1,6 +1,7 @@
 editor_settings:
   interactive_elements: 'no'
   footer_log: 'yes'
+  default_round: 6 # 'undefined' or int
 
 default_sizes:
   board_grid_rows: 18
@@ -31,8 +32,8 @@ main_function:
 derivative:
   linestyle: 'solid'
   linewidth: 1.5
-  max_derivative: 3
-  colors: # number of colors must match 'max_derivative'
+  user_max: 3
+  colors: # number of colors must match 'user_max'
     - '#ff8647'
     - '#c01e58'
     - '#7b6cef'
@@ -43,17 +44,19 @@ asymptote:
   color: '#000000'
 
 zero_points:
-  markersize: 6
+  marker: 'o'
+  markersize: 7
   color: '#000000'
   iterations: 50
-  round: 8
 
 extremes:
-  markersize: 6
+  marker: 'o'
+  markersize: 7
   color: '#e32400'
 
 inflex_points:
-  markersize: 6
+  marker: 'o'
+  markersize: 7
   color: '#77bb40'
 
 increasing:
@@ -66,12 +69,12 @@ decreasing:
   linewidth: 2
   color: '#E34A27'
 
-convex:
+concave_up:
   linestyle: 'solid'
   linewidth: 2
   color: '#2B2466'
 
-concave:
+concave_down:
   linestyle: 'solid'
   linewidth: 2
   color: '#F1C344'

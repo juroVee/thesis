@@ -39,6 +39,13 @@ Základné informácie
 Log
 ===
 
+13.4.2020 - 19.4.2020
+---------------------
+
+- kompletne prerobené funkcie na výpočet lokálnych extrémov a inflexných bodov podľa vety 16., resp. vety 14 (Kubáček)
+- vypočítané hodnoty sa zaokrúhľujú podľa zaokrúhlenia definovaného v konfiguračnom súbore
+- pridaná možnosť zmeny ``marker`` pri kreslení funkcie do konfiguračného súboru
+
 6.4.2020 - 12.4.2020
 --------------------
 

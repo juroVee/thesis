@@ -25,5 +25,5 @@ class Editor:
         observer = self.board.get_object('observer')
         display(self.board.get_widget())
         function_manager.update_plot(main_function=True, derivatives=True, zero_points=True,
-                                     extremes=True, inflex_points=True, monotonic=True, convex=True)
+                                     extremes=True, inflex_points=True, monotonic=True, concave=True)
         observer.write_warnings()
