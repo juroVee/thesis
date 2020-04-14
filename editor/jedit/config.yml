@@ -1,13 +1,16 @@
 editor_settings:
   interactive_elements: 'no'
   footer_log: 'yes'
-  default_round: 6 # 'undefined' or int
+  round:
+    from: 0
+    to: 12
+    default: 6
 
 default_sizes:
-  board_grid_rows: 18
-  board_grid_cols: 10
-  main_window_rows: 15
-  main_window_cols: 7
+  board_grid_rows: 20
+  board_grid_cols: 25
+  main_window_rows: 17
+  main_window_cols: 17
   board_grid_height: '580px'
   menu_element_description: '100px'
 
@@ -15,7 +18,7 @@ plot_parameters:
   grid: 'no'
   aspect: 'auto'
   height: 5
-  width: 6.8
+  width: 6.2
 
 main_function:
   linestyle: 'solid'
@@ -27,7 +30,6 @@ main_function:
     derivatives: # order matters...
       - 'lambda x: 2*x'
     linspace: 'np.linspace(-10, 10, 101)'
-    latex: 'r"$f(x) = x^2$"'
 
 derivative:
   linestyle: 'solid'
@@ -88,11 +90,3 @@ refinement_x:
     - '10000'
     - '100000'
     - '1000000'
-
-refinement_y:
-  values:
-    - '-100'
-    - '-10'
-    - 'pôvodné'
-    - '10'
-    - '100'

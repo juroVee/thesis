@@ -1,3 +1,5 @@
+from fractions import Fraction
+
 def init_subplot(ax):
     """Author: J. Komara"""
 
@@ -10,9 +12,6 @@ def init_subplot(ax):
     ax.spines['bottom'].set_position(('data', 0))
     ax.yaxis.set_ticks_position('left')
     ax.spines['left'].set_position(('data', 0))
-
-
-from fractions import Fraction
 
 
 def smart_ticklabel(n, unit, d):

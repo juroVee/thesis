@@ -57,11 +57,10 @@ class Plotter:
             marker = config['zero_points']['marker']
             markersize = config['zero_points']['markersize']
             zorder = self.function.get('zero_points_zorder')
-            dataset = self.function.get('zero_points_dataset')
             f = self.function.get('f')
-            for xvals in dataset.values():
-                self.ax.plot(xvals, f(xvals), marker, c=self.function.get('zero_points_color'),
-                             markersize=markersize, zorder=zorder)
+            zero_points = self.function.get('zero_points')
+            self.ax.plot(zero_points, f(zero_points), marker, c=self.function.get('zero_points_color'),
+                         markersize=markersize, zorder=zorder)
 
     def plot_extremes(self):
         if self.function.get('extremes_visible'):
@@ -70,7 +69,8 @@ class Plotter:
             zorder = self.function.get('extremes_zorder')
             f = self.function.get('f')
             extremes = self.function.get('local_extrema')
-            self.ax.plot(extremes, f(extremes), marker, c=self.function.get('extremes_color'), markersize=markersize, zorder=zorder)
+            self.ax.plot(extremes, f(extremes), marker, c=self.function.get('extremes_color'), markersize=markersize,
+                         zorder=zorder)
 
     def plot_inflex_points(self):
         if self.function.get('inflex_points_visible'):
@@ -79,8 +79,8 @@ class Plotter:
             zorder = self.function.get('inflex_points_zorder')
             f = self.function.get('f')
             inflex_points = self.function.get('inflex_points')
-            self.ax.plot(inflex_points, f(inflex_points), marker, c=self.function.get('inflex_points_color'), markersize=markersize, zorder=zorder)
-
+            self.ax.plot(inflex_points, f(inflex_points), marker, c=self.function.get('inflex_points_color'),
+                         markersize=markersize, zorder=zorder)
 
     def plot_intervals(self, op):
         if self.function.get(f'{op}_visible'):
@@ -94,9 +94,6 @@ class Plotter:
                 self.ax.plot(interval, f(interval), color=color, linestyle=linestyle, linewidth=linewidth,
                              zorder=zorder)
 
-    def plot_title(self):
-        self.ax.set_title(self.function.get('latex'), y=1.06)
-
     def plot_all(self):
         self.plot_main_function()
         self.plot_asymptotes()
@@ -106,4 +103,3 @@ class Plotter:
         self.plot_inflex_points()
         for op in 'increasing', 'decreasing', 'concave_up', 'concave_down':
             self.plot_intervals(op)
-        self.plot_title()

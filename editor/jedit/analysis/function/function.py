@@ -1,7 +1,6 @@
 import numpy as np
 from matplotlib.lines import Line2D
 
-from .util import transform_title
 from ..plotting import Plotter
 from ...config import config
 
@@ -11,10 +10,10 @@ class Function:
     Class that serves as a container for all the useful information about particular user function
     """
 
-    def __init__(self, f, X, name, latex, user_derivatives=None, asymptotes=None):
+    def __init__(self, f, X, name, user_derivatives=None, asymptotes=None):
         self.parameters = {}
         self.zorder_sum = 4
-        self._init_function_details(X, f, name, latex, user_derivatives, asymptotes)
+        self._init_function_details(X, f, name, user_derivatives, asymptotes)
         self._init_plot_parameters()
         self._init_derivatives()
         self._init_zero_points()
@@ -22,15 +21,15 @@ class Function:
             self._init_analysis(op)
         self._init_refinements()
 
-    def _init_function_details(self, X, f, name, latex_representation, user_derivatives, asymptotes):
+    def _init_function_details(self, X, f, name, user_derivatives, asymptotes):
         self.set('x_values', X)
         self.set('original_x_values', X)
         self.set('f', f)
         self.set('name', name)
-        self.set('latex', latex_representation)
         self.set('user_derivatives', user_derivatives)
         self.set('asymptotes', asymptotes)
         self.set('lines_count', len(list(X)))
+        self.set('rounding', config['editor_settings']['round']['default'])
 
     def _init_plot_parameters(self):
         self.set('grid', True if config['plot_parameters']['grid'] == 'yes' else False)
@@ -60,6 +59,22 @@ class Function:
     def _init_refinements(self):
         self.set('refinement_x', 1)
         self.set('refinement_y', 1)
+
+    def set_refinement_x(self, value=1) -> None:
+        self.set('refinement', value)
+        if value == 0:
+            self.set('x_values', self.get('original_x_values'))
+            return
+        f = self.get('f')
+        new_x_values = []
+        for X in self.get('original_x_values'):
+            minima, maxima = min(X), max(X)
+            intervals = len(X) - 1
+            new_intervals = intervals * self.get('refinement')
+            new_X = np.linspace(minima, maxima, new_intervals + 1)
+            with np.errstate(divide='ignore', invalid='ignore'):
+                new_x_values.append(new_X[~np.isnan(f(new_X))])
+        self.set('x_values', new_x_values)
 
     def plot(self, ax) -> None:
         """
@@ -101,24 +116,6 @@ class Function:
         """
         return self.zorder_sum
 
-    def set_refinement_x(self, value=1) -> None:
-        """
-
-        :param value: Integer, value
-        :return:
-        """
-        self.set('refinement', value)
-        if value == 0:
-            self.set('x_values', self.get('original_x_values'))
-            return
-        new_x_values = []
-        for X in self.get('original_x_values'):
-            minima, maxima = min(X), max(X)
-            intervals = len(X) - 1
-            new_intervals = intervals * self.get('refinement')
-            new_x_values.append(np.linspace(minima, maxima, new_intervals + 1))
-        self.set('x_values', new_x_values)
-
 
 class UserFunction(Function):
 
@@ -128,7 +125,6 @@ class UserFunction(Function):
         user_derivatives = {i+1 : user_params.get('primes', [])[i] for i in range(len(user_params.get('primes', [])))}
         asymptotes = user_params.get('asymptotes', [])
         super().__init__(f, X, name='user function',
-                         latex=transform_title(ax.get_title()),
                          user_derivatives=user_derivatives,
                          asymptotes=asymptotes)
         self._init_params(ax, asymptotes)
@@ -143,7 +139,7 @@ class UserFunction(Function):
         return user_params
 
     def _init_params(self, ax, asymptotes=None):
-        for param in ['title', 'aspect', 'xticks', 'yticks', 'xlim', 'ylim']:
+        for param in ['aspect', 'xticks', 'yticks', 'xlim', 'ylim']:
             if hasattr(ax, f'get_{param}'):
                 method = getattr(ax, f'get_{param}')
                 self.set(param, method())
@@ -166,11 +162,9 @@ class DefaultFunction(Function):
     def __init__(self, name='undefined', config_data=None):
         function = eval(config_data['formula'])
         X = eval(config_data['linspace'])
-        latex = eval(config_data['latex'])
         derivatives = [eval(derivative) for derivative in config_data.get('derivatives', [])]
-        super().__init__(function, [X], name, latex, user_derivatives=derivatives, asymptotes=None)
+        super().__init__(function, [X], name, user_derivatives=derivatives, asymptotes=None)
         self.set('lines', [Line2D(X, function(X))])
-        self.set('title', latex)
         self.set('aspect', 'equal' if config['plot_parameters']['aspect'] == 'equal' else 'auto')
         if 'xticks_data' in config_data:
             self.set('xticks', eval(config_data['xticks_data']['xticks']))

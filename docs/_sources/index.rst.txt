@@ -9,7 +9,7 @@ Základné informácie
 .. sidebar:: Odkazy/Na stiahnutie
 
    | **Aktualizácia odkazov**
-   |    9. apríl 2020
+   |    14. apríl 2020
 
    | **Repozitár práce**
    |    GitHub_
@@ -19,8 +19,8 @@ Základné informácie
    |    :download:`LaTeX (tar.gz) <files/docs/Bachelor_Thesis_LATEXv1_1.tar.gz>`
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz <files/sw/editor_v14_4.tar.gz>`
-   |    :download:`zip <files/sw/editor_v14_4.zip>`
+   |    :download:`tar.gz <files/sw/editor_v15.tar.gz>`
+   |    :download:`zip <files/sw/editor_v15.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -45,6 +45,8 @@ Log
 - kompletne prerobené funkcie na výpočet lokálnych extrémov a inflexných bodov podľa vety 16., resp. vety 14 (Kubáček)
 - vypočítané hodnoty sa zaokrúhľujú podľa zaokrúhlenia definovaného v konfiguračnom súbore
 - pridaná možnosť zmeny ``marker`` pri kreslení funkcie do konfiguračného súboru
+- pridaná možnosť zmeny zaokrúhlenia vypočítaných hodnôt, čo môže v konečnom dôsledku napomôcť pri filtrovaní veľmi blízkych hodnôt (napr. nulové body pri "plochých funkciách")
+- odstránený názov funkcie z editora, uvoľnenie väčšieho miesta pre samotný graf, čo je asi viac podstatné
 
 6.4.2020 - 12.4.2020
 --------------------
@@ -335,6 +337,18 @@ Z aplikácie
    :align: center
 
 .. figure:: images/screen10.png
+   :align: center
+
+.. figure:: images/screen11.png
+   :align: center
+
+.. figure:: images/screen12.png
+   :align: center
+
+.. figure:: images/screen13.png
+   :align: center
+
+.. figure:: images/screen14.png
    :align: center
 
 

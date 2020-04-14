@@ -17,7 +17,7 @@ class MainMenu:
         Vytvorí a vráti mriežkové štruktúry pre uloženie ovládacích prvkov, ktoré sú prístupné v objekte Tab.
         :return: Hlavné menu v podobe Tab objektu
         """
-        a_grid = w.GridspecLayout(config['default_sizes']['main_window_rows'] - 3, 1)
+        a_grid = w.GridspecLayout(config['default_sizes']['main_window_rows'] - 4, 1)
 
         a_grid[0, 0] = self.elements['hbox']['zero_points'] = HBox(description='Nulové body',
                                                                    disabled=False,
@@ -45,16 +45,16 @@ class MainMenu:
                                                                   link=True).get()
 
         a_grid[6, 0] = self.elements['hbox']['concave_up'] = HBox(description='Konvexná',
-                                                              disabled=False,
-                                                              color=config['concave_up']['color'],
-                                                              link=True).get()
+                                                                  disabled=False,
+                                                                  color=config['concave_up']['color'],
+                                                                  link=True).get()
 
         a_grid[7, 0] = self.elements['hbox']['concave_down'] = HBox(description='Konkávna',
-                                                               disabled=False,
-                                                               color=config['concave_down']['color'],
-                                                               link=True).get()
+                                                                    disabled=False,
+                                                                    color=config['concave_down']['color'],
+                                                                    link=True).get()
 
-        a_grid[9, 0] = self.elements['dropdown']['refinement_x'] = Dropdown(description='Zjemnenie x',
+        a_grid[9, 0] = self.elements['dropdown']['refinement_x'] = Dropdown(description='Zjemnenie osi x',
                                                                             disabled=False,
                                                                             values=list(map(lambda
                                                                                                 n: n + 'x' if n != 'pôvodné' else n,
@@ -62,15 +62,17 @@ class MainMenu:
                                                                                                 'values'])),
                                                                             default_value='pôvodné').get()
 
-        a_grid[10, 0] = self.elements['dropdown']['refinement_y'] = Dropdown(description='Zjemnenie y',
-                                                                            disabled=False,
-                                                                            values=list(map(lambda
-                                                                                                n: n + 'x' if n != 'pôvodné' else n,
-                                                                                            config['refinement_y'][
-                                                                                                'values'])),
-                                                                            default_value='pôvodné').get()
+        a_grid[10, 0] = self.elements['dropdown']['rounding'] = Dropdown(description='Zaokrúhlenie hodnôt',
+                                                                         disabled=False,
+                                                                         values=list(range(
+                                                                             config['editor_settings']['round']['to'],
+                                                                             config['editor_settings']['round'][
+                                                                                 'from'] - 1, -1)),
+                                                                         default_value=
+                                                                         config['editor_settings']['round'][
+                                                                             'default']).get()
 
-        a_grid[11, 0] = self.elements['text']['iterations'] = Text(description='Iterácie Newton',
+        a_grid[12, 0] = self.elements['text']['iterations'] = Text(description='Iterácie Newtonovej metódy',
                                                                    disabled=False,
                                                                    minval=1,
                                                                    maxval=1000,
@@ -78,7 +80,7 @@ class MainMenu:
                                                                    default_value=config['zero_points'][
                                                                        'iterations']).get()
 
-        f_grid = w.GridspecLayout(config['default_sizes']['main_window_rows'] - 4, 1)
+        f_grid = w.GridspecLayout(config['default_sizes']['main_window_rows'] - 7, 1)
 
         f_grid[0, 0] = self.elements['hbox']['main_function'] = HBox(description='Funkcia',
                                                                      disabled=True,
@@ -101,9 +103,9 @@ class MainMenu:
 
         f_grid[8, 0] = self.elements['dropdown']['logger_order'] = Dropdown(description='Poradie výpisov',
                                                                             disabled=False,
-                                                                            values=['od najnovšieho',
-                                                                                    'od najstaršieho'],
-                                                                            default_value='od najnovšieho').get()
+                                                                            values=['najnovšie',
+                                                                                    'najstaršie'],
+                                                                            default_value='najnovšie').get()
 
         f_grid[9, 0] = self.elements['button']['logger_save'] = Button(description='Uložiť výpisy do súboru',
                                                                        disabled=False).get()

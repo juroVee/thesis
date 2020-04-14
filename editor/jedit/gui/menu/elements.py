@@ -64,14 +64,14 @@ class Dropdown:
             disabled=True,
             button_style='',  # 'success', 'info', 'warning', 'danger' or ''
             tooltip=self.description,
-            layout=w.Layout(width='90%', border='1px solid darkgrey')
+            layout=w.Layout(width='100%', border='1px solid darkgrey')
         )
         dropdown = w.Dropdown(
             options=self.values,
             value=self.default_value,
             description='',
             disabled=self.disabled,
-            layout=w.Layout(width='100%', overflow='hidden')
+            layout=w.Layout(width='70%', overflow='hidden')
         )
         return w.HBox(children=[toggle, dropdown], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
 
@@ -93,7 +93,7 @@ class Text:
             disabled=True,
             button_style='',
             tooltip=self.description,
-            layout=w.Layout(width='90%', border='1px solid darkgrey')
+            layout=w.Layout(width='100%', border='1px solid darkgrey')
         )
         textfield = w.BoundedIntText(
             value=self.default_value,
@@ -102,7 +102,7 @@ class Text:
             step=self.step,
             description='',
             disabled=self.disabled,
-            layout=w.Layout(width='100%', overflow='hidden')
+            layout=w.Layout(width='40%', overflow='hidden')
         )
         return w.HBox(children=[toggle, textfield], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
 

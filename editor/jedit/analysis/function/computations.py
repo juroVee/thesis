@@ -1,13 +1,13 @@
+import warnings
 from collections import defaultdict
 
 import numpy as np
-import warnings
 from matplotlib.lines import Line2D
 from scipy.misc import derivative
 from scipy.optimize import newton
 
+from .util import signchanges, prepare
 from ...config import config
-from .util import signchanges, around
 
 
 class ComputationsHandler:
@@ -20,59 +20,50 @@ class ComputationsHandler:
         self.user_primes = function.get('user_derivatives')
         self.primes = function.get('derivatives')
         self.maxiter = function.get('zero_points_iterations')
-        self.refinement_y = function.get('refinement_y')
-        self.round = config['editor_settings']['default_round']
+        self.round = self.function.get('rounding')
 
     def main_function(self) -> None:
         Y_values = [self.f(Xi) for Xi in self.x_values]
         lines = [Line2D(Xi, Yi) for Xi, Yi in zip(self.x_values, Y_values)]
-        self.function.set('y_values', Y_values)
         self.function.set('lines', lines)
 
-    def derivatives(self) -> None:
+    def derivatives(self) -> list:
         derivatives = defaultdict(dict)
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
             for i, X in enumerate(self.x_values):
-                key = f'X{i}'
                 for n in range(1, config['derivative']['user_max'] + 1):
                     if n in self.user_primes:
                         d = self.user_primes[n]
-                        derivatives[key][n] = d(X)
+                        derivatives[f'X{i}'][n] = d(X)
                     else:
                         order = n + 1 if n % 2 == 0 else n + 2
-                        derivatives[key][n] = derivative(self.f, X, dx=0.001, n=n, order=order)
+                        derivatives[f'X{i}'][n] = derivative(self.f, X, dx=0.001, n=n, order=order)
         self.function.set('derivatives', derivatives)
         self.primes = derivatives
         return w
 
-    def zero_points(self) -> tuple:
+    def zero_points(self) -> list:
         fprime, fprime2 = self.user_primes.get(1, None), self.user_primes.get(2, None)
-        result = defaultdict()
+        result = []
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
             for i, (original_X, X) in enumerate(zip(self.original_x_values, self.x_values)):
-                key = f'X{i}'
                 delta_x = np.diff(X)[0]
-                ref = abs(self.refinement_y)
-                delta_y = delta_x * ref if self.refinement_y >= 0 else delta_x / ref
-                try:
-                    candidates = newton(self.f, original_X, fprime=fprime, fprime2=fprime2, tol=delta_x, maxiter=self.maxiter)
-                except RuntimeError:
-                    break
+                candidates = newton(self.f, original_X, fprime=fprime, fprime2=fprime2, tol=delta_x,
+                                          maxiter=self.maxiter)
                 candidates = candidates[(candidates >= np.amin(X)) & (candidates <= np.amax(X))]
-                candidates = np.unique(around(candidates, self.round))
-                result[key] = candidates[np.isclose(self.f(candidates), 0, atol=delta_y)]
-        self.function.set('zero_points_dataset', result)
+                candidates = candidates[np.isclose(self.f(candidates), 0, atol=10**(-self.round))]
+                result.append(candidates)
+        self.function.set('zero_points', prepare(result, self.round, concat=True))
         return w
 
-    def extremes(self) -> warnings.WarningMessage:
+    def extremes(self) -> list:
         result = defaultdict(list)
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
             for i, X in enumerate(self.x_values):
-                key = f'X{i}'
-                table = np.dstack((X, self.primes[key][1], self.primes[key][2]))[0]
+                table = np.dstack((X, self.primes[f'X{i}'][1], self.primes[f'X{i}'][2]))[0]
                 for i0, i1 in signchanges(table[:, 1]):
                     candidates = np.vstack([table[i0], table[i1]])
                     extrema, fprime1, fprime2 = candidates[(np.abs(candidates[:, 1])).argmin()]
@@ -80,56 +71,59 @@ class ComputationsHandler:
                         result['minima'].append(extrema)
                     elif fprime2 < 0:
                         result['maxima'].append(extrema)
-        self.function.set('local_minima', np.unique(around(np.asarray(result['minima']), self.round)))
-        self.function.set('local_maxima', np.unique(around(np.asarray(result['maxima']), self.round)))
-        self.function.set('local_extrema', np.sort(np.unique(around(np.concatenate([result['minima'], result['maxima']]), self.round))))
+        self.function.set('local_minima', prepare(result['minima'], self.round))
+        self.function.set('local_maxima', prepare(result['maxima'], self.round))
+        self.function.set('local_extrema', prepare([result['minima'], result['maxima']], self.round, concat=True))
         return w
 
-    def inflex_points(self) -> warnings.WarningMessage:
-        result = list()
+    def inflex_points(self) -> list:
+        result = []
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
             for i, X in enumerate(self.x_values):
-                key = f'X{i}'
-                table = np.dstack((X, self.primes[key][2], self.primes[key][3]))[0]
+                table = np.dstack((X, self.primes[f'X{i}'][2], self.primes[f'X{i}'][3]))[0]
                 for i0, i1 in signchanges(table[:, 1]):
                     candidates = np.vstack([table[i0], table[i1]])
                     inflex_point, fprime2, fprime3 = candidates[(np.abs(candidates[:, 1])).argmin()]
                     if fprime3 != 0:
                         result.append(inflex_point)
-        self.function.set('inflex_points', np.unique(around(np.asarray(result), self.round)))
+        self.function.set('inflex_points', prepare(result, self.round))
         return w
 
-    def monotonic(self):
-        result_inc, result_dec = defaultdict(list), defaultdict(list)
+    def monotonic(self) -> list:
+        inc, dec = defaultdict(list), defaultdict(list)
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
             for i, X in enumerate(self.x_values):
-                key = f'X{i}'
-                stacked = np.dstack((X, self.primes[key][1]))[0]
+                stacked = np.dstack((X, self.primes[f'X{i}'][1]))[0]
                 for interval in np.split(stacked, np.where(np.diff(stacked[:, 1] < 0))[0] + 1):
-                    X, primes = around(interval[:, 0], self.round), interval[:, 1]
-                    dest = result_inc if np.all(primes >= 0) else result_dec
-                    dest['values'].append(X)
-                    dest['intervals'].append((X[0], X[-1]))
-        self.function.set('increasing_values', result_inc['values'])
-        self.function.set('increasing_intervals', result_inc['intervals'])
-        self.function.set('decreasing_values', result_dec['values'])
-        self.function.set('decreasing_intervals', result_inc['intervals'])
+                    X, fprime1 = np.around(interval[:, 0], self.round), interval[:, 1]
+                    if np.all(fprime1 >= 0):
+                        inc['values'].append(X)
+                        inc['intervals'].append((X[0], X[-1]))
+                    else:
+                        dec['values'].append(X)
+                        dec['intervals'].append((X[0], X[-1]))
+        self.function.set('increasing_values', inc['values'])
+        self.function.set('increasing_intervals', inc['intervals'])
+        self.function.set('decreasing_values', dec['values'])
+        self.function.set('decreasing_intervals', dec['intervals'])
         return w
 
-    def concave(self):
+    def concave(self) -> list:
         concave_down, concave_up = defaultdict(list), defaultdict(list)
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
             for i, X in enumerate(self.x_values):
-                key = f'X{i}'
-                stacked = np.dstack((X, self.primes[key][2]))[0]
+                stacked = np.dstack((X, self.primes[f'X{i}'][2]))[0]
                 for interval in np.split(stacked, np.where(np.diff(stacked[:, 1] < 0))[0] + 1):
-                    X, primes = around(interval[:, 0], self.round), interval[:, 1]
-                    dest = concave_up if np.all(primes >= 0) else concave_down
-                    dest['values'].append(X)
-                    dest['intervals'].append((X[0], X[-1]))
+                    X, fprime2 = np.around(interval[:, 0], self.round), interval[:, 1]
+                    if np.all(fprime2 >= 0):
+                        concave_up['values'].append(X)
+                        concave_up['intervals'].append((X[0], X[-1]))
+                    else:
+                        concave_down['values'].append(X)
+                        concave_down['intervals'].append((X[0], X[-1]))
         self.function.set('concave_up_values', concave_up['values'])
         self.function.set('concave_up_intervals', concave_up['intervals'])
         self.function.set('concave_down_values', concave_down['values'])

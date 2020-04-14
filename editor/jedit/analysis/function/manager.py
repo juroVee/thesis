@@ -21,11 +21,12 @@ class FunctionManager:
         return self.functions[function_name]
 
     def _init_plot(self):
-        self.output = w.Output()
+        self.output = w.Output(layout=w.Layout(overflow='hidden'))
         plt.ioff()
         width, height = config['plot_parameters']['width'], config['plot_parameters']['height']
         self.fig, self.ax = plt.subplots()
         self.fig.set_size_inches(width, height)
+        plt.subplots_adjust(left=0.08, bottom=0.08, right=0.92, top=0.92, wspace=0, hspace=0)
 
     def _init_structures(self):
         self.functions = {}

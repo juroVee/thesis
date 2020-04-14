@@ -40,28 +40,28 @@ class Observer:
         """
         self.write_warnings()
         visible = function.get('zero_points_visible')
-        dataset = function.get('zero_points_dataset')
+        zero_points = function.get('zero_points')
         method = function.get('zero_points_method')
         maxiter = function.get('zero_points_iterations')
+        derivatives_provided = len(function.get('user_derivatives'))
         if not visible:
             if not refinement_support:
-                self.logger.write(logger_message('nulové body', viditeľné=self.svk[visible],
-                                                 derivácia="áno" if method == "Newton" else "nie",
+                self.logger.write(logger_message('nulové body',
+                                                 derivácie=derivatives_provided,
                                                  metóda=method,
                                                  maxiter=maxiter), mini=True, main=True)
             return
-        zp_values = np.concatenate(list(dataset.values()))
-        message_mini = logger_message('nulové body', viditeľné=self.svk[visible],
-                                      derivácia="áno" if method == "Newton" else "nie",
+        message_mini = logger_message('nulové body',
+                                      derivácie=derivatives_provided,
                                       metóda=method,
                                       maxiter=maxiter,
-                                      počet=len(zp_values))
-        message = logger_message('nulové body', viditeľné=self.svk[visible],
-                                 derivácia="áno" if method == "Newton" else "nie",
+                                      počet=len(zero_points))
+        message = logger_message('nulové body',
+                                 derivácie=derivatives_provided,
                                  metóda=method,
                                  maxiter=maxiter,
-                                 počet=len(zp_values),
-                                 hodnoty=zp_values)
+                                 počet=len(zero_points),
+                                 v_bodoch=zero_points)
         if not refinement_support:
             self.logger.write(message_mini, mini=True)
         self.logger.write(message, main=True)
@@ -156,7 +156,7 @@ class Observer:
         :return:
         """
         message = logger_message('výpisy', poradie=event['new'])
-        self.logger.set_order_oldest(True if event['new'] == 'od najstaršieho' else False)
+        self.logger.set_order_oldest(True if event['new'] == 'najstaršie' else False)
         self.logger.write(message, main=True, mini=True)
 
     def _changed_logger_save(self, event) -> None:
@@ -282,18 +282,6 @@ class Observer:
         self._add_inflex_points_info(function, refinement_support=True)
         self._add_analysis_info(function, refinement_support=True)
 
-    def _changed_refinement_y(self, b) -> None:
-        options = {value + 'x': int(value) for value in config['refinement_y']['values'] if value != 'pôvodné'}
-        options['pôvodné'] = 1
-        choice = options[b['new']]
-        function = self.function_manager.get_current()
-        function.set('refinement_y', choice)
-        self.logger.write('Prepočítavanie funkcie...', timer=True)
-        self.function_manager.update_plot(zero_points=True)
-        message = logger_message('zjemnenie y-ovej osi', zjemnenie=b['new'])
-        self.logger.write(message, main=True, mini=True)
-        self._add_zero_points_info(function, refinement_support=True)
-
     def _changed_zero_points(self, event) -> None:
         """
         Event handler that turns plotting zero points on or off
@@ -332,6 +320,18 @@ class Observer:
         function.set('zero_points_iterations', choice)
         self.function_manager.update_plot(zero_points=True)
         self._add_zero_points_info(function)
+
+    def _changed_rounding(self, event) -> None:
+        function = self.function_manager.get_current()
+        function.set('rounding', event['new'])
+        self.logger.write('Prepočítavanie funkcie...', timer=True)
+        self.function_manager.update_plot(zero_points=True, extremes=True, inflex_points=True, monotonic=True, concave=True)
+        message = logger_message('zaokrúhlenie hodnôt', desatinné_miesta=event['new'])
+        self.logger.write(message, main=True, mini=True)
+        self._add_zero_points_info(function, refinement_support=True)
+        self._add_extremes_info(function, refinement_support=True)
+        self._add_inflex_points_info(function, refinement_support=True)
+        self._add_analysis_info(function, refinement_support=True)
 
     def _changed_extremes(self, event) -> None:
         """
