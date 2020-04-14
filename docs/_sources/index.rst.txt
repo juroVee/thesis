@@ -309,9 +309,6 @@ Tutoriály, manuály
 Z aplikácie
 ===========
 
-.. figure:: images/screen01.png
-   :align: center
-
 .. figure:: images/screen02.png
    :align: center
 
