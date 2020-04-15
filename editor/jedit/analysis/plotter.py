@@ -1,5 +1,5 @@
 from .util import init_subplot
-from ...config import config
+from ..settings import settings
 
 
 class Plotter:
@@ -20,16 +20,16 @@ class Plotter:
             self.ax.grid(self.function.get('grid'))
             self.ax.plot(X, Y,
                          color=self.function.get('main_function_color'),
-                         linestyle=config['main_function']['linestyle'],
-                         linewidth=config['main_function']['linewidth'],
+                         linestyle=settings['main_function']['linestyle'],
+                         linewidth=settings['main_function']['linewidth'],
                          zorder=3)
 
     def plot_asymptotes(self):
         for line in self.function.get('asymptotes'):
             X, Y = line.get_xdata(), line.get_ydata()
-            linestyle = config['asymptote']['linestyle']
-            linewidth = config['asymptote']['linewidth']
-            color = config['asymptote']['color']
+            linestyle = settings['asymptote']['linestyle']
+            linewidth = settings['asymptote']['linewidth']
+            color = settings['asymptote']['color']
             self.ax.plot(X, Y,
                          color=color,
                          linestyle=linestyle,
@@ -44,8 +44,8 @@ class Plotter:
                 if self.function.get('active_derivative' + str(n)):
                     dydx = primes[key].get(n)
                     color = self.function.get('derivative_color' + str(n))
-                    linestyle = config['derivative']['linestyle']
-                    linewidth = config['derivative']['linewidth']
+                    linestyle = settings['derivative']['linestyle']
+                    linewidth = settings['derivative']['linewidth']
                     self.ax.plot(X, dydx,
                                  color=color,
                                  linestyle=linestyle,
@@ -54,8 +54,8 @@ class Plotter:
 
     def plot_zero_points(self):
         if self.function.get('zero_points_visible'):
-            marker = config['zero_points']['marker']
-            markersize = config['zero_points']['markersize']
+            marker = settings['zero_points']['marker']
+            markersize = settings['zero_points']['markersize']
             zorder = self.function.get('zero_points_zorder')
             f = self.function.get('f')
             zero_points = self.function.get('zero_points')
@@ -64,8 +64,8 @@ class Plotter:
 
     def plot_extremes(self):
         if self.function.get('extremes_visible'):
-            marker = config['extremes']['marker']
-            markersize = config['extremes']['markersize']
+            marker = settings['extremes']['marker']
+            markersize = settings['extremes']['markersize']
             zorder = self.function.get('extremes_zorder')
             f = self.function.get('f')
             extremes = self.function.get('local_extrema')
@@ -74,8 +74,8 @@ class Plotter:
 
     def plot_inflex_points(self):
         if self.function.get('inflex_points_visible'):
-            marker = config['inflex_points']['marker']
-            markersize = config['inflex_points']['markersize']
+            marker = settings['inflex_points']['marker']
+            markersize = settings['inflex_points']['markersize']
             zorder = self.function.get('inflex_points_zorder')
             f = self.function.get('f')
             inflex_points = self.function.get('inflex_points')
@@ -84,8 +84,8 @@ class Plotter:
 
     def plot_intervals(self, op):
         if self.function.get(f'{op}_visible'):
-            linestyle = config[op]['linestyle']
-            linewidth = config[op]['linewidth']
+            linestyle = settings[op]['linestyle']
+            linewidth = settings[op]['linewidth']
             color = self.function.get(f'{op}_color')
             f = self.function.get('f')
             zorder = self.function.get(f'{op}_zorder')

@@ -21,12 +21,12 @@ def check_parameters(params, logger) -> dict:
         return result
     for param in params.keys():
         if param not in allowed_params:
-            logger.write(logger_message('Chyba', neznámy_parameter=param, akcia='vykreslenie prednastavenej funkcie'),
+            logger.write(logger.new_message('Chyba', neznámy_parameter=param, akcia='vykreslenie prednastavenej funkcie'),
                          mini=True)
             return result
     if any(param not in params for param in ['figure', 'axes', 'function', 'intervals']):
         logger.write(
-            'Parameters "figure", "axes", "function" and "intervals" are required to analysis your function.\nPlotting default.',
+            logger.new_message('Parameters "figure", "axes", "function" and "intervals" are required to analysis your function.\nPlotting default.'),
             mini=True)
         return result
     else:
@@ -35,11 +35,11 @@ def check_parameters(params, logger) -> dict:
             if param == 'X':
                 for i, X in enumerate(value):
                     if len(X) < 2:
-                        logger.write(f'Cannot analysis X at position {i}, need at least 2 values.\nPlotting default.',
+                        logger.write(logger.new_message(f'Cannot analysis X at position {i}, need at least 2 values.\nPlotting default.'),
                                      mini=True)
                         return result
             if type(value) != list:
-                logger.write('Optional parameters must be in list. E.g. intervals=[X1, ...].\nPlotting default.',
+                logger.write(logger.new_message('Optional parameters must be in list. E.g. intervals=[X1, ...].\nPlotting default.'),
                              mini=True)
                 return result
     return params

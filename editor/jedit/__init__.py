@@ -1,1 +1,1 @@
-from .runner import editor
+from .main import editor

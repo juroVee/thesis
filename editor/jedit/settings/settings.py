@@ -1,10 +1,10 @@
 import yaml
 
 
-class Config:
+class Settings:
 
     def __init__(self):
-        with open('jedit/config.yml', 'r') as yml:
+        with open('jedit/settings/settings.yml', 'r') as yml:
             self.data = yaml.load(yml, Loader=yaml.FullLoader)
 
     def get_data(self):
@@ -12,4 +12,4 @@ class Config:
 
 
 # create instance alongside editor
-config = Config().get_data()
+settings = Settings().get_data()

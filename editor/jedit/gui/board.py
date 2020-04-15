@@ -1,7 +1,8 @@
 import ipywidgets as w
 from ..analysis import FunctionManager
 from .tabs import AnalysisTab, LogTab, WarningTab
-from .menu import MainMenu, Observer
+from .menu import MainMenu
+from .observer import Observer
 
 
 class Board:
@@ -10,7 +11,7 @@ class Board:
         if 'config' in user_params:
             self.user_config = user_params['config']
         self.logger = logger
-        self.function_manager = FunctionManager(user_params)
+        self.function_manager = FunctionManager(user_params, logger)
         self.main_menu = MainMenu()
         tabs = [AnalysisTab(board=self),
                 LogTab(board=self),

@@ -1,7 +1,20 @@
 import ipywidgets as w
 
-from .tab import Tab
-from ...config import config
+from ..settings import settings
+
+
+class Tab:
+
+    def __init__(self, name=None, main_window=None, sidebar=None, footer=None):
+        self.name = name if name else 'Untitled Tab'
+        self.main_window = main_window if main_window else []
+        self.sidebar = sidebar if sidebar else []
+        self.footer = footer if footer else []
+        self.board_grid_rows = settings['default_sizes']['board_grid_rows']
+        self.board_grid_cols = settings['default_sizes']['board_grid_cols']
+        self.height = settings['default_sizes']['board_grid_height']
+        self.main_window_rows = settings['default_sizes']['main_window_rows']
+        self.main_window_cols = settings['default_sizes']['main_window_cols']
 
 
 class AnalysisTab(Tab):
@@ -15,7 +28,7 @@ class AnalysisTab(Tab):
         super().__init__(name='Analýza',
                          main_window=[function_manager.get_plot_widget()],
                          sidebar=[menu.get_widget()],
-                         footer=[logger_mini_tab] if config['editor_settings']['footer_log'] == 'yes' else []
+                         footer=[logger_mini_tab] if settings['editor_settings']['footer_log'] == 'yes' else []
                          )
 
     def get_widget(self) -> w.GridspecLayout:

@@ -1,8 +1,4 @@
-import numpy as np
-
-from .util import logger_message
-from ...config import config
-
+from ..settings import settings
 
 class Observer:
     """
@@ -14,22 +10,9 @@ class Observer:
         self.function_manager = board.get_object('function_manager')
         self.menu = board.get_object('main_menu')
         self.logger = board.get_object('logger')
-        self.logger.write(logger_message('editor spustený'), main=True)
-        self.write_warnings()
+        self.logger.write(self.logger.new_message('editor spustený'), main=True)
         self.rules = {'vypnuté': False, 'zapnuté': True}
         self.svk = {True: 'áno', False: 'nie'}
-
-    def write_warnings(self) -> None:
-        """
-        Method sends all the warnings generated during computations to logger object which prints them to the log
-        """
-        warnings = self.function_manager.get_warnings()
-        while not warnings.empty():
-            warning = warnings.get()
-            self.logger.write(logger_message('upozornenie',
-                                             správa=str(warning.message),
-                                             kategória=str(warning.category),
-                                             súbor=str(warning.filename)), warnings=True)
 
     def _add_zero_points_info(self, function, refinement_support=False) -> None:
         """
@@ -38,7 +21,6 @@ class Observer:
         :param refinement_support: Condition to print information about zero points after refinement change
         :return: 
         """
-        self.write_warnings()
         visible = function.get('zero_points_visible')
         zero_points = function.get('zero_points')
         method = function.get('zero_points_method')
@@ -46,25 +28,23 @@ class Observer:
         derivatives_provided = len(function.get('user_derivatives'))
         if not visible:
             if not refinement_support:
-                self.logger.write(logger_message('nulové body',
+                self.logger.write(self.logger.new_message('nulové body',
                                                  derivácie=derivatives_provided,
                                                  metóda=method,
                                                  maxiter=maxiter), mini=True, main=True)
             return
-        message_mini = logger_message('nulové body',
+        if not refinement_support:
+            self.logger.write(self.logger.new_message('nulové body',
                                       derivácie=derivatives_provided,
                                       metóda=method,
                                       maxiter=maxiter,
-                                      počet=len(zero_points))
-        message = logger_message('nulové body',
+                                      počet=len(zero_points)), mini=True)
+        self.logger.write(self.logger.new_message('nulové body',
                                  derivácie=derivatives_provided,
                                  metóda=method,
                                  maxiter=maxiter,
                                  počet=len(zero_points),
-                                 v_bodoch=zero_points)
-        if not refinement_support:
-            self.logger.write(message_mini, mini=True)
-        self.logger.write(message, main=True)
+                                 v_bodoch=zero_points), main=True)
 
     def _add_extremes_info(self, function, refinement_support=False) -> None:
         """
@@ -76,20 +56,18 @@ class Observer:
         visible = function.get('extremes_visible')
         if not visible:
             if not refinement_support:
-                self.logger.write(logger_message('extrémy', viditeľné=self.svk[visible]), mini=True, main=True)
+                self.logger.write(self.logger.new_message('extrémy', viditeľné=self.svk[visible]), mini=True, main=True)
             return
         minX = function.get('local_minima')
         maxX = function.get('local_maxima')
         full = function.get('local_extrema')
-        message_mini = logger_message('extrémy', viditeľné=self.svk[visible],
-                                      ostré_lokálne_extrémy=len(full))
-        message = logger_message('extrémy', viditeľné=self.svk[visible],
+        if not refinement_support:
+            self.logger.write(self.logger.new_message('extrémy', viditeľné=self.svk[visible],
+                                      ostré_lokálne_extrémy=len(full)), mini=True)
+        self.logger.write(self.logger.new_message('extrémy', viditeľné=self.svk[visible],
                                  ostré_lokálne_extrémy_v_bodoch=full,
                                  ostré_lokálne_minimá_v_bodoch=minX,
-                                 ostré_lokálne_maximá_v_bodoch=maxX)
-        if not refinement_support:
-            self.logger.write(message_mini, mini=True)
-        self.logger.write(message, main=True)
+                                 ostré_lokálne_maximá_v_bodoch=maxX), main=True)
 
     def _add_inflex_points_info(self, function, refinement_support=False) -> None:
         """
@@ -101,14 +79,12 @@ class Observer:
         visible = function.get('inflex_points_visible')
         if not visible:
             if not refinement_support:
-                self.logger.write(logger_message('inflexné body', viditeľné=self.svk[visible]), mini=True, main=True)
+                self.logger.write(self.logger.new_message('inflexné body', viditeľné=self.svk[visible]), mini=True, main=True)
             return
         inflex_points = function.get('inflex_points')
-        message_mini = logger_message('inflexné body', viditeľné=self.svk[visible], nájdené=len(inflex_points))
-        message = logger_message('inflexné body', viditeľné=self.svk[visible], v_bodoch=inflex_points)
         if not refinement_support:
-            self.logger.write(message_mini, mini=True)
-        self.logger.write(message, main=True)
+            self.logger.write(self.logger.new_message('inflexné body', viditeľné=self.svk[visible], nájdené=len(inflex_points)), mini=True)
+        self.logger.write(self.logger.new_message('inflexné body', viditeľné=self.svk[visible], v_bodoch=inflex_points), main=True)
 
     def _add_analysis_info(self, function, op='increasing', refinement_support=False) -> None:
         """
@@ -126,15 +102,13 @@ class Observer:
                 'concave_down': 'konkávna'}
         if not visible:
             if not refinement_support:
-                self.logger.write(logger_message(desc[op], viditeľné=self.svk[visible]), mini=True, main=True)
+                self.logger.write(self.logger.new_message(desc[op], viditeľné=self.svk[visible]), mini=True, main=True)
             return
 
         intervals = function.get(f'{op}_intervals')
-        message_mini = logger_message(desc[op], viditeľné=self.svk[visible], nájdené_intervaly_x=len(intervals))
-        message = logger_message(desc[op], viditeľné=self.svk[visible], intervaly_x=intervals)
         if not refinement_support:
-            self.logger.write(message_mini, mini=True)
-        self.logger.write(message, main=True)
+            self.logger.write(self.logger.new_message(desc[op], viditeľné=self.svk[visible], nájdené_intervaly_x=len(intervals)), mini=True)
+        self.logger.write(self.logger.new_message(desc[op], viditeľné=self.svk[visible], intervaly_x=intervals), main=True)
 
     def _changed_grid(self, event) -> None:
         """
@@ -143,11 +117,10 @@ class Observer:
         :return:
         """
         visible = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('grid', visible)
         self.function_manager.update_plot()
-        message = logger_message('mriežka', viditeľné=self.svk[visible])
-        self.logger.write(message, main=True, mini=True)
+        self.logger.write(self.logger.new_message('mriežka', viditeľné=self.svk[visible]), main=True, mini=True)
 
     def _changed_logger_order(self, event) -> None:
         """
@@ -155,9 +128,8 @@ class Observer:
         :param event: A data structure which saves user input information
         :return:
         """
-        message = logger_message('výpisy', poradie=event['new'])
         self.logger.set_order_oldest(True if event['new'] == 'najstaršie' else False)
-        self.logger.write(message, main=True, mini=True)
+        self.logger.write(self.logger.new_message('výstupy', poradie=event['new']), main=True, mini=True)
 
     def _changed_logger_save(self, event) -> None:
         """
@@ -165,9 +137,7 @@ class Observer:
         :param event: A data structure which saves user input information
         :return:
         """
-        file_name = self.logger.to_file()
-        message = logger_message('výpisy', stav='uložené', súbor=file_name)
-        self.logger.write(message, mini=True)
+        self.logger.write(self.logger.new_message('výstupy', stav='uložené', súbor=self.logger.to_file()), mini=True)
 
     def _changed_derivative1(self, event) -> None:
         """
@@ -176,11 +146,10 @@ class Observer:
         :return:
         """
         visible = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('active_derivative1', visible)
         self.function_manager.update_plot()
-        message = logger_message('prvá derivácia', viditeľné=self.svk[visible])
-        self.logger.write(message, main=True, mini=True)
+        self.logger.write(self.logger.new_message('prvá derivácia', viditeľné=self.svk[visible]), main=True, mini=True)
 
     def _changed_derivative2(self, event) -> None:
         """
@@ -189,11 +158,10 @@ class Observer:
         :return:
         """
         visible = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('active_derivative2', visible)
         self.function_manager.update_plot()
-        message = logger_message('druhá derivácia', viditeľné=self.svk[visible])
-        self.logger.write(message, main=True, mini=True)
+        self.logger.write(self.logger.new_message('druhá derivácia', viditeľné=self.svk[visible]), main=True, mini=True)
 
     def _changed_derivative3(self, event) -> None:
         """
@@ -202,11 +170,10 @@ class Observer:
         :return:
         """
         visible = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('active_derivative3', visible)
         self.function_manager.update_plot()
-        message = logger_message('tretia derivácia', viditeľné=self.svk[visible])
-        self.logger.write(message, main=True, mini=True)
+        self.logger.write(self.logger.new_message('tretia derivácia', viditeľné=self.svk[visible]), main=True, mini=True)
 
     def _changed_color_main_function(self, event) -> None:
         """
@@ -215,11 +182,10 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('main_function_color', choice)
         self.function_manager.update_plot()
-        message = logger_message('hlavná funkcia', farba=choice)
-        self.logger.write(message, main=True, mini=True)
+        self.logger.write(self.logger.new_message('hlavná funkcia', farba=choice), main=True, mini=True)
 
     def _changed_color_derivative1(self, event) -> None:
         """
@@ -228,11 +194,10 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('derivative_color1', choice)
         self.function_manager.update_plot()
-        message = logger_message('prvá derivácia', farba=choice)
-        self.logger.write(message, main=True, mini=True)
+        self.logger.write(self.logger.new_message('prvá derivácia', farba=choice), main=True, mini=True)
 
     def _changed_color_derivative2(self, event) -> None:
         """
@@ -241,11 +206,10 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('derivative_color2', choice)
         self.function_manager.update_plot()
-        message = logger_message('druhá derivácia', farba=choice)
-        self.logger.write(message, main=True, mini=True)
+        self.logger.write(self.logger.new_message('druhá derivácia', farba=choice), main=True, mini=True)
 
     def _changed_color_derivative3(self, event) -> None:
         """
@@ -254,10 +218,10 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('derivative_color3', choice)
         self.function_manager.update_plot()
-        self.logger.write(logger_message('tretia derivácia', farba=choice), main=True, mini=True)
+        self.logger.write(self.logger.new_message('tretia derivácia', farba=choice), main=True, mini=True)
 
     def _changed_refinement_x(self, event) -> None:
         """
@@ -265,18 +229,17 @@ class Observer:
         :param event: A data structure which saves user input information
         :return:
         """
-        options = {value + 'x': int(value) for value in config['refinement_x']['values'] if value != 'pôvodné'}
+        options = {value + 'x': int(value) for value in settings['refinement_x']['values'] if value != 'pôvodné'}
         options['pôvodné'] = 1
         choice = options[event['new']]
-        function = self.function_manager.get_current()
-        function.set_refinement_x(choice)
-        self.logger.write('Prepočítavanie funkcie...', timer=True)
+        function = self.function_manager.get_function()
+        function.set('refinement', choice)
+        self.logger.write(self.logger.new_message('Prebieha prepočítavanie funkcie...'), timer=True)
         self.function_manager.update_plot(main_function=True, derivatives=True, zero_points=True, extremes=True,
                                           inflex_points=True, monotonic=True, concave=True)
         n_x_values = sum(map(len, function.get("x_values")))
-        message = logger_message('zjemnenie x-ovej osi', zjemnenie=event['new'], počet_intervalov=n_x_values - 1,
-                                 počet_hodnôt=n_x_values)
-        self.logger.write(message, main=True, mini=True)
+        self.logger.write(self.logger.new_message('zjemnenie x-ovej osi', zjemnenie=event['new'], počet_intervalov=n_x_values - 1,
+                                 počet_hodnôt=n_x_values), main=True, mini=True)
         self._add_zero_points_info(function, refinement_support=True)
         self._add_extremes_info(function, refinement_support=True)
         self._add_inflex_points_info(function, refinement_support=True)
@@ -289,7 +252,7 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('zero_points_visible', choice)
         if choice:
             function.set('zero_points_zorder', function.get_zorder_sum() + 1)
@@ -304,10 +267,10 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('zero_points_color', choice)
         self.function_manager.update_plot()
-        self.logger.write(logger_message('nulové body', farba=choice), main=True, mini=True)
+        self.logger.write(self.logger.new_message('nulové body', farba=choice), main=True, mini=True)
 
     def _changed_iterations(self, event) -> None:
         """
@@ -316,18 +279,17 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('zero_points_iterations', choice)
         self.function_manager.update_plot(zero_points=True)
         self._add_zero_points_info(function)
 
     def _changed_rounding(self, event) -> None:
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('rounding', event['new'])
-        self.logger.write('Prepočítavanie funkcie...', timer=True)
+        self.logger.write(self.logger.new_message('Prebieha prepočítavanie funkcie...'), timer=True)
         self.function_manager.update_plot(zero_points=True, extremes=True, inflex_points=True, monotonic=True, concave=True)
-        message = logger_message('zaokrúhlenie hodnôt', desatinné_miesta=event['new'])
-        self.logger.write(message, main=True, mini=True)
+        self.logger.write(self.logger.new_message('zaokrúhlenie hodnôt', desatinné_miesta=event['new']), main=True, mini=True)
         self._add_zero_points_info(function, refinement_support=True)
         self._add_extremes_info(function, refinement_support=True)
         self._add_inflex_points_info(function, refinement_support=True)
@@ -340,7 +302,7 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         if choice:
             function.set('extremes_zorder', function.get_zorder_sum() + 1)
             function.update_zorder_sum()
@@ -355,10 +317,10 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('extremes_color', choice)
         self.function_manager.update_plot()
-        self.logger.write(logger_message('extrémy', farba=choice), main=True, mini=True)
+        self.logger.write(self.logger.new_message('extrémy', farba=choice), main=True, mini=True)
 
     def _changed_inflex_points(self, event) -> None:
         """
@@ -367,7 +329,7 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         if choice:
             function.set('inflex_points_zorder', function.get_zorder_sum() + 1)
             function.update_zorder_sum()
@@ -382,10 +344,10 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('inflex_points_color', choice)
         self.function_manager.update_plot()
-        self.logger.write(logger_message('inflexné body', farba=choice), main=True, mini=True)
+        self.logger.write(self.logger.new_message('inflexné body', farba=choice), main=True, mini=True)
 
     def _changed_increasing(self, event) -> None:
         """
@@ -394,7 +356,7 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         if choice:
             function.set('increasing_zorder', function.get_zorder_sum() + 1)
             function.update_zorder_sum()
@@ -409,10 +371,10 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('increasing_color', choice)
         self.function_manager.update_plot()
-        self.logger.write(logger_message('rastúca', farba=choice), main=True, mini=True)
+        self.logger.write(self.logger.new_message('rastúca', farba=choice), main=True, mini=True)
 
     def _changed_decreasing(self, event) -> None:
         """
@@ -421,7 +383,7 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         if choice:
             function.set('decreasing_zorder', function.get_zorder_sum() + 1)
             function.update_zorder_sum()
@@ -436,10 +398,10 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('decreasing_color', choice)
         self.function_manager.update_plot()
-        self.logger.write(logger_message('klesajúca', farba=choice), main=True, mini=True)
+        self.logger.write(self.logger.new_message('klesajúca', farba=choice), main=True, mini=True)
 
     def _changed_concave_up(self, event) -> None:
         """
@@ -448,7 +410,7 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         if choice:
             function.set('concave_up_zorder', function.get_zorder_sum() + 1)
             function.update_zorder_sum()
@@ -463,10 +425,10 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('concave_up_color', choice)
         self.function_manager.update_plot()
-        self.logger.write(logger_message('konvexná', farba=choice), main=True, mini=True)
+        self.logger.write(self.logger.new_message('konvexná', farba=choice), main=True, mini=True)
 
     def _changed_concave_down(self, event) -> None:
         """
@@ -475,7 +437,7 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         if choice:
             function.set('concave_down_zorder', function.get_zorder_sum() + 1)
             function.update_zorder_sum()
@@ -490,10 +452,10 @@ class Observer:
         :return:
         """
         choice = event['new']
-        function = self.function_manager.get_current()
+        function = self.function_manager.get_function()
         function.set('concave_down_color', choice)
         self.function_manager.update_plot()
-        self.logger.write(logger_message('konkávna', farba=choice), main=True, mini=True)
+        self.logger.write(self.logger.new_message('konkávna', farba=choice), main=True, mini=True)
 
     def start(self) -> None:
         """

@@ -3,8 +3,8 @@ from matplotlib import get_backend
 
 from .exceptions import NotSupportedException
 from .util import hide_interactive_toolbars, check_parameters
-from ..config import config
 from ..gui import Board, Logger
+from ..settings import settings
 
 
 class Editor:
@@ -14,7 +14,7 @@ class Editor:
         self.logger = Logger()
 
     def run_instance(self, **params):
-        if not config['editor_settings']['interactive_elements'] == 'yes':
+        if not settings['editor_settings']['interactive_elements'] == 'yes':
             hide_interactive_toolbars()
         if 'inline' in get_backend():
             raise NotSupportedException('Clause %matplotlib inline is not supported. Please use %matplotlib notebook.')
@@ -22,8 +22,6 @@ class Editor:
             self.logger.get_widget(t).clear_output()
         self.board = Board(check_parameters(params, self.logger), self.logger)
         function_manager = self.board.get_object('function_manager')
-        observer = self.board.get_object('observer')
         display(self.board.get_widget())
         function_manager.update_plot(main_function=True, derivatives=True, zero_points=True,
                                      extremes=True, inflex_points=True, monotonic=True, concave=True)
-        observer.write_warnings()

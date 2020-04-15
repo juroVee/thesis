@@ -1,1 +1,1 @@
-from .function import FunctionManager
+from .manager import FunctionManager

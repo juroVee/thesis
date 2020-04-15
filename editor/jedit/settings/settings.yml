@@ -47,18 +47,18 @@ asymptote:
 
 zero_points:
   marker: 'o'
-  markersize: 7
+  markersize: 5.5
   color: '#000000'
   iterations: 50
 
 extremes:
   marker: 'o'
-  markersize: 7
+  markersize: 5.5
   color: '#e32400'
 
 inflex_points:
   marker: 'o'
-  markersize: 7
+  markersize: 5.5
   color: '#77bb40'
 
 increasing:
