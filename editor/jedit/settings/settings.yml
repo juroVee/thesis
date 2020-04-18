@@ -1,10 +1,11 @@
-editor_settings:
+editor:
   interactive_elements: 'no'
   footer_log: 'yes'
   round:
     from: 0
-    to: 12
+    to: 20
     default: 6
+  zero_tolerance: 1e-6
 
 default_sizes:
   board_grid_rows: 20
@@ -17,7 +18,7 @@ default_sizes:
 plot_parameters:
   grid: 'no'
   aspect: 'auto'
-  height: 5
+  height: 4.5
   width: 6.2
 
 main_function:
@@ -52,6 +53,7 @@ zero_points:
   iterations: 50
 
 extremes:
+  max_derivative: 10
   marker: 'o'
   markersize: 5.5
   color: '#e32400'

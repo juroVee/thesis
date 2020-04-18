@@ -28,7 +28,7 @@ class Function:
         self.set('user_derivatives', user_derivatives)
         self.set('asymptotes', asymptotes)
         self.set('lines_count', len(list(X)))
-        self.set('rounding', settings['editor_settings']['round']['default'])
+        self.set('rounding', settings['editor']['round']['default'])
 
     def _init_plot_parameters(self):
         self.set('grid', True if settings['plot_parameters']['grid'] == 'yes' else False)

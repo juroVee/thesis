@@ -6,12 +6,17 @@ def hide_interactive_toolbars():
             <style>
             .output_wrapper button.btn.btn-default,
             .output_wrapper .ui-dialog-titlebar,
-            .output_wrapper .mpl-message {
-              display: none;
+            .output_wrapper .mpl-message,
+            .output_wrapper .ui-icon {
+              display: none!important;
             }
             </style>
            '''
     display(HTML(html))
+
+#.output_wrapper .ui-dialog-titlebar { display: none;}
+
+#<div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90; display: block;"></div>
 
 
 def check_parameters(params, logger) -> dict:

@@ -1,7 +1,12 @@
 import numpy as np
+
+from scipy.misc import derivative
+from scipy.signal import argrelextrema
 from fractions import Fraction
 
-def signchanges(array) -> list:
+from ..settings import settings
+
+def zero_crossings(array) -> list:
     """
     Pri hľadaní nulových hodnôt derivácií sa často stretávame s problémom, že tieto hodnoty
     sú nule len blízke, pričom samotné nuly sa v našich vypočítaných hodnotách ani nenachádzajú.
@@ -18,21 +23,36 @@ def signchanges(array) -> list:
         result = result[:-1]
     return list(zip(result, result + 1))
 
-def prepare(array, decimal, concat=False):
+def approximate_zeros(array):
+    atol = float(settings['editor']['zero_tolerance'])
+    touching_zero_pos = argrelextrema(array, np.less)[0]
+    touching_zero_neg = argrelextrema(array, np.greater)[0]
+    if np.any(np.isclose(array[touching_zero_pos], 0, atol=atol)):
+        array[touching_zero_pos] = 0.
+    if np.any(np.isclose(array[touching_zero_neg], 0, atol=atol)):
+        array[touching_zero_neg] = 0.
+    crossings = [pair[np.abs(array[np.array(pair)]).argmin()] for pair in zero_crossings(array)]
+    array[crossings] = 0.
+    return array
+
+def get_derivative(func, X, n):
+    delta_x, order = np.diff(X)[0], n + 5 if n % 2 == 0 else n + 2
+    return derivative(func, X, n=n, dx=delta_x, order=order)
+
+def prepare(array, decimal):
     """
     Pripraví výsledné hodnoty, ktoré sa pošlú na výstup (textový/grafický).
     Pythonovské pole hodnôt zmení na numpy pole, zaokrúhli jeho hodnoty, odstráni duplikáty a zoradí hodnoty vzostupne.
     :param array: vstupné pole hodnôt (polí hodnôt)
     :param decimal: desatinné miesta pre zaokrúhľovanie
-    :param concat: určuje, že vstupné pole obsahuje ďalšie polia hodnôt, ktoré treba spojiť do jedného
     :return:
     """
-    if concat:
-        return np.sort(np.unique(np.around(np.concatenate(array), decimal)))
-    return np.sort(np.unique(np.around(np.asarray(array), decimal)))
+    return np.sort(np.unique(np.around(np.asarray(list(array)), decimal)))
 
 def init_subplot(ax):
-    """Author: J. Komara"""
+    """
+    Author: J. Komara
+    """
 
     # Hide the top and right spines
     ax.spines['top'].set_color('none')

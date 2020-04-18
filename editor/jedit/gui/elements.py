@@ -76,7 +76,7 @@ class Dropdown:
         return w.HBox(children=[toggle, dropdown], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
 
 
-class Text:
+class IntText:
 
     def __init__(self, description, disabled, minval, maxval, step, default_value):
         self.description = description

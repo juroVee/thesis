@@ -23,12 +23,12 @@ class AnalysisTab(Tab):
         function_manager = board.get_object('function_manager')
         menu = board.get_object('main_menu')
         logger = board.get_object('logger')
-        logger_mini_tab = w.Tab(children=[logger.get_widget(t='mini')], layout=w.Layout(height='100%'))
+        logger_mini_tab = w.Tab(children=[logger.get_widget(t='mini')], layout=w.Layout(height='95%'))
         logger_mini_tab.set_title(0, 'Posledná zmena')
         super().__init__(name='Analýza',
                          main_window=[function_manager.get_plot_widget()],
                          sidebar=[menu.get_widget()],
-                         footer=[logger_mini_tab] if settings['editor_settings']['footer_log'] == 'yes' else []
+                         footer=[logger_mini_tab] if settings['editor']['footer_log'] == 'yes' else []
                          )
 
     def get_widget(self) -> w.GridspecLayout:

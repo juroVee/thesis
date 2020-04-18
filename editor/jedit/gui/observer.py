@@ -58,9 +58,7 @@ class Observer:
             if not refinement_support:
                 self.logger.write(self.logger.new_message('extrémy', viditeľné=self.svk[visible]), mini=True, main=True)
             return
-        minX = function.get('local_minima')
-        maxX = function.get('local_maxima')
-        full = function.get('local_extrema')
+        minX, maxX, full = function.get('local_minima'), function.get('local_maxima'), function.get('local_extrema')
         if not refinement_support:
             self.logger.write(self.logger.new_message('extrémy', viditeľné=self.svk[visible],
                                       ostré_lokálne_extrémy=len(full)), mini=True)
@@ -235,7 +233,7 @@ class Observer:
         function = self.function_manager.get_function()
         function.set('refinement', choice)
         self.logger.write(self.logger.new_message('Prebieha prepočítavanie funkcie...'), timer=True)
-        self.function_manager.update_plot(main_function=True, derivatives=True, zero_points=True, extremes=True,
+        self.function_manager.update_plot(main_function=True, main_derivatives=True, zero_points=True, extremes=True,
                                           inflex_points=True, monotonic=True, concave=True)
         n_x_values = sum(map(len, function.get("x_values")))
         self.logger.write(self.logger.new_message('zjemnenie x-ovej osi', zjemnenie=event['new'], počet_intervalov=n_x_values - 1,
@@ -289,7 +287,7 @@ class Observer:
         function.set('rounding', event['new'])
         self.logger.write(self.logger.new_message('Prebieha prepočítavanie funkcie...'), timer=True)
         self.function_manager.update_plot(zero_points=True, extremes=True, inflex_points=True, monotonic=True, concave=True)
-        self.logger.write(self.logger.new_message('zaokrúhlenie hodnôt', desatinné_miesta=event['new']), main=True, mini=True)
+        self.logger.write(self.logger.new_message('presnosť výsledkov', desatinné_miesta=event['new']), main=True, mini=True)
         self._add_zero_points_info(function, refinement_support=True)
         self._add_extremes_info(function, refinement_support=True)
         self._add_inflex_points_info(function, refinement_support=True)

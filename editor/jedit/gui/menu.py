@@ -2,7 +2,7 @@ from collections import defaultdict
 
 import ipywidgets as w
 
-from .elements import HBox, Dropdown, Text, Toggle, Button
+from .elements import HBox, Dropdown, IntText, Toggle, Button
 from ..settings import settings
 
 
@@ -62,17 +62,14 @@ class MainMenu:
                                                                                                 'values'])),
                                                                             default_value='pôvodné').get()
 
-        a_grid[10, 0] = self.elements['dropdown']['rounding'] = Dropdown(description='Zaokrúhlenie hodnôt',
-                                                                         disabled=False,
-                                                                         values=list(range(
-                                                                             settings['editor_settings']['round']['to'],
-                                                                             settings['editor_settings']['round'][
-                                                                                 'from'] - 1, -1)),
-                                                                         default_value=
-                                                                         settings['editor_settings']['round'][
-                                                                             'default']).get()
+        a_grid[11, 0] = self.elements['text']['rounding'] = IntText(description='Presnosť výsledkov',
+                                                                   disabled=False,
+                                                                   minval=settings['editor']['round']['from'],
+                                                                   maxval=settings['editor']['round']['to'],
+                                                                   step=1,
+                                                                   default_value=settings['editor']['round']['default']).get()
 
-        a_grid[12, 0] = self.elements['text']['iterations'] = Text(description='Iterácie Newtonovej metódy',
+        a_grid[12, 0] = self.elements['text']['iterations'] = IntText(description='Iterácie Newtonovej metódy',
                                                                    disabled=False,
                                                                    minval=1,
                                                                    maxval=1000,

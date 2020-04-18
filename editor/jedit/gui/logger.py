@@ -44,7 +44,7 @@ class Logger:
                 clear_output()
                 self.log_stack.push(out + message.text())
                 self.log_stack.reveal()
-        if mini and settings['editor_settings']['footer_log'] == 'yes':
+        if mini and settings['editor']['footer_log'] == 'yes':
             with self.outputs['mini']:
                 clear_output()
                 print(message.text(mini=True))

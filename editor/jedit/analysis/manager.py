@@ -5,7 +5,7 @@ from IPython.display import clear_output, display
 
 from .function import Function, DefaultFunction, UserFunction
 from .computations import ComputationsManager
-from .warnings import WarningsManager
+from .warn import WarningsManager
 from ..settings import settings
 
 
