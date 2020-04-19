@@ -12,7 +12,7 @@ default_sizes:
   board_grid_cols: 25
   main_window_rows: 17
   main_window_cols: 17
-  board_grid_height: '580px'
+  board_grid_height: '600px'
   menu_element_description: '100px'
 
 plot_parameters:

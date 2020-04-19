@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib.lines import Line2D
 from scipy.optimize import newton
 
-from .util import prepare, approximate_zeros, get_derivative
+from .util import prepare, approximate_zeros, get_derivative, round_to_n_significant
 from ..settings import settings
 
 
@@ -66,7 +66,6 @@ class ComputationsManager:
 
     def extremes(self) -> None:
         result = defaultdict(set)
-        np.set_printoptions(suppress=True)
         for i, X in enumerate(self.x_values):
             primes1 = approximate_zeros(self.primes[f'X{i}'][1])
             for n in range(2, settings['extremes']['max_derivative'] + 1, 2):

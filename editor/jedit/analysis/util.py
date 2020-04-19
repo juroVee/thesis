@@ -39,15 +39,20 @@ def get_derivative(func, X, n):
     delta_x, order = np.diff(X)[0], n + 5 if n % 2 == 0 else n + 2
     return derivative(func, X, n=n, dx=delta_x, order=order)
 
-def prepare(array, decimal):
+def round_to_n_significant(array, n):
+    x_positive = np.where(np.isfinite(array) & (array != 0), np.abs(array), 10**(array-1))
+    mags = 10 ** (n - 1 - np.floor(np.log10(x_positive)))
+    return np.round(array * mags) / mags
+
+def prepare(array, n):
     """
     Pripraví výsledné hodnoty, ktoré sa pošlú na výstup (textový/grafický).
     Pythonovské pole hodnôt zmení na numpy pole, zaokrúhli jeho hodnoty, odstráni duplikáty a zoradí hodnoty vzostupne.
     :param array: vstupné pole hodnôt (polí hodnôt)
-    :param decimal: desatinné miesta pre zaokrúhľovanie
+    :param n: počet platných číslic
     :return:
     """
-    return np.sort(np.unique(np.around(np.asarray(list(array)), decimal)))
+    return np.sort(np.unique(round_to_n_significant(np.asarray(list(array)), n)))
 
 def init_subplot(ax):
     """

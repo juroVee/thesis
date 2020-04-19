@@ -4,11 +4,12 @@ from traitlets import directional_link
 
 class HBox:
 
-    def __init__(self, description, disabled, color, link=False):
+    def __init__(self, description, disabled, color, link=False, tooltip=None):
         self.description = description
         self.disabled = disabled
         self.color = color
         self.link = link
+        self.tooltip = tooltip
 
     def get(self):
         toggle = w.ToggleButton(
@@ -16,7 +17,7 @@ class HBox:
             description=self.description,
             disabled=self.disabled,
             button_style='',
-            tooltip=self.description,
+            tooltip=self.tooltip if self.tooltip is not None else self.description,
             layout=w.Layout(width='90%', border='1px solid darkgrey')
         )
         cpicker = w.ColorPicker(
@@ -33,9 +34,10 @@ class HBox:
 
 class Toggle:
 
-    def __init__(self, description, disabled):
+    def __init__(self, description, disabled, tooltip=None):
         self.description = description
         self.disabled = disabled
+        self.tooltip = tooltip
 
     def get(self):
         toggle = w.ToggleButton(
@@ -43,7 +45,7 @@ class Toggle:
             description=self.description,
             disabled=self.disabled,
             button_style='',
-            tooltip=self.description,
+            tooltip=self.tooltip if self.tooltip is not None else self.description,
             layout=w.Layout(width='100%', border='1px solid darkgrey')
         )
         return w.HBox(children=[toggle], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
@@ -51,11 +53,12 @@ class Toggle:
 
 class Dropdown:
 
-    def __init__(self, description, disabled, values, default_value):
+    def __init__(self, description, disabled, values, default_value, tooltip=None):
         self.description = description
         self.disabled = disabled
         self.values = values
         self.default_value = default_value
+        self.tooltip = tooltip
 
     def get(self):
         toggle = w.ToggleButton(
@@ -63,7 +66,7 @@ class Dropdown:
             description=self.description,
             disabled=True,
             button_style='',  # 'success', 'info', 'warning', 'danger' or ''
-            tooltip=self.description,
+            tooltip=self.tooltip if self.tooltip is not None else self.description,
             layout=w.Layout(width='100%', border='1px solid darkgrey')
         )
         dropdown = w.Dropdown(
@@ -78,13 +81,14 @@ class Dropdown:
 
 class IntText:
 
-    def __init__(self, description, disabled, minval, maxval, step, default_value):
+    def __init__(self, description, disabled, minval, maxval, step, default_value, tooltip=None):
         self.description = description
         self.disabled = disabled
         self.min = minval
         self.max = maxval
         self.step = step
         self.default_value = default_value
+        self.tooltip = tooltip
 
     def get(self):
         toggle = w.ToggleButton(
@@ -92,7 +96,7 @@ class IntText:
             description=self.description,
             disabled=True,
             button_style='',
-            tooltip=self.description,
+            tooltip=self.tooltip if self.tooltip is not None else self.description,
             layout=w.Layout(width='100%', border='1px solid darkgrey')
         )
         textfield = w.BoundedIntText(
@@ -109,9 +113,10 @@ class IntText:
 
 class Button:
 
-    def __init__(self, description, disabled):
+    def __init__(self, description, disabled, tooltip=None):
         self.description = description
         self.disabled = disabled
+        self.tooltip = tooltip
 
     def get(self):
         button = w.Button(
@@ -119,7 +124,7 @@ class Button:
             description=self.description,
             disabled=self.disabled,
             button_style='',
-            tooltip=self.description,
+            tooltip=self.tooltip if self.tooltip is not None else self.description,
             layout=w.Layout(width='100%', border='1px solid darkgrey')
         )
         return w.HBox(children=[button], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))

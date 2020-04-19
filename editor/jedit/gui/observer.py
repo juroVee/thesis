@@ -287,7 +287,7 @@ class Observer:
         function.set('rounding', event['new'])
         self.logger.write(self.logger.new_message('Prebieha prepočítavanie funkcie...'), timer=True)
         self.function_manager.update_plot(zero_points=True, extremes=True, inflex_points=True, monotonic=True, concave=True)
-        self.logger.write(self.logger.new_message('presnosť výsledkov', desatinné_miesta=event['new']), main=True, mini=True)
+        self.logger.write(self.logger.new_message('presnosť výsledkov', platné_číslice=event['new']), main=True, mini=True)
         self._add_zero_points_info(function, refinement_support=True)
         self._add_extremes_info(function, refinement_support=True)
         self._add_inflex_points_info(function, refinement_support=True)

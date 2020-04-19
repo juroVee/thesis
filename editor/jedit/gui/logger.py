@@ -12,7 +12,7 @@ class Logger:
 
     def __init__(self):
         self.outputs = {'main': w.Output(layout=w.Layout(overflow='auto')),
-                        'mini': w.Output(),
+                        'mini': w.Output(layout=w.Layout(overflow='hidden', height='100%')),
                         'warnings': w.Output(layout=w.Layout(overflow='auto'))}
         self.log_stack = LoggerStack()
         self.warning_stack = LoggerStack()
