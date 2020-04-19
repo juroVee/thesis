@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib.lines import Line2D
 from scipy.optimize import newton
 
-from .util import prepare, approximate_zeros, get_derivative, round_to_n_significant
+from .util import prepare, approximate_zeros, get_derivative
 from ..settings import settings
 
 
@@ -104,10 +104,11 @@ class ComputationsManager:
             table = np.delete(table, np.where(table[:, 1] == 0)[0], axis=0)
             intervals = np.split(table, np.where(np.diff(table[:, 1] < 0))[0] + 1)
             for interval in intervals:
-                X, fprime1 = interval[:, 0], interval[:, 1]
-                dest = increasing if np.all(fprime1 > 0) else decreasing
-                dest['values'].append(X)
-                dest['intervals'].append((X[0], X[-1]))
+                if len(interval) > 1:
+                    X, fprime1 = interval[:, 0], interval[:, 1]
+                    dest = increasing if np.all(fprime1 > 0) else decreasing
+                    dest['values'].append(X)
+                    dest['intervals'].append((X[0], X[-1]))
         self.function.set('increasing_values', increasing['values'])
         self.function.set('increasing_intervals', increasing['intervals'])
         self.function.set('decreasing_values', decreasing['values'])
@@ -121,10 +122,11 @@ class ComputationsManager:
             table = np.delete(table, np.where(table[:, 1] == 0)[0], axis=0)
             intervals = np.split(table, np.where(np.diff(table[:, 1] < 0))[0] + 1)
             for interval in intervals:
-                X, fprime2 = np.around(interval[:, 0], self.round), interval[:, 1]
-                dest = concave_up if np.all(fprime2 >= 0) else concave_down
-                dest['values'].append(X)
-                dest['intervals'].append((X[0], X[-1]))
+                if len(interval) > 1:
+                    X, fprime2 = np.around(interval[:, 0], self.round), interval[:, 1]
+                    dest = concave_up if np.all(fprime2 > 0) else concave_down
+                    dest['values'].append(X)
+                    dest['intervals'].append((X[0], X[-1]))
         self.function.set('concave_up_values', concave_up['values'])
         self.function.set('concave_up_intervals', concave_up['intervals'])
         self.function.set('concave_down_values', concave_down['values'])

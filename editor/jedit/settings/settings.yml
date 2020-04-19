@@ -8,17 +8,17 @@ editor:
   zero_tolerance: 1e-6
 
 default_sizes:
-  board_grid_rows: 20
-  board_grid_cols: 25
-  main_window_rows: 17
-  main_window_cols: 17
-  board_grid_height: '600px'
+  board_grid_rows: 18
+  board_grid_cols: 18
+  main_window_rows: 15
+  main_window_cols: 12
+  board_grid_height: '580px'
   menu_element_description: '100px'
 
 plot_parameters:
   grid: 'no'
   aspect: 'auto'
-  height: 4.5
+  height: 4.2
   width: 6.2
 
 main_function:

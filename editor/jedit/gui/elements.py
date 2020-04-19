@@ -18,7 +18,7 @@ class HBox:
             disabled=self.disabled,
             button_style='',
             tooltip=self.tooltip if self.tooltip is not None else self.description,
-            layout=w.Layout(width='90%', border='1px solid darkgrey')
+            layout=w.Layout(width='90%')
         )
         cpicker = w.ColorPicker(
             concise=True,
@@ -29,7 +29,7 @@ class HBox:
         )
         if self.link:
             directional_link((toggle, 'value'), (cpicker, 'disabled'), lambda case: not case)
-        return w.HBox(children=[toggle, cpicker], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
+        return w.HBox(children=[toggle, cpicker], layout=w.Layout(overflow='hidden'))
 
 
 class Toggle:
@@ -46,9 +46,9 @@ class Toggle:
             disabled=self.disabled,
             button_style='',
             tooltip=self.tooltip if self.tooltip is not None else self.description,
-            layout=w.Layout(width='100%', border='1px solid darkgrey')
+            layout=w.Layout(width='100%')
         )
-        return w.HBox(children=[toggle], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
+        return w.HBox(children=[toggle], layout=w.Layout(overflow='hidden'))
 
 
 class Dropdown:
@@ -67,7 +67,7 @@ class Dropdown:
             disabled=True,
             button_style='',  # 'success', 'info', 'warning', 'danger' or ''
             tooltip=self.tooltip if self.tooltip is not None else self.description,
-            layout=w.Layout(width='100%', border='1px solid darkgrey')
+            layout=w.Layout(width='100%')
         )
         dropdown = w.Dropdown(
             options=self.values,
@@ -76,7 +76,7 @@ class Dropdown:
             disabled=self.disabled,
             layout=w.Layout(width='70%', overflow='hidden')
         )
-        return w.HBox(children=[toggle, dropdown], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
+        return w.HBox(children=[toggle, dropdown], layout=w.Layout(overflow='hidden'))
 
 
 class IntText:
@@ -97,7 +97,7 @@ class IntText:
             disabled=True,
             button_style='',
             tooltip=self.tooltip if self.tooltip is not None else self.description,
-            layout=w.Layout(width='100%', border='1px solid darkgrey')
+            layout=w.Layout(width='100%')
         )
         textfield = w.BoundedIntText(
             value=self.default_value,
@@ -108,7 +108,7 @@ class IntText:
             disabled=self.disabled,
             layout=w.Layout(width='40%', overflow='hidden')
         )
-        return w.HBox(children=[toggle, textfield], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
+        return w.HBox(children=[toggle, textfield], layout=w.Layout(overflow='hidden'))
 
 
 class Button:
@@ -125,6 +125,6 @@ class Button:
             disabled=self.disabled,
             button_style='',
             tooltip=self.tooltip if self.tooltip is not None else self.description,
-            layout=w.Layout(width='100%', border='1px solid darkgrey')
+            layout=w.Layout(width='100%')
         )
-        return w.HBox(children=[button], layout=w.Layout(overflow='hidden', border='1px solid darkgrey'))
+        return w.HBox(children=[button], layout=w.Layout(overflow='hidden'))

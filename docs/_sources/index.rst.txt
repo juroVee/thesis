@@ -19,8 +19,8 @@ Základné informácie
    |    :download:`LaTeX (tar.gz) <files/docs/Bachelor_Thesis_LATEXv1_1.tar.gz>`
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz (v16_1) <files/sw/editor_v16_1.tar.gz>`
-   |    :download:`zip (v16_1) <files/sw/editor_v16_1.zip>`
+   |    :download:`tar.gz (v16_2) <files/sw/editor_v16_2.tar.gz>`
+   |    :download:`zip (v16_2) <files/sw/editor_v16_2.zip>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
@@ -49,6 +49,8 @@ Log
 - odstránený názov funkcie z editora, uvoľnenie väčšieho miesta pre samotný graf, čo je asi viac podstatné
 - ďalšia refaktorizácia kódu - pridaných viac tried, rozdelený kód
 - zväčšený priestor v editore pre samotný graf (zmenšené margins)
+- optimalizácia GUI pre jednotnú funkčnosť a zjav vo Firefox, Chrome aj Safari
+- opravená chyba výpočtu intervalov monotónnosti/konvexnosti/konkávnosti, kde sa vyskytli ``-inf`` alebo ``inf`` hodnoty
 
 6.4.2020 - 12.4.2020
 --------------------

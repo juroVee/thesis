@@ -17,7 +17,9 @@ class MainMenu:
         Vytvorí a vráti mriežkové štruktúry pre uloženie ovládacích prvkov, ktoré sú prístupné v objekte Tab.
         :return: Hlavné menu v podobe Tab objektu
         """
-        a_grid = w.GridspecLayout(settings['default_sizes']['main_window_rows'] - 4, 1)
+        n_elements_max = 13
+
+        a_grid = w.GridspecLayout(n_elements_max, 1)
 
         a_grid[0, 0] = self.elements['hbox']['zero_points'] = HBox(description='Nulové body',
                                                                    disabled=False,
@@ -78,7 +80,7 @@ class MainMenu:
                                                                    default_value=settings['zero_points'][
                                                                        'iterations']).get()
 
-        f_grid = w.GridspecLayout(settings['default_sizes']['main_window_rows'] - 4, 1)
+        f_grid = w.GridspecLayout(n_elements_max, 1)
 
         f_grid[0, 0] = self.elements['hbox']['main_function'] = HBox(description='Funkcia',
                                                                      disabled=True,
@@ -99,13 +101,13 @@ class MainMenu:
         f_grid[6, 0] = self.elements['toggle']['grid'] = Toggle(description='Mriežka',
                                                                 disabled=False).get()
 
-        f_grid[8, 0] = self.elements['dropdown']['logger_order'] = Dropdown(description='Poradie výstupov',
+        f_grid[11, 0] = self.elements['dropdown']['logger_order'] = Dropdown(description='Poradie výstupov',
                                                                             disabled=False,
                                                                             values=['najnovšie',
                                                                                     'najstaršie'],
                                                                             default_value='najnovšie').get()
 
-        f_grid[9, 0] = self.elements['button']['logger_save'] = Button(description='Uložiť výstupy do súboru',
+        f_grid[12, 0] = self.elements['button']['logger_save'] = Button(description='Uložiť výstupy do súboru',
                                                                        disabled=False).get()
 
         tab_nest = w.Tab(layout=w.Layout(overflow='hidden'))
