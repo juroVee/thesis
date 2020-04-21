@@ -52,7 +52,7 @@ def prepare(array, n):
     :param n: počet platných číslic
     :return:
     """
-    return np.sort(np.unique(round_to_n_significant(np.asarray(list(array)), n)))
+    return np.sort(np.unique(round_to_n_significant(array, n)))
 
 def init_subplot(ax):
     """

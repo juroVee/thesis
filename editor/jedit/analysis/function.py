@@ -1,4 +1,8 @@
+import numpy as np
+import itertools
+
 from matplotlib.lines import Line2D
+from collections import defaultdict
 
 from .plotter import Plotter
 from ..settings import settings
@@ -9,8 +13,9 @@ class Function:
     Trieda reprezentujúca všetky parametre funkcie
     """
 
-    def __init__(self, f, X, name, user_derivatives=None, asymptotes=None):
+    def __init__(self, f, X, name, user_derivatives, asymptotes):
         self.parameters = {}
+        self.analysis_data = defaultdict(dict)
         self.zorder_sum = 4
         self._init_function_details(X, f, name, user_derivatives, asymptotes)
         self._init_plot_parameters()
@@ -81,6 +86,16 @@ class Function:
         """
         return self.parameters.get(parameter_name, None)
 
+    def get_analysis_data(self, key=None, unpack=False, list_values=False) -> np.array:
+        if key is None:
+            return self.analysis_data
+        if unpack and key in self.analysis_data:
+            all_intervals = self.analysis_data.get(key)
+            if list_values:
+                return np.asarray(list(itertools.chain(*all_intervals.values())))
+            return np.concatenate(list(all_intervals.values()))
+        return self.analysis_data.get(key, np.asarray([]))
+
     def update_zorder_sum(self) -> None:
         """
         Increases plot objects count
@@ -140,8 +155,7 @@ class DefaultFunction(Function):
     def __init__(self, name='undefined', config_data=None):
         function = eval(config_data['formula'])
         X = eval(config_data['linspace'])
-        derivatives = [eval(derivative) for derivative in config_data.get('derivatives', [])]
-        super().__init__(function, [X], name, user_derivatives=derivatives, asymptotes=None)
+        super().__init__(function, [X], name, user_derivatives={}, asymptotes=[])
         self.set('lines', [Line2D(X, function(X))])
         self.set('aspect', 'equal' if settings['plot_parameters']['aspect'] == 'equal' else 'auto')
         if 'xticks_data' in config_data:

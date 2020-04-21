@@ -37,16 +37,14 @@ class Plotter:
                          zorder=1)
 
     def plot_derivative(self):
-        primes = self.function.get('derivatives')
-        for i, X in enumerate(self.function.get('x_values')):
-            key = f'X{i}'
-            for n in range(1, len(primes[key]) + 1):
-                if self.function.get('active_derivative' + str(n)):
-                    dydx = primes[key].get(n)
+        for i, Xi in enumerate(self.function.get('x_values')):
+            for n in range(1, settings['derivative']['user_max'] + 1):
+                key, primes = f'X{i}', self.function.get_analysis_data(key=f'primes{n}')
+                if self.function.get(f'active_derivative{n}'):
                     color = self.function.get('derivative_color' + str(n))
                     linestyle = settings['derivative']['linestyle']
                     linewidth = settings['derivative']['linewidth']
-                    self.ax.plot(X, dydx,
+                    self.ax.plot(Xi, primes[key],
                                  color=color,
                                  linestyle=linestyle,
                                  linewidth=linewidth,
@@ -58,9 +56,9 @@ class Plotter:
             markersize = settings['zero_points']['markersize']
             zorder = self.function.get('zero_points_zorder')
             f = self.function.get('f')
-            zero_points = self.function.get('zero_points')
+            zero_points = self.function.get_analysis_data(key='zero_points', unpack=True)
             self.ax.plot(zero_points, f(zero_points), marker, c=self.function.get('zero_points_color'),
-                         markersize=markersize, zorder=zorder)
+                                 markersize=markersize, zorder=zorder)
 
     def plot_extremes(self):
         if self.function.get('extremes_visible'):
@@ -68,9 +66,9 @@ class Plotter:
             markersize = settings['extremes']['markersize']
             zorder = self.function.get('extremes_zorder')
             f = self.function.get('f')
-            extremes = self.function.get('local_extrema')
+            extremes = self.function.get_analysis_data(key='extremes', unpack=True)
             self.ax.plot(extremes, f(extremes), marker, c=self.function.get('extremes_color'), markersize=markersize,
-                         zorder=zorder)
+                                 zorder=zorder)
 
     def plot_inflex_points(self):
         if self.function.get('inflex_points_visible'):
@@ -78,9 +76,9 @@ class Plotter:
             markersize = settings['inflex_points']['markersize']
             zorder = self.function.get('inflex_points_zorder')
             f = self.function.get('f')
-            inflex_points = self.function.get('inflex_points')
+            inflex_points = self.function.get_analysis_data(key='inflex_points', unpack=True)
             self.ax.plot(inflex_points, f(inflex_points), marker, c=self.function.get('inflex_points_color'),
-                         markersize=markersize, zorder=zorder)
+                                 markersize=markersize, zorder=zorder)
 
     def plot_intervals(self, op):
         if self.function.get(f'{op}_visible'):
@@ -89,10 +87,8 @@ class Plotter:
             color = self.function.get(f'{op}_color')
             f = self.function.get('f')
             zorder = self.function.get(f'{op}_zorder')
-            values = self.function.get(f'{op}_values')
-            for interval in values:
-                self.ax.plot(interval, f(interval), color=color, linestyle=linestyle, linewidth=linewidth,
-                             zorder=zorder)
+            for interval in self.function.get_analysis_data(key=op, unpack=True, list_values=True):
+                self.ax.plot(interval, f(interval), color=color, linestyle=linestyle, linewidth=linewidth, zorder=zorder)
 
     def plot_all(self):
         self.plot_main_function()

@@ -101,13 +101,16 @@ class MainMenu:
         f_grid[6, 0] = self.elements['toggle']['grid'] = Toggle(description='Mriežka',
                                                                 disabled=False).get()
 
-        f_grid[11, 0] = self.elements['dropdown']['logger_order'] = Dropdown(description='Poradie výstupov',
+        f_grid[8, 0] = self.elements['dropdown']['logger_order'] = Dropdown(description='Poradie výstupov',
                                                                             disabled=False,
                                                                             values=['najnovšie',
                                                                                     'najstaršie'],
                                                                             default_value='najnovšie').get()
 
-        f_grid[12, 0] = self.elements['button']['logger_save'] = Button(description='Uložiť výstupy do súboru',
+        f_grid[10, 0] = self.elements['button']['logger_save'] = Button(description='Uložiť textové výstupy (txt)',
+                                                                       disabled=False).get()
+
+        f_grid[11, 0] = self.elements['button']['json_save'] = Button(description='Uložiť vypočítané hodnoty (JSON)',
                                                                        disabled=False).get()
 
         tab_nest = w.Tab(layout=w.Layout(overflow='hidden'))

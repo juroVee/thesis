@@ -1,3 +1,7 @@
+import numpy as np
+
+from copy import deepcopy
+
 from ..settings import settings
 
 class Observer:
@@ -21,8 +25,8 @@ class Observer:
         :param refinement_support: Condition to print information about zero points after refinement change
         :return: 
         """
+        zero_points = function.get_analysis_data(key='zero_points', unpack=True)
         visible = function.get('zero_points_visible')
-        zero_points = function.get('zero_points')
         method = function.get('zero_points_method')
         maxiter = function.get('zero_points_iterations')
         derivatives_provided = len(function.get('user_derivatives'))
@@ -58,14 +62,16 @@ class Observer:
             if not refinement_support:
                 self.logger.write(self.logger.new_message('extrémy', viditeľné=self.svk[visible]), mini=True, main=True)
             return
-        minX, maxX, full = function.get('local_minima'), function.get('local_maxima'), function.get('local_extrema')
+        extremes = function.get_analysis_data(key='extremes', unpack=True)
+        maxima = function.get_analysis_data(key='maxima', unpack=True)
+        minima = function.get_analysis_data(key='minima', unpack=True)
         if not refinement_support:
             self.logger.write(self.logger.new_message('extrémy', viditeľné=self.svk[visible],
-                                      ostré_lokálne_extrémy=len(full)), mini=True)
+                                      ostré_lokálne_extrémy=len(extremes)), mini=True)
         self.logger.write(self.logger.new_message('extrémy', viditeľné=self.svk[visible],
-                                 ostré_lokálne_extrémy_v_bodoch=full,
-                                 ostré_lokálne_minimá_v_bodoch=minX,
-                                 ostré_lokálne_maximá_v_bodoch=maxX), main=True)
+                                 ostré_lokálne_extrémy_v_bodoch=extremes,
+                                 ostré_lokálne_minimá_v_bodoch=minima,
+                                 ostré_lokálne_maximá_v_bodoch=maxima), main=True)
 
     def _add_inflex_points_info(self, function, refinement_support=False) -> None:
         """
@@ -79,7 +85,7 @@ class Observer:
             if not refinement_support:
                 self.logger.write(self.logger.new_message('inflexné body', viditeľné=self.svk[visible]), mini=True, main=True)
             return
-        inflex_points = function.get('inflex_points')
+        inflex_points = function.get_analysis_data(key='inflex_points', unpack=True)
         if not refinement_support:
             self.logger.write(self.logger.new_message('inflexné body', viditeľné=self.svk[visible], nájdené=len(inflex_points)), mini=True)
         self.logger.write(self.logger.new_message('inflexné body', viditeľné=self.svk[visible], v_bodoch=inflex_points), main=True)
@@ -102,11 +108,10 @@ class Observer:
             if not refinement_support:
                 self.logger.write(self.logger.new_message(desc[op], viditeľné=self.svk[visible]), mini=True, main=True)
             return
-
-        intervals = function.get(f'{op}_intervals')
+        outer_points = [(interval[0], interval[-1]) for interval in function.get_analysis_data(key=op, unpack=True, list_values=True)]
         if not refinement_support:
-            self.logger.write(self.logger.new_message(desc[op], viditeľné=self.svk[visible], nájdené_intervaly_x=len(intervals)), mini=True)
-        self.logger.write(self.logger.new_message(desc[op], viditeľné=self.svk[visible], intervaly_x=intervals), main=True)
+            self.logger.write(self.logger.new_message(desc[op], viditeľné=self.svk[visible], nájdené_intervaly_x=len(outer_points)), mini=True)
+        self.logger.write(self.logger.new_message(desc[op], viditeľné=self.svk[visible], intervaly_x=outer_points), main=True)
 
     def _changed_grid(self, event) -> None:
         """
@@ -135,7 +140,23 @@ class Observer:
         :param event: A data structure which saves user input information
         :return:
         """
-        self.logger.write(self.logger.new_message('výstupy', stav='uložené', súbor=self.logger.to_file()), mini=True)
+        self.logger.write(self.logger.new_message('výstupy', stav='uložené', súbor=self.logger.to_file()), mini=True, main=True)
+
+    def _changed_json_save(self, event) -> None:
+        """
+        Event handler that saves log to file
+        :param event: A data structure which saves user input information
+        :return:
+        """
+        function = self.function_manager.get_function()
+        data = deepcopy(function.get_analysis_data())
+        for name, intervals in data.items():
+            for Xi, interval in intervals.items():
+                if type(interval) == list:
+                    data[name][Xi] = list(map(list, interval))
+                else:
+                    data[name][Xi] = list(interval)
+        self.logger.write(self.logger.new_message('vypočítané_hodnoty', stav='uložené', súbor=self.logger.to_file(data)), mini=True, main=True)
 
     def _changed_derivative1(self, event) -> None:
         """
@@ -241,7 +262,8 @@ class Observer:
         self._add_zero_points_info(function, refinement_support=True)
         self._add_extremes_info(function, refinement_support=True)
         self._add_inflex_points_info(function, refinement_support=True)
-        self._add_analysis_info(function, refinement_support=True)
+        for op in 'increasing', 'decreasing', 'concave_up', 'concave_down':
+            self._add_analysis_info(function, op=op, refinement_support=True)
 
     def _changed_zero_points(self, event) -> None:
         """
@@ -291,7 +313,8 @@ class Observer:
         self._add_zero_points_info(function, refinement_support=True)
         self._add_extremes_info(function, refinement_support=True)
         self._add_inflex_points_info(function, refinement_support=True)
-        self._add_analysis_info(function, refinement_support=True)
+        for op in 'increasing', 'decreasing', 'concave_up', 'concave_down':
+            self._add_analysis_info(function, op=op, refinement_support=True)
 
     def _changed_extremes(self, event) -> None:
         """

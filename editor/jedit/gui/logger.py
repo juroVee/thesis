@@ -1,4 +1,5 @@
 import os
+import json
 from datetime import datetime
 import numpy as np
 
@@ -53,13 +54,18 @@ class Logger:
                 self.warning_stack.push(out + message.text())
                 self.warning_stack.reveal()
 
-    def to_file(self) -> str:
-        dir_name = 'editor_logs'
+    def to_file(self, analysis_dict=None) -> str:
+        dir_name = 'jedit_out'
         if not os.path.exists(dir_name):
             os.mkdir(dir_name)
-        file_name = str(datetime.now().strftime(f'{dir_name}/log-%d-%m-%Y-%H-%M-%S.txt'))
-        with open(file_name, 'w') as file:
-            self.log_stack.reveal(file=file)
+        if analysis_dict is not None:
+            file_name = str(datetime.now().strftime(f'{dir_name}/computings-%d-%m-%Y-%H-%M-%S.json'))
+            with open(file_name, 'w') as file:
+                json.dump(analysis_dict, file, sort_keys=True)
+        else:
+            file_name = str(datetime.now().strftime(f'{dir_name}/log-%d-%m-%Y-%H-%M-%S.txt'))
+            with open(file_name, 'w') as file:
+                self.log_stack.reveal(file=file)
         return file_name
 
     def get_widget(self, t=None) -> w.Output:

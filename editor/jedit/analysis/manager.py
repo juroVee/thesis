@@ -30,8 +30,9 @@ class FunctionManager:
         return self.function
 
     def update_plot(self, **kwargs) -> None:
+        function = self.get_function()
         if len(kwargs) > 0:
-            manager = ComputationsManager(function=self.get_function())
+            manager = ComputationsManager(function=function)
             for arg, value in kwargs.items():
                 if value:
                     with warnings.catch_warnings(record=True) as warnings_list:
@@ -41,7 +42,6 @@ class FunctionManager:
         self.warnings.print()
         if self.updates > 0:
             plt.close('all')
-        function = self.get_function()
         function.plot(self.ax)
         self.updates += 1
         with self.output:

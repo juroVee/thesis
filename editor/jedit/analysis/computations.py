@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 import numpy as np
 from matplotlib.lines import Line2D
 from scipy.optimize import newton
@@ -16,10 +14,10 @@ class ComputationsManager:
         self.x_values = function.get('x_values')
         self.original_x_values = function.get('original_x_values')
         self.user_primes = function.get('user_derivatives')
-        self.primes = function.get('derivatives')
         self.refinement = function.get('refinement')
         self.maxiter = function.get('zero_points_iterations')
         self.round = self.function.get('rounding')
+        self.data = function.get_analysis_data()
 
     def main_function(self) -> None:
         if self.refinement == 1:
@@ -40,36 +38,34 @@ class ComputationsManager:
         self.function.set('lines', lines)
 
     def main_derivatives(self) -> None:
-        result = defaultdict(dict)
         for i, X in enumerate(self.x_values):
+            key = f'X{i}'
             for n in range(1, settings['derivative']['user_max'] + 1):
                 if n in self.user_primes:
                     d = self.user_primes[n]
                     values = d(X)
                 else:
                     values = get_derivative(self.f, X, n)
-                result[f'X{i}'][n] = values
-        self.function.set('derivatives', result)
-        self.primes = result
+                self.data[f'primes{n}'][key] = values
 
     def zero_points(self) -> None:
         fprime, fprime2 = self.user_primes.get(1, None), self.user_primes.get(2, None)
-        result = set()
+        np.set_printoptions(suppress=True)
         for i, (original_X, X) in enumerate(zip(self.original_x_values, self.x_values)):
+            key = f'X{i}'
             delta_x = np.diff(X)[0]
             candidates = newton(self.f, original_X, fprime=fprime, fprime2=fprime2, tol=delta_x,
                                       maxiter=self.maxiter)
             candidates = candidates[(candidates >= np.amin(X)) & (candidates <= np.amax(X))]
             candidates = candidates[np.isclose(self.f(candidates), 0, atol=10**(-self.round))]
-            result.update(candidates)
-        self.function.set('zero_points', prepare(result, self.round))
+            self.data['zero_points'][key] = prepare(candidates, self.round)
 
     def extremes(self) -> None:
-        result = defaultdict(set)
         for i, X in enumerate(self.x_values):
-            primes1 = approximate_zeros(self.primes[f'X{i}'][1])
-            for n in range(2, settings['extremes']['max_derivative'] + 1, 2):
-                next_prime = self.primes[f'X{i}'].get(n)
+            key = f'X{i}'
+            primes1 = approximate_zeros(self.data['primes1'][key])
+            for n in range(2, settings['extremes']['max_derivative'] + 1, 2): # kazda parna podla Vety 17
+                next_prime = self.data[f'primes{n}'].get(key)
                 if next_prime is None:
                     next_prime = get_derivative(self.f, X, n)
                 next_prime = approximate_zeros(next_prime)
@@ -78,28 +74,26 @@ class ComputationsManager:
                 if len(candidates) == 0:
                     break
                 if np.any(candidates[candidates[:, 2] != 0]) and n % 2 == 0:
-                    result['minima'].update(candidates[candidates[:, 2] > 0][:, 0])
-                    result['maxima'].update(candidates[candidates[:, 2] < 0][:, 0])
+                    minima, maxima = candidates[candidates[:, 2] > 0][:, 0], candidates[candidates[:, 2] < 0][:, 0]
+                    self.data['minima'][key] = prepare(minima, self.round)
+                    self.data['maxima'][key] = prepare(maxima, self.round)
+                    self.data['extremes'][key] = prepare(np.concatenate([minima, maxima]), self.round)
                     if not np.any(candidates[candidates[:, 2] == 0]):
                         break
-        self.function.set('local_minima', prepare(result['minima'], self.round))
-        self.function.set('local_maxima', prepare(result['maxima'], self.round))
-        self.function.set('local_extrema', prepare(result['minima'] | result['maxima'], self.round))
 
     def inflex_points(self) -> None:
-        result = set()
         for i, X in enumerate(self.x_values):
-            fprime2 = approximate_zeros(self.primes[f'X{i}'][2])
-            fprime3 = approximate_zeros(self.primes[f'X{i}'][3])
+            key = f'X{i}'
+            fprime2 = approximate_zeros(self.data['primes2'][key])
+            fprime3 = approximate_zeros(self.data['primes3'][key])
             table = np.dstack((X, fprime2, fprime3))[0]
             candidates = table[table[:, 1] == 0]
-            result.update(candidates[candidates[:, 2] != 0][:, 0])
-        self.function.set('inflex_points', prepare(result, self.round))
+            self.data['inflex_points'][key] = prepare(candidates[candidates[:, 2] != 0][:, 0], self.round)
 
     def monotonic(self) -> None:
-        increasing, decreasing = defaultdict(list), defaultdict(list)
         for i, X in enumerate(self.x_values):
-            fprime1 = approximate_zeros(self.primes[f'X{i}'][1])
+            key, increasing, decreasing = f'X{i}', [], []
+            fprime1 = approximate_zeros(self.data['primes1'][key])
             table = np.dstack((X, fprime1))[0]
             table = np.delete(table, np.where(table[:, 1] == 0)[0], axis=0)
             intervals = np.split(table, np.where(np.diff(table[:, 1] < 0))[0] + 1)
@@ -107,17 +101,14 @@ class ComputationsManager:
                 if len(interval) > 1:
                     X, fprime1 = interval[:, 0], interval[:, 1]
                     dest = increasing if np.all(fprime1 > 0) else decreasing
-                    dest['values'].append(X)
-                    dest['intervals'].append((X[0], X[-1]))
-        self.function.set('increasing_values', increasing['values'])
-        self.function.set('increasing_intervals', increasing['intervals'])
-        self.function.set('decreasing_values', decreasing['values'])
-        self.function.set('decreasing_intervals', decreasing['intervals'])
+                    dest.append(prepare(X, self.round))
+            self.data['increasing'][key] = increasing
+            self.data['decreasing'][key] = decreasing
 
     def concave(self) -> None:
-        concave_down, concave_up = defaultdict(list), defaultdict(list)
         for i, X in enumerate(self.x_values):
-            fprime2 = approximate_zeros(self.primes[f'X{i}'][2])
+            key, concave_down, concave_up = f'X{i}', [], []
+            fprime2 = approximate_zeros(self.data['primes2'][key])
             table = np.dstack((X, fprime2))[0]
             table = np.delete(table, np.where(table[:, 1] == 0)[0], axis=0)
             intervals = np.split(table, np.where(np.diff(table[:, 1] < 0))[0] + 1)
@@ -125,9 +116,6 @@ class ComputationsManager:
                 if len(interval) > 1:
                     X, fprime2 = np.around(interval[:, 0], self.round), interval[:, 1]
                     dest = concave_up if np.all(fprime2 > 0) else concave_down
-                    dest['values'].append(X)
-                    dest['intervals'].append((X[0], X[-1]))
-        self.function.set('concave_up_values', concave_up['values'])
-        self.function.set('concave_up_intervals', concave_up['intervals'])
-        self.function.set('concave_down_values', concave_down['values'])
-        self.function.set('concave_down_intervals', concave_down['intervals'])
+                    dest.append(prepare(X, self.round))
+            self.data['concave_down'][key] = concave_down
+            self.data['concave_up'][key] = concave_up
