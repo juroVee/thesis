@@ -43,7 +43,7 @@ class Logger:
     def new_message(self, theme, **kwargs):
         return LoggerMessage(theme, kwargs)
 
-    def set_order_oldest(self, value):
+    def set_order_oldest(self, value) -> None:
         """
         Vymení poradie výpisu výstupov
         :param value:

@@ -32,7 +32,7 @@ class Plotter:
     def __init__(self, function, axes):
         self.function, self.ax = function, axes
 
-    def plot_main_function(self):
+    def plot_main_function(self) -> None:
         """
         Vykreslí užívateľom zadanú alebo predvolenú funkciu (intervaly X a príslušné funkčné hodnoty)
         :return:
@@ -53,7 +53,7 @@ class Plotter:
                          linewidth=settings['main_function']['linewidth'],
                          zorder=3)
 
-    def plot_asymptotes(self):
+    def plot_asymptotes(self) -> None:
         """
         Vykreslí užívateľom zadané asymptoty.
         :return:
@@ -69,7 +69,7 @@ class Plotter:
                          linewidth=linewidth,
                          zorder=1)
 
-    def plot_derivative(self):
+    def plot_derivatives(self):
         """
         Vykreslí predvolený počet derivácii, ak sa ich užívateľ rozhodol zobraziť.
         :return:
@@ -87,7 +87,7 @@ class Plotter:
                                  linewidth=linewidth,
                                  zorder=2)
 
-    def plot_zero_points(self):
+    def plot_zero_points(self) -> None:
         """
         Vykreslí nulové body, ak sa ich užívateľ rozhodol zobraziť.
         :return:
@@ -101,7 +101,7 @@ class Plotter:
             self.ax.plot(zero_points, f(zero_points), marker, c=self.function.get('zero_points_color'),
                          markersize=markersize, zorder=zorder)
 
-    def plot_extremes(self):
+    def plot_extremes(self) -> None:
         """
         Vykreslí ostré lokálne extrémy, ak sa ich užívateľ rozhodol zobraziť.
         :return:
@@ -115,7 +115,7 @@ class Plotter:
             self.ax.plot(extremes, f(extremes), marker, c=self.function.get('extremes_color'), markersize=markersize,
                          zorder=zorder)
 
-    def plot_inflex_points(self):
+    def plot_inflex_points(self) -> None:
         """
         Vykreslí inflexné body, ak sa ich užívateľ rozhodol zobraziť.
         :return:
@@ -129,7 +129,7 @@ class Plotter:
             self.ax.plot(inflex_points, f(inflex_points), marker, c=self.function.get('inflex_points_color'),
                          markersize=markersize, zorder=zorder)
 
-    def plot_intervals(self, op):
+    def plot_intervals(self, op) -> None:
         """
         Vykreslí intervaly monotónnosti/konvexnosti/konkávnosti, ak sa ich užívateľ rozhodol zobraziť.
         :param op:
@@ -145,14 +145,14 @@ class Plotter:
                 self.ax.plot(interval, f(interval), color=color, linestyle=linestyle, linewidth=linewidth,
                              zorder=zorder)
 
-    def plot_all(self):
+    def plot_all(self) -> None:
         """
         Združujúca metóda pre vykreslenie všetkých informácii vybratých užívateľom do grafu.
         :return:
         """
         self.plot_main_function()
         self.plot_asymptotes()
-        self.plot_derivative()
+        self.plot_derivatives()
         self.plot_zero_points()
         self.plot_extremes()
         self.plot_inflex_points()

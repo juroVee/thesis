@@ -38,7 +38,7 @@ class Editor:
         self.board = None
         self.logger = Logger()
 
-    def run_instance(self, **params):
+    def run_instance(self, **params) -> None:
         if not settings['editor']['interactive_elements'] == 'yes':
             hide_interactive_toolbars()
         if 'inline' in get_backend():
