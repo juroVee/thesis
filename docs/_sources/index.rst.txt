@@ -9,14 +9,14 @@ Základné informácie
 .. sidebar:: Odkazy/Na stiahnutie
 
    | **Aktualizácia odkazov**
-   |    30. apríl 2020
+   |    1. máj 2020
 
    | **Repozitár práce**
    |    GitHub_
 
    | **Aktuálna verzia práce**
-   |    :download:`PDF (v1.3) <files/docs/Bachelor_Thesis_PDFv1_3.pdf>`
-   |    :download:`LaTeX (v1.3) <files/docs/Bachelor_Thesis_LATEXv1_3.tar.gz>`
+   |    :download:`PDF (v1.4) <files/docs/Bachelor_Thesis_PDFv1_4.pdf>`
+   |    :download:`LaTeX (v1.4) <files/docs/Bachelor_Thesis_LATEXv1_4.tar.gz>`
 
    | **Aktuálna verzia programu**
    |    :download:`tar.gz (v16.4) <files/sw/editor_v16_4.tar.gz>`
@@ -49,6 +49,7 @@ Log
 - opravená matplotlib ukážka v texte (plt -> fig, ax)
 - pripravené grafické ukážky metódy sečníc a Newtonovej metódy
 - vrátanie číslovanie podkapitol
+- pridaný text k Newtonovej metóde
 
 20.4.2020 - 26.4.2020
 ---------------------
