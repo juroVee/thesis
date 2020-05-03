@@ -41,42 +41,27 @@ def hide_interactive_toolbars():
     display(HTML(html))
 
 
-def check_parameters(params, logger) -> dict:
+def check_parameters(params) -> tuple:
     """
     Prekontroluje užívateľský vstup, zadané parametre, ich formát a hodnoty.
     :param params: užívateľské prametre
     :param logger: referencia na objektu Logger, pre prípadný výpis upozornení
     :return:
     """
-    allowed_params = {'figure', 'axes', 'function', 'intervals', 'primes', 'asymptotes', 'config'}
-    result = {}
-    if len(params) == 0:
-        return result
+    allowed_params = {'figure', 'axes', 'function', 'intervals', 'primes'}
+    required_params = {'figure', 'axes', 'function', 'intervals'}
+    error_message = None
     for param in params.keys():
         if param not in allowed_params:
-            logger.write(
-                logger.new_message('Chyba', neznámy_parameter=param, akcia='vykreslenie prednastavenej funkcie'),
-                mini=True)
-            return result
-    if any(param not in params for param in ['figure', 'axes', 'function', 'intervals']):
-        logger.write(
-            logger.new_message(
-                'Parameters "figure", "axes", "function" and "intervals" are required to analysis your function.\nPlotting default.'),
-            mini=True)
-        return result
+            error_message = f'Neznámy parameter {param}. Povolené parametre sú {allowed_params}.'
+            return error_message, params
+    if any(param not in params for param in required_params):
+        error_message = f'Parametre {required_params} sú nevyhnutné pre analýzu funkcie.'
+        return error_message, params
     else:
         others = {k: params[k] for k in set(params) - {'figure', 'axes', 'function'}}
         for param, value in others.items():
-            if param == 'X':
-                for i, X in enumerate(value):
-                    if len(X) < 2:
-                        logger.write(logger.new_message(
-                            f'Cannot analysis X at position {i}, need at least 2 values.\nPlotting default.'),
-                                     mini=True)
-                        return result
             if type(value) != list:
-                logger.write(logger.new_message(
-                    'Optional parameters must be in list. E.g. intervals=[X1, ...].\nPlotting default.'),
-                             mini=True)
-                return result
-    return params
+                error_message = f'Hodnota parametra "{param}" musí byť typu list, napr. {param}=[a, b, ...].'
+                return error_message, params
+    return error_message, params

@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 from IPython.display import clear_output, display
 
 from .computations import ComputationsManager
-from .function import Function, DefaultFunction, UserFunction
+from .function import Function
 from .warn import WarningsManager
 from ..settings import settings
 
@@ -48,12 +48,7 @@ class FunctionManager:
         self.fig, self.ax = plt.subplots()
         self.fig.set_size_inches(settings['plot_parameters']['width'], settings['plot_parameters']['height'])
         plt.subplots_adjust(left=0.08, bottom=0.08, right=0.92, top=0.92, wspace=0, hspace=0)
-        if bool(user_parameters):
-            function = UserFunction(user_parameters)
-        else:
-            parameters = settings['main_function']['default']
-            function = DefaultFunction(parameters['name'], parameters)
-        self.function = function
+        self.function = Function(user_parameters)
         self.updates = 0
         self.warnings = WarningsManager(logger)
 
@@ -74,7 +69,7 @@ class FunctionManager:
                     with warnings.catch_warnings(record=True) as warnings_list:
                         warnings.simplefilter("always")
                         getattr(manager, arg)()
-                        self.warnings.add(warnings_list)
+                        self.warnings.add(warnings_list, category=arg)
         self.warnings.print()
         if self.updates > 0:
             plt.close('all')

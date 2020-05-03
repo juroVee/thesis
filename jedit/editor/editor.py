@@ -23,7 +23,7 @@ along with this program (license.txt).  If not, see https://www.gnu.org/licenses
 from IPython.display import display
 from matplotlib import get_backend
 
-from .exceptions import NotSupportedException
+from .exceptions import NotSupportedException, ParameterError
 from .util import hide_interactive_toolbars, check_parameters
 from ..gui import Board, Logger
 from ..settings import settings
@@ -45,7 +45,10 @@ class Editor:
             raise NotSupportedException('Clause %matplotlib inline is not supported. Please use %matplotlib notebook.')
         for t in 'main', 'mini', 'warnings':
             self.logger.get_widget(t).clear_output()
-        self.board = Board(check_parameters(params, self.logger), self.logger)
+        error_message, parameters = check_parameters(params)
+        if error_message is not None:
+            raise ParameterError(error_message)
+        self.board = Board(parameters, self.logger)
         function_manager = self.board.get_object('function_manager')
         display(self.board.get_widget())
         function_manager.update_plot(main_function=True, main_derivatives=True, zero_points=True,

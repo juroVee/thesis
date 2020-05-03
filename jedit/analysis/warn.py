@@ -32,9 +32,12 @@ class WarningsManager:
         self.logger = logger
         self.data = Queue()
 
-    def add(self, warnings_list):
+    def add(self, warnings_list, category=None):
+        messages = set()
         for warning in warnings_list:
-            self.data.put(warning)
+            if str(warning.message) not in messages:
+                self.data.put((category, warning))
+                messages.add(str(warning.message))
 
     def get(self):
         return self.data
@@ -44,9 +47,9 @@ class WarningsManager:
         Metóda pošle všetky varovania objektu Logger, ktorý ich vypíše do tabu Upozornenia.
         """
         while not self.data.empty():
-            warning = self.data.get()
+            category, warning = self.data.get()
             message = self.logger.new_message('upozornenie',
                                               správa=str(warning.message),
-                                              kategória=str(warning.category),
+                                              kategória=f'{warning.category} at {category}',
                                               súbor=str(warning.filename))
             self.logger.write(message, warnings=True)

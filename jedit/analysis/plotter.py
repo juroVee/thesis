@@ -37,37 +37,21 @@ class Plotter:
         Vykreslí užívateľom zadanú alebo predvolenú funkciu (intervaly X a príslušné funkčné hodnoty)
         :return:
         """
-        for line in self.function.get('lines'):
-            X, Y = line.get_xdata(), line.get_ydata()
+        f = self.function.get('f')
+        for X in self.function.get('x_values'):
             init_subplot(self.ax)
             for param in self.function.parameters:
                 try:
                     method = getattr(self.ax, 'set_' + param)
-                    method(self.function.parameters[param])
+                    method(self.function.get(param))
                 except AttributeError:
                     pass
             self.ax.grid(self.function.get('grid'))
-            self.ax.plot(X, Y,
+            self.ax.plot(X, f(X),
                          color=self.function.get('main_function_color'),
                          linestyle=settings['main_function']['linestyle'],
                          linewidth=settings['main_function']['linewidth'],
                          zorder=3)
-
-    def plot_asymptotes(self) -> None:
-        """
-        Vykreslí užívateľom zadané asymptoty.
-        :return:
-        """
-        for line in self.function.get('asymptotes'):
-            X, Y = line.get_xdata(), line.get_ydata()
-            linestyle = settings['asymptote']['linestyle']
-            linewidth = settings['asymptote']['linewidth']
-            color = settings['asymptote']['color']
-            self.ax.plot(X, Y,
-                         color=color,
-                         linestyle=linestyle,
-                         linewidth=linewidth,
-                         zorder=1)
 
     def plot_derivatives(self):
         """
@@ -151,7 +135,6 @@ class Plotter:
         :return:
         """
         self.plot_main_function()
-        self.plot_asymptotes()
         self.plot_derivatives()
         self.plot_zero_points()
         self.plot_extremes()

@@ -22,5 +22,7 @@ along with this program (license.txt).  If not, see https://www.gnu.org/licenses
 
 
 class NotSupportedException(Exception):
-    """Raised when % matplotlib notebook is not set"""
+    pass
+
+class ParameterError(Exception):
     pass

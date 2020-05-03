@@ -25,12 +25,6 @@ main_function:
   linestyle: 'solid'
   linewidth: 1.8
   color: '#1f77b4'
-  default:
-    name: 'x^2'
-    formula: 'lambda x: np.power(x, 2)'
-    derivatives: # order matters...
-      - 'lambda x: 2*x'
-    linspace: 'np.linspace(-10, 10, 101)'
 
 derivative:
   linestyle: 'solid'

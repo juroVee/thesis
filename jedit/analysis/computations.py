@@ -70,9 +70,6 @@ class ComputationsManager:
                     new_x_values.append(new_X[~np.isnan(self.f(new_X))])
             self.function.set('x_values', new_x_values)
             self.x_values = new_x_values
-        y_values = [self.f(Xi) for Xi in self.x_values]
-        lines = [Line2D(Xi, Yi) for Xi, Yi in zip(self.x_values, y_values)]
-        self.function.set('lines', lines)
 
     def main_derivatives(self) -> None:
         """
@@ -96,13 +93,12 @@ class ComputationsManager:
         Vypočíta aproximácie nulových bodov pre jednotlivé intervaly X za použitia scipy.optimize.newton.
         :return:
         """
-        fprime, fprime2 = self.user_primes.get(1, None), self.user_primes.get(2, None)
+        fprime = self.user_primes.get(1, None)
         np.set_printoptions(suppress=True)
         for i, (original_X, X) in enumerate(zip(self.original_x_values, self.x_values)):
             key = f'X{i}'
             delta_x = np.diff(X)[0]
-            candidates = newton(self.f, original_X, fprime=fprime, fprime2=fprime2, tol=delta_x,
-                                maxiter=self.maxiter)
+            candidates = newton(self.f, original_X, fprime=fprime, tol=delta_x, maxiter=self.maxiter)
             candidates = candidates[(candidates >= np.amin(X)) & (candidates <= np.amax(X))]
             candidates = candidates[np.isclose(self.f(candidates), 0, atol=10 ** (-self.round))]
             self.data['zero_points'][key] = prepare(candidates, self.round)
@@ -119,7 +115,7 @@ class ComputationsManager:
         for i, X in enumerate(self.x_values):
             key = f'X{i}'
             primes1 = approximate_zeros(self.data['primes1'][key])
-            for n in range(2, settings['extremes']['max_derivative'] + 1, 2):  # kazda parna podla Vety 17
+            for n in range(2, settings['extremes']['max_derivative'] + 1, 2):
                 next_prime = self.data[f'primes{n}'].get(key)
                 if next_prime is None:
                     next_prime = get_derivative(self.f, X, n)

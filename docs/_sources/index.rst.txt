@@ -9,7 +9,7 @@ Základné informácie
 .. sidebar:: Odkazy/Na stiahnutie
 
    | **Aktualizácia odkazov**
-   |    1. máj 2020
+   |    3. máj 2020
 
    | **Repozitár práce**
    |    GitHub_
@@ -19,8 +19,8 @@ Základné informácie
    |    :download:`LaTeX (v1.4) <files/docs/Bachelor_Thesis_LATEXv1_4.tar.gz>`
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz (v16.4) <files/sw/editor_v16_4.tar.gz>`
-   |    :download:`zip (v16.4) <files/sw/editor_v16_4.zip>`
+   |    :download:`tar.gz (v16.5) <files/sw/editor_v16_5.tar.gz>`
+   |    :download:`zip (v16.5) <files/sw/editor_v16_5.zip>`
 
    | **Prezentácia - návrh**
    |    :download:`PDF <files/docs/SWDesignJurajVetrak.pdf>`
@@ -50,6 +50,12 @@ Log
 - pripravené grafické ukážky metódy sečníc a Newtonovej metódy
 - vrátanie číslovanie podkapitol
 - pridaný text k Newtonovej metóde
+- opravý bug, ktorý spôsoboval vykreslenie prerušovaných čiar
+- zjednotená trieda Function s jej podtriedou UserFunction
+- odstránená možnosť spúšťať editor bez parametrov
+- zlepšený odchyt zle zadaných parametrov editora
+- odstránená možnosť spracovania užívateľských asymptot
+- snáď vyriešený problém s ``IOPub data rate exceeded``
 
 20.4.2020 - 26.4.2020
 ---------------------

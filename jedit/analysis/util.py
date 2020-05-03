@@ -75,8 +75,8 @@ def get_derivative(func, X, n):
     :param n: stupeň derivácie
     :return: pole derivácií funkcie func stupňa n, prislúchajúcich intervalu X
     """
-    delta_x, order = np.diff(X)[0], n + 5 if n % 2 == 0 else n + 2
-    return derivative(func, X, n=n, dx=delta_x, order=order)
+    delta_x, order = np.diff(X)[0], n + 3 if n % 2 == 0 else n + 2
+    return derivative(func, X, n=n, dx=delta_x / 10, order=order)
 
 
 def round_to_n_significant(array, n):
