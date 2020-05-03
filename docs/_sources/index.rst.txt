@@ -19,8 +19,8 @@ Základné informácie
    |    :download:`LaTeX (v1.4) <files/docs/Bachelor_Thesis_LATEXv1_4.tar.gz>`
 
    | **Aktuálna verzia programu**
-   |    :download:`tar.gz (v16.5) <files/sw/editor_v16_5.tar.gz>`
-   |    :download:`zip (v16.5) <files/sw/editor_v16_5.zip>`
+   |    :download:`tar.gz (v16.6) <files/sw/editor_v16_6.tar.gz>`
+   |    :download:`zip (v16.6) <files/sw/editor_v16_6.zip>`
 
    | **Prezentácia - návrh**
    |    :download:`PDF <files/docs/SWDesignJurajVetrak.pdf>`
@@ -56,6 +56,7 @@ Log
 - zlepšený odchyt zle zadaných parametrov editora
 - odstránená možnosť spracovania užívateľských asymptot
 - snáď vyriešený problém s ``IOPub data rate exceeded``
+- odchytený ``RuntimeError`` pri výpočte nulových bodov, ktoré neexistujú
 
 20.4.2020 - 26.4.2020
 ---------------------

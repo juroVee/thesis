@@ -98,10 +98,13 @@ class ComputationsManager:
         for i, (original_X, X) in enumerate(zip(self.original_x_values, self.x_values)):
             key = f'X{i}'
             delta_x = np.diff(X)[0]
-            candidates = newton(self.f, original_X, fprime=fprime, tol=delta_x, maxiter=self.maxiter)
-            candidates = candidates[(candidates >= np.amin(X)) & (candidates <= np.amax(X))]
-            candidates = candidates[np.isclose(self.f(candidates), 0, atol=10 ** (-self.round))]
-            self.data['zero_points'][key] = prepare(candidates, self.round)
+            try:
+                candidates = newton(self.f, original_X, fprime=fprime, tol=delta_x, maxiter=self.maxiter)
+                candidates = candidates[(candidates >= np.amin(X)) & (candidates <= np.amax(X))]
+                candidates = candidates[np.isclose(self.f(candidates), 0, atol=10 ** (-self.round))]
+                self.data['zero_points'][key] = prepare(candidates, self.round)
+            except RuntimeError:
+                pass
 
     def extremes(self) -> None:
         """
