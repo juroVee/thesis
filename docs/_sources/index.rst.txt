@@ -9,14 +9,14 @@ Základné informácie
 .. sidebar:: Odkazy/Na stiahnutie
 
    | **Aktualizácia odkazov**
-   |    3. máj 2020
+   |    5. máj 2020
 
    | **Repozitár práce**
    |    GitHub_
 
    | **Aktuálna verzia práce**
-   |    :download:`PDF (v1.4) <files/docs/Bachelor_Thesis_PDFv1_4.pdf>`
-   |    :download:`LaTeX (v1.4) <files/docs/Bachelor_Thesis_LATEXv1_4.tar.gz>`
+   |    :download:`PDF (v1.5) <files/docs/Bachelor_Thesis_PDFv1_5.pdf>`
+   |    :download:`LaTeX (v1.5) <files/docs/Bachelor_Thesis_LATEXv1_5.tar.gz>`
 
    | **Aktuálna verzia programu**
    |    :download:`tar.gz (v16.6) <files/sw/editor_v16_6.tar.gz>`
@@ -41,6 +41,17 @@ Základné informácie
 
 Log
 ===
+
+4.5.2020 - 10.5.2020
+--------------------
+
+- pridaný text k metóde sečníc, pridaná definícia konvexnosti a konkávnosti
+- odstránené ``\textbf`` z definícií v texte, ``\forall x \in A {:}\ ...``
+- Rastúca, klesajúca a rýdzomonotónna funkcia -> Monotónnosť funkcie
+- neprázdne množiny preč, rastúca + klesajúca v jednej definícii
+- zmena štruktúry kapitoly teoretických východísk
+- pridaná používaná notácia
+- vysvetlenie notácie ``f: A → R`` (v definícii funkcie)
 
 27.4.2020 - 3.5.2020
 --------------------
