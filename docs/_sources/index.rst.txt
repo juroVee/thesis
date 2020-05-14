@@ -9,14 +9,14 @@ Základné informácie
 .. sidebar:: Odkazy/Na stiahnutie
 
    | **Aktualizácia odkazov**
-   |    5. máj 2020
+   |    14. máj 2020
 
    | **Repozitár práce**
    |    GitHub_
 
    | **Aktuálna verzia práce**
-   |    :download:`PDF (v1.6) <files/docs/Bachelor_Thesis_PDFv1_6.pdf>`
-   |    :download:`LaTeX (v1.6) <files/docs/Bachelor_Thesis_LATEXv1_6.tar.gz>`
+   |    :download:`PDF (v2.0) <files/docs/Bachelor_Thesis_PDFv2_0.pdf>`
+   |    :download:`LaTeX (v2.0) <files/docs/Bachelor_Thesis_LATEXv2_0.tar.gz>`
 
    | **Aktuálna verzia programu**
    |    :download:`tar.gz (v16.6) <files/sw/editor_v16_6.tar.gz>`
@@ -42,18 +42,26 @@ Základné informácie
 Log
 ===
 
+11.5.2020 - 17.5.2020
+---------------------
+
+- doplnená časť o výpočte numerických derivácií
+- doplnená motivačná kapitola o vyšetrovaní priebehu funkcie
+
+
 4.5.2020 - 10.5.2020
 --------------------
 
 - pridaný text k metóde sečníc, pridaná definícia konvexnosti a konkávnosti
-- odstránené ``\textbf`` z definícií v texte, ``\forall x \in A {:}\ ...``
+- odstránené ``\textbf`` z definícií v texte, :math:``\forall x \in A {:}\ ...``
 - rastúca, klesajúca a rýdzomonotónna funkcia -> monotónnosť funkcie
 - neprázdne množiny preč, rastúca + klesajúca v jednej definícii
 - zmena štruktúry kapitoly teoretických východísk
 - pridaná používaná notácia
-- vysvetlenie notácie ``f: A → R`` (v definícii funkcie)
+- vysvetlenie notácie :math:``f: A → R`` (v definícii funkcie)
 - zmena názvoslovia labelov jednotlivých kapitol, sekcií, odstránenie čísel
 - ďalšie úpravy súvisiace s konzultáciou 6.5.2020
+- :math:`a` -> :math:`x`
 
 27.4.2020 - 3.5.2020
 --------------------
