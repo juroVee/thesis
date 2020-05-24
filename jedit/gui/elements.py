@@ -91,7 +91,7 @@ class Dropdown:
             value=False,
             description=self.description,
             disabled=True,
-            button_style='',  # 'success', 'info', 'warning', 'danger' or ''
+            button_style='',
             tooltip=self.tooltip if self.tooltip is not None else self.description,
             layout=w.Layout(width='100%')
         )
