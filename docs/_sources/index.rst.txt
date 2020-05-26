@@ -9,14 +9,14 @@ Základné informácie
 .. sidebar:: Odkazy/Na stiahnutie
 
    | **Aktualizácia odkazov**
-   |    24. máj 2020
+   |    26. máj 2020
 
    | **Repozitár práce**
    |    GitHub_
 
    | **Aktuálna verzia práce**
-   |    :download:`PDF (v3.0) <files/docs/Bachelor_Thesis_PDFv3_0.pdf>`
-   |    :download:`LaTeX (v3.0) <files/docs/Bachelor_Thesis_LATEXv3_0.tar.gz>`
+   |    :download:`PDF (v3.1) <files/docs/Bachelor_Thesis_PDFv3_1.pdf>`
+   |    :download:`LaTeX (v3.1) <files/docs/Bachelor_Thesis_LATEXv3_1.tar.gz>`
 
    | **Aktuálna verzia programu**
    |    :download:`tar.gz (v16.6) <files/sw/editor_v16_6.tar.gz>`
@@ -46,6 +46,7 @@ Log
 ---------------------
 
 - doplnené vyhodnotenie spätnej väzby od študentov
+- doplnený abstrakt, poďakovanie, úvod a záver
 
 18.5.2020 - 24.5.2020
 ---------------------
