@@ -15,8 +15,8 @@ Základné informácie
    |    GitHub_
 
    | **Aktuálna verzia práce**
-   |    :download:`PDF (v3.1) <files/docs/Bachelor_Thesis_PDFv3_1.pdf>`
-   |    :download:`LaTeX (v3.1) <files/docs/Bachelor_Thesis_LATEXv3_1.tar.gz>`
+   |    :download:`PDF (v3.2) <files/docs/Bachelor_Thesis_PDFv3_2.pdf>`
+   |    :download:`LaTeX (v3.2) <files/docs/Bachelor_Thesis_LATEXv3_2.tar.gz>`
 
    | **Aktuálna verzia programu**
    |    :download:`tar.gz (v16.6) <files/sw/editor_v16_6.tar.gz>`
@@ -47,6 +47,7 @@ Log
 
 - doplnené vyhodnotenie spätnej väzby od študentov
 - doplnený abstrakt, poďakovanie, úvod a záver
+- čiastočná úprava prvej kapitoly
 
 18.5.2020 - 24.5.2020
 ---------------------
