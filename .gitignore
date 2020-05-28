@@ -5,4 +5,5 @@ exercises
 .vscode
 .ipynb_checkpoints
 __pycache__
+/final/
 /testing/
