@@ -9,7 +9,7 @@ Základné informácie
 .. sidebar:: Odkazy/Na stiahnutie
 
    | **Aktualizácia odkazov**
-   |    29. máj 2020
+   |    18. jún 2020
 
    | **Repozitár práce**
    |    GitHub_
@@ -24,6 +24,9 @@ Základné informácie
 
    | **Prezentácia - návrh**
    |    :download:`PDF <files/docs/SWDesignJurajVetrak.pdf>`
+
+   | **Prezentácia - obhajoba**
+   |    :download:`PDF <files/docs/FinalPresentationJurajVetrak.pdf>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
