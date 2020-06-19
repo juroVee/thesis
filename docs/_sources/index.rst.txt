@@ -27,7 +27,6 @@ Základné informácie
 
    | **Prezentácia - obhajoba**
    |    :download:`PDF <files/docs/FinalPresentationJurajVetrak.pdf>`
-   |    :download:`M4A <files/docs/FinalPresentationJurajVetrak.m4a>`
 
 | **Názov práce**
 |   Interaktívne vyšetrovanie priebehu elementárnych funkcií
